@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import pickle
 import numpy as np
 import subprocess
-
+from io import BytesIO
 
     
 import plotly.express as px
@@ -45,7 +45,7 @@ url = 'https://github.com/ferifirmansah05/ads_mvn/blob/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
 download_file_from_github(url, save_path)
 if os.path.exists(save_path):
-    df = pd.read_excel(save_path)
+    df = pd.read_excel(BytesIO(response.content))
 else:
     print("Excel file does not exist")
 
