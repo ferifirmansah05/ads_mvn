@@ -1,5 +1,4 @@
-import subprocess  
-
+import subprocess
 from pandas.core.api import Index
 import streamlit as st
 import pandas as pd
@@ -16,8 +15,8 @@ def run_install_script():
 
 if __name__ == "__main__":
     run_install_script() 
-      
 import plotly.express as px
+
 import requests
 import os
 
