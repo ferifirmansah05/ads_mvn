@@ -8,6 +8,7 @@ import subprocess
 import plotly.express as px
 import requests
 import os
+import sklearn
 
 def download_file_from_github(url, save_path):
     try:
