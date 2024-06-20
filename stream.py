@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import pickle
 import numpy as np
-pip install plotly
+pip install -r requirements.txt
 import plotly.express as px
 
 model = pickle.load(open('rf_model.pkl','rb'))
