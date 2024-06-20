@@ -4,7 +4,18 @@ import pandas as pd
 from datetime import datetime, timedelta
 import pickle
 import numpy as np
-python install_packages.py
+import subprocess
+
+def run_install_script():
+    result = subprocess.run(['python', 'install_packages.py'], check=True)
+    if result.returncode == 0:
+        print("Packages installed successfully")
+    else:
+        print("Failed to install packages")
+
+if __name__ == "__main__":
+    run_install_script()
+  
 import plotly.express as px
 
 model = pickle.load(open('rf_model.pkl','rb'))
