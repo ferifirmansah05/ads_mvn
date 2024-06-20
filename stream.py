@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import pickle
 import numpy as np
 import subprocess
+import openpyxl 
 
 def run_install_script():
     try:
@@ -64,7 +65,7 @@ url = 'https://github.com/ferifirmansah05/ads_mvn/raw/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
 download_file_from_github(url, save_path)
 if os.path.exists(save_path):
-    df = read(save_path)
+    df = read(save_path, engine='openpyxl')
 else:
     st.write("Excel file does not exist")
 
