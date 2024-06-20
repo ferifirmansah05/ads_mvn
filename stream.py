@@ -46,7 +46,7 @@ def load_model(file_path):
 def read(file_path):
     try:
         with open(file_path, 'rb') as file:
-            df = pd.read_excel(file)
+            df = pd.read_excel(file, engine='openpyxl')
         st.write("Model loaded successfully")
         return df
     except Exception as e:
@@ -65,7 +65,7 @@ url = 'https://github.com/ferifirmansah05/ads_mvn/raw/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
 download_file_from_github(url, save_path)
 if os.path.exists(save_path):
-    df = read(save_path, engine='openpyxl')
+    df = read(save_path)
 else:
     st.write("Excel file does not exist")
 
