@@ -18,7 +18,7 @@ if __name__ == "__main__":
   
 import plotly.express as px
 
-model = pickle.load(open('rf_model.pkl','rb'))
+model = pickle.load(open('https://github.com/ferifirmansah05/ads_mvn/blob/main/rf_model.pkl','rb'))
 df = pd.read_excel('ad_conversion.xlsx')
 
 st.title("Prediction")
