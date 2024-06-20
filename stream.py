@@ -55,7 +55,7 @@ if os.path.exists(save_path):
 else:
     print("Model file does not exist")
 
-df = pd.read_excel('ad_conversion.xlsx')
+df = pd.read_excel('https://github.com/ferifirmansah05/ads_mvn/blob/main/ad_conversion.xlsx')
 
 st.title("Prediction")
 st.markdown('### Date Range')
