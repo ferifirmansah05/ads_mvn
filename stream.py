@@ -44,7 +44,7 @@ def read(file_path):
 
 url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/rf_model.pkl'
 save_path = 'rf_model.pkl'
-
+download_file_from_github(url, save_path)
 if os.path.exists(save_path):
     model = load_model(save_path)
 else:
@@ -52,7 +52,7 @@ else:
 
 url = 'https://github.com/ferifirmansah05/ads_mvn/blob/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
-
+download_file_from_github(url, save_path)
 if os.path.exists(save_path):
     df = read(save_path)
 else:
