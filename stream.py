@@ -5,9 +5,6 @@ from datetime import datetime, timedelta
 import pickle
 import numpy as np
 import subprocess
-from io import BytesIO
-
-    
 import plotly.express as px
 import requests
 import os
@@ -42,7 +39,7 @@ def read(file_path):
         print(f"Failed to load model: {e}")
         return None
 
-url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/rf_model.pkl'
+url = 'https://github.com/ferifirmansah05/ads_mvn/edit/main/rf_model.pkl'
 save_path = 'rf_model.pkl'
 download_file_from_github(url, save_path)
 if os.path.exists(save_path):
