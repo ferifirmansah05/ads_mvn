@@ -34,11 +34,12 @@ def load_model(file_path):
 
 # URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
 url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/rf_model.pkl'
+save_path = 'rf_model.pkl'
 # Muat model dari file yang diunduh
 if os.path.exists(save_path):
-        model = load_model(save_path)
+    model = load_model(save_path)
 else:
-        print("Model file does not exist")
+    print("Model file does not exist")
 
 url = 'https://github.com/ferifirmansah05/ads_mvn/blob/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
@@ -46,7 +47,7 @@ download_file_from_github(url, save_path)
 if os.path.exists(save_path):
     df = pd.read_excel(save_path)
 else:
-    print("Model file does not exist")
+    print("Excel file does not exist")
 
 
 st.title("Prediction")
