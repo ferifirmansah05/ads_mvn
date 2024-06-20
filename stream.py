@@ -1,4 +1,12 @@
 import subprocess  
+
+from pandas.core.api import Index
+import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta
+import pickle
+import numpy as np
+
 def run_install_script():
     result = subprocess.run(['python', 'install_packages.py'], check=True)
     if result.returncode == 0:
@@ -8,14 +16,7 @@ def run_install_script():
 
 if __name__ == "__main__":
     run_install_script() 
-    
-from pandas.core.api import Index
-import streamlit as st
-import pandas as pd
-from datetime import datetime, timedelta
-import pickle
-import numpy as np
-  
+      
 import plotly.express as px
 import requests
 import os
