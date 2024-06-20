@@ -35,7 +35,7 @@ def download_file_from_github(url, save_path):
 def load_model(file_path):
     try:
         with open(file_path, 'rb') as file:
-            model = pickle.load(file, allow_pickle=True)
+            model = pickle.load(file, encoding='latin1')
         st.write("Model loaded successfully")
         return model
     except Exception as e:
