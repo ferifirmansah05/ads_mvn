@@ -21,18 +21,24 @@ import requests
 import os
 
 def download_file_from_github(url, save_path):
-    response = requests.get(url)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Memeriksa apakah permintaan berhasil
         with open(save_path, 'wb') as file:
             file.write(response.content)
         print(f"File downloaded successfully and saved to {save_path}")
-    else:
-        print(f"Failed to download file. Status code: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to download file: {e}")
 
 def load_model(file_path):
-    with open(file_path, 'rb') as file:
-        model = pickle.load(file)
-    return model
+    try:
+        with open(file_path, 'rb') as file:
+            model = pickle.load(file)
+        print("Model loaded successfully")
+        return model
+    except Exception as e:
+        print(f"Failed to load model: {e}")
+        return None
 
 # URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
 url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/rf_model.pkl'
@@ -46,7 +52,6 @@ download_file_from_github(url, save_path)
 # Muat model dari file yang diunduh
 if os.path.exists(save_path):
     model = load_model(save_path)
-    print("Model loaded successfully")
 else:
     print("Model file does not exist")
 
