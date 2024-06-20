@@ -39,7 +39,7 @@ def read(file_path):
         print(f"Failed to load model: {e}")
         return None
 
-url = 'https://github.com/ferifirmansah05/ads_mvn/edit/main/rf_model.pkl'
+url = 'https://github.com/ferifirmansah05/ads_mvn/raw/main/rf_model.pkl'
 save_path = 'rf_model.pkl'
 download_file_from_github(url, save_path)
 if os.path.exists(save_path):
@@ -47,7 +47,7 @@ if os.path.exists(save_path):
 else:
     st.write("Model file does not exist")
 
-url = 'https://github.com/ferifirmansah05/ads_mvn/blob/main/ad_conversion.xlsx'
+url = 'https://github.com/ferifirmansah05/ads_mvn/raw/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
 download_file_from_github(url, save_path)
 if os.path.exists(save_path):
