@@ -5,6 +5,18 @@ from datetime import datetime, timedelta
 import pickle
 import numpy as np
 import subprocess
+
+def run_install_script():
+    try:
+        result = subprocess.run(['python', 'path/to/install_packages.py'], check=True)
+        print("Packages installed successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"Error installing packages: {e}")
+
+if __name__ == "__main__":
+    run_install_script()
+
+
 import plotly.express as px
 import requests
 import os
