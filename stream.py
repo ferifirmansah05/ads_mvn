@@ -1,22 +1,20 @@
-import subprocess
 from pandas.core.api import Index
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import pickle
 import numpy as np
-
+import subprocess
 def run_install_script():
     result = subprocess.run(['python', 'install_packages.py'], check=True)
     if result.returncode == 0:
         print("Packages installed successfully")
     else:
         print("Failed to install packages")
-
 if __name__ == "__main__":
-    run_install_script() 
+    run_install_script()  
+    
 import plotly.express as px
-
 import requests
 import os
 
@@ -40,14 +38,14 @@ def load_model(file_path):
         print(f"Failed to load model: {e}")
         return None
 
-
+# URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
 url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/rf_model.pkl'
-save_path = 'rf_model.pkl'
-download_file_from_github(url, save_path)
-if os.path.exists(save_path):
-    model = load_model(save_path)
-else:
-    print("Model file does not exist")
+def load_model(file_path):
+# Muat model dari file yang diunduh
+    if os.path.exists(save_path):
+        model = load_model(save_path)
+    else:
+        print("Model file does not exist")
 
 url = 'https://github.com/ferifirmansah05/ads_mvn/blob/main/ad_conversion.xlsx'
 save_path = 'ad_conversion.xlsx'
