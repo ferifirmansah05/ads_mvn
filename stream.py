@@ -15,28 +15,28 @@ def download_file_from_github(url, save_path):
         response.raise_for_status()  # Memeriksa apakah permintaan berhasil
         with open(save_path, 'wb') as file:
             file.write(response.content)
-        print(f"File downloaded successfully and saved to {save_path}")
+        st.write(f"File downloaded successfully and saved to {save_path}")
     except requests.exceptions.RequestException as e:
-        print(f"Failed to download file: {e}")
+        st.write(f"Failed to download file: {e}")
 
 def load_model(file_path):
     try:
         with open(file_path, 'rb') as file:
             model = pickle.load(file)
-        print("Model loaded successfully")
+        st.write("Model loaded successfully")
         return model
     except Exception as e:
-        print(f"Failed to load model: {e}")
+        st.write(f"Failed to load model: {e}")
         return None
 
 def read(file_path):
     try:
         with open(file_path, 'rb') as file:
             df = pd.read_excel(file)
-        print("Model loaded successfully")
+        st.write("Model loaded successfully")
         return df
     except Exception as e:
-        print(f"Failed to load model: {e}")
+        st.write(f"Failed to load model: {e}")
         return None
 
 url = 'https://github.com/ferifirmansah05/ads_mvn/raw/main/rf_model.pkl'
