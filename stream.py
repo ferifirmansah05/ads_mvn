@@ -14,11 +14,42 @@ def run_install_script():
         print("Failed to install packages")
 
 if __name__ == "__main__":
-    run_install_script()
-  
+    run_install_script()  
+    
 import plotly.express as px
+import requests
+import os
 
-model = pickle.load(open('https://github.com/ferifirmansah05/ads_mvn/blob/main/rf_model.pkl','rb'))
+def download_file_from_github(url, save_path):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(save_path, 'wb') as file:
+            file.write(response.content)
+        print(f"File downloaded successfully and saved to {save_path}")
+    else:
+        print(f"Failed to download file. Status code: {response.status_code}")
+
+def load_model(file_path):
+    with open(file_path, 'rb') as file:
+        model = pickle.load(file)
+    return model
+
+# URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
+url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/rf_model.pkl'
+
+# Path untuk menyimpan file yang diunduh
+save_path = 'rf_model.pkl'
+
+# Unduh file dari GitHub
+download_file_from_github(url, save_path)
+
+# Muat model dari file yang diunduh
+if os.path.exists(save_path):
+    model = load_model(save_path)
+    print("Model loaded successfully")
+else:
+    print("Model file does not exist")
+
 df = pd.read_excel('ad_conversion.xlsx')
 
 st.title("Prediction")
