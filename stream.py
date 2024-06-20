@@ -1,3 +1,4 @@
+import subprocess  
 def run_install_script():
     result = subprocess.run(['python', 'install_packages.py'], check=True)
     if result.returncode == 0:
@@ -14,7 +15,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import pickle
 import numpy as np
-import subprocess    
+  
 import plotly.express as px
 import requests
 import os
