@@ -994,7 +994,7 @@ if uploaded_file is not None:
         web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
         web_exp          =       web_final.to_csv('1. ABO/_final/ALL/WEB {saveas}.csv', index=False)
         
-        df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob.glob('1. ABO/_final/Final*')], ignore_index = True).fillna('')
+        df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob('1. ABO/_final/Final*')], ignore_index = True).fillna('')
         df_concat = df_concat[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
         df_concat = df_concat[(df_concat['CAB'].str.isin(all_cab))]
         df_concat = df_concat[df_concat['DATE']     !=      '']
