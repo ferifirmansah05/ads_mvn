@@ -1725,8 +1725,8 @@ if uploaded_file is not None:
         for cab in all_cab:
              for date in all_date:
                 for ojol in all_kat:
-                    if os.path.exists(f'_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
-                        files.append(f'_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
+                    if os.path.exists(f'1. ABO/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
+                        files.append(f'1. ABO/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
         
                 # Concatenate CSV files within each subfolder
         df_all = pd.concat([pd.read_csv(file) for file in files])
