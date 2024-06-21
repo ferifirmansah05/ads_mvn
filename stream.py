@@ -114,7 +114,7 @@ if uploaded_file is not None:
         if combined_dataframes:
             final_df = pd.concat(combined_dataframes)
             final_df.to_csv('1. ABO/_merge/merge_Gojek 1.csv', index=False)
-            st.write("File GOJEK 1 Concatenated)
+            st.write("File GOJEK 1 Concatenated")
         else:
             st.write("No dataframes to concatenate.")  
 
@@ -146,7 +146,7 @@ if uploaded_file is not None:
             # Concatenate dataframes from all subfolders
             final_df_ = pd.concat(combined_dataframes)
             final_df.to_csv('1. ABO/_merge/merge_Gojek 2.csv', index=False)
-            st.write("File GOJEK 2 Concantenated')
+            st.write("File GOJEK 2 Concantenated")
         else:
             st.write("No dataframes to concatenate.")    
 
@@ -172,7 +172,7 @@ if uploaded_file is not None:
             storename = pd.read_csv('1. ABO/_bahan/bahan/Store Name GOJEK.csv')
             concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Outlet name').fillna('')
             concatenated_df.to_csv('1. ABO/_merge/merge_Gojek 3.csv', index=False)
-            st.write("FIle GOEJEK 3 Concatenated:")
+            st.write("FIle GOEJEK 3 Concatenated")
         else:
             st.write("No dataframes to concatenate.")
 
@@ -203,7 +203,7 @@ if uploaded_file is not None:
             # Concatenate dataframes from all subfolders
             final_df = pd.concat(combined_dataframes, ignore_index=True)
             final_df.to_csv('1. ABO/_merge/merge_Shopee Food.csv', index=False)
-            st.write("File SHOPEE FOOD Concatenated')
+            st.write("File SHOPEE FOOD Concatenated")
         else:
             st.write("No dataframes to concatenate.")
 
@@ -345,7 +345,7 @@ if uploaded_file is not None:
             output_path = '1. ABO/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_A.csv'
             final_df.to_csv(output_path, index=False)
         
-            st.write("File QRIS SHOPEE *, Concatenated)
+            st.write("File QRIS SHOPEE *, Concatenated")
         else:
             st.write("No dataframes to concatenate.")
         
@@ -435,7 +435,7 @@ if uploaded_file is not None:
             df.to_csv(output_file_path, index=False)
             st.write(f"File QRIS SHOPEE *; Concatenated")
         else:
-            st.write("No dataframes to concatenate")
+            st.write("No dataframes to concatenate.")
         
         st.write('QRIS SHOPEE')
         # Define the folder path
@@ -485,7 +485,7 @@ if uploaded_file is not None:
             merged_df.to_csv(output_path, index=False)
             st.write("File QRIS SHOPEE Concatenated")
         else:
-            st.write("No dataframes to concatenate")
+            st.write("No dataframes to concatenate.")
         
         
         # Define the directory containing the CSV files
@@ -515,7 +515,7 @@ if uploaded_file is not None:
         
             st.write('File QRIS SHOPEE Concatenated')
         else:
-            st.write("No dataframes to concatenate")
+            st.write("No dataframes to concatenate.")
         
         st.write('QRIS IA')
          #Specify the directory where the HTML files are located
@@ -555,7 +555,7 @@ if uploaded_file is not None:
             merged_qris_ia.to_csv(output_file, index=False)
             st.write("File QRIS TELKOM Concatenated")
         else:
-            st.write("No dafaframes to concatenate")
+            st.write("No dafaframes to concatenate.")
         
         st.write('WEB')
         # Specify the directory where the HTML files are located
@@ -597,7 +597,7 @@ if uploaded_file is not None:
         
             st.write("FIle WEB Concatenated")
         else:
-            st.write("No dataframes to concatenate")           
+            st.write("No dataframes to concatenate.")           
 
         st.markdown('###Preparing')
         
