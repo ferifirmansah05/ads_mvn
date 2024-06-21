@@ -109,12 +109,12 @@ if uploaded_file is not None:
                 df['Folder'] = subfolder
                 combined_dataframes.append(df)
             else:
-                st.write(f"No CSV files found in subfolder: {subfolder}")
+                st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
     
         if combined_dataframes:
             final_df = pd.concat(combined_dataframes)
             final_df.to_csv('1. ABO/_merge/merge_Gojek 1.csv', index=False)
-            st.write("Concatenated GOJEK 1 Exported to:", '_merge/merge_Gojek 1.csv')
+            st.write("File GOJEK 1 Concatenated)
         else:
             st.write("No dataframes to concatenate.")  
 
@@ -139,14 +139,14 @@ if uploaded_file is not None:
                 df['Folder'] = subfolder
                 combined_dataframes.append(df)
             else:
-                st.write(f"No CSV files found in subfolder: {subfolder}")
+                st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
         
         # Check if there are any dataframes to concatenate
         if combined_dataframes:
             # Concatenate dataframes from all subfolders
             final_df_ = pd.concat(combined_dataframes)
             final_df.to_csv('1. ABO/_merge/merge_Gojek 2.csv', index=False)
-            st.write("Concatenated GOJEK 2 Exported to:", '_merge/merge_Gojek 2.csv')
+            st.write("File GOJEK 2 Concantenated')
         else:
             st.write("No dataframes to concatenate.")    
 
@@ -172,9 +172,9 @@ if uploaded_file is not None:
             storename = pd.read_csv('1. ABO/_bahan/bahan/Store Name GOJEK.csv')
             concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Outlet name').fillna('')
             concatenated_df.to_csv('1. ABO/_merge/merge_Gojek 3.csv', index=False)
-            st.write("Concatenated GOJEK 3 Exported to:", output_path)
+            st.write("FIle GOEJEK 3 Concatenated:")
         else:
-            st.write("There are no files to concatenate.")
+            st.write("No dataframes to concatenate.")
 
         st.write('SHOPEE FOOD')
         main_folder = '1. ABO/_bahan/SHOPEE FOOD'
@@ -196,14 +196,14 @@ if uploaded_file is not None:
                     df['Folder'] = subfolder
                     combined_dataframes.append(df)
                 else:
-                    st.write(f"No CSV files found in subfolder: {subfolder}")
+                    st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
         
         # Check if there are any dataframes to concatenate
         if combined_dataframes:
             # Concatenate dataframes from all subfolders
             final_df = pd.concat(combined_dataframes, ignore_index=True)
             final_df.to_csv('1. ABO/_merge/merge_Shopee Food.csv', index=False)
-            st.write("Concatenated SHOPEE FOOD Exported to:", '_merge/merge_Shopee Food.csv')
+            st.write("File SHOPEE FOOD Concatenated')
         else:
             st.write("No dataframes to concatenate.")
 
@@ -235,7 +235,7 @@ if uploaded_file is not None:
             output_path = '1. ABO/_merge/merge_Grab 1.csv'
             concatenated_df.to_csv(output_path, index=False)
         
-            st.write("Concatenated GRAB Exported to:", output_path)
+            st.write("File GRAB *csv Concatenated")
         else:
             st.write("There are no files to concatenate.")
         
@@ -277,9 +277,9 @@ if uploaded_file is not None:
             os.makedirs(os.path.dirname(output_file), exist_ok=True)
             merged_df.to_csv(output_file, index=False)
         
-            st.write("Concatenated DataFrame Exported to:", output_file)
+            st.write("File GRAB *xls Concatenated")
         else:
-            st.write("There are no files to process.")
+            st.write("No dataframes to concatenate.")
         
         
         # Function to preprocess each DataFrame
@@ -329,7 +329,7 @@ if uploaded_file is not None:
                 df_subfolder['Folder'] = subfolder
                 combined_dataframes.append(df_subfolder)
             else:
-                st.write(f"No CSV files found in subfolder: {subfolder}")
+                st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
         
         # Check if there are any dataframes to concatenate
         if combined_dataframes:
@@ -345,9 +345,9 @@ if uploaded_file is not None:
             output_path = '1. ABO/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_A.csv'
             final_df.to_csv(output_path, index=False)
         
-            st.write("Concatenated QRIS S_A Exported to:", output_path)
+            st.write("File QRIS SHOPEE *, Concatenated)
         else:
-            st.write("There are no files to concatenate.")
+            st.write("No dataframes to concatenate.")
         
         
         st.write('QRIS SHOPEE *;')
@@ -380,13 +380,8 @@ if uploaded_file is not None:
         
             # st.write a message if no CSV files are found in a subfolder
             if not filenames:
-                st.write(f"No CSV files found in subfolder: {dirpath}")
-        
-        # Check if any CSV files were processed
-        if csv_processed:
-            st.write("All CSV files processed.")
-        else:
-            st.write("No CSV files found for processing.")
+                st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
+
         
         base_folder_path = '1. ABO/_bahan/QRIS_SHOPEE/QRIS B (Separator ;)'
         
@@ -410,7 +405,7 @@ if uploaded_file is not None:
                     df['Folder'] = folder
                     dfs.append(df)
                 except Exception as e:
-                    st.write(f"Error reading {file}: {e}")
+                    print(f"Error reading {file}: {e}")
             return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
         
         # Find all CSV files in the base folder and its subfolders
@@ -420,7 +415,7 @@ if uploaded_file is not None:
         if csv_files:
             df = read_csv_files(csv_files, base_folder_path)
         else:
-            st.write("No CSV files found.")
+            st.write(File does not exist. Please double check")
             df = pd.DataFrame()
         
         # Only proceed if the DataFrame is not empty
@@ -438,9 +433,9 @@ if uploaded_file is not None:
             # Export DataFrame to CSV
             output_file_path = '1. ABO/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv'
             df.to_csv(output_file_path, index=False)
-            st.write(f"DataFrame exported to {output_file_path}")
+            st.write(f"File QRIS SHOPEE *; Concatenated")
         else:
-            st.write("No data to export. DataFrame is empty.")
+            st.write("No dataframes to concatenate")
         
         st.write('QRIS SHOPEE')
         # Define the folder path
@@ -484,13 +479,13 @@ if uploaded_file is not None:
                 merged_df['DATE'] = merged_df['Update Time'].dt.strftime('%d/%m/%Y')
                 merged_df['TIME'] = merged_df['Update Time'].dt.time
             except Exception as e:
-                st.write(f"Error formatting time: {e}")
+                print(f"Error formatting time: {e}")
         
             # Save the merged DataFrame to a CSV file
             merged_df.to_csv(output_path, index=False)
-            st.write("Merged CSV file has been created:", output_path)
+            st.write("File QRIS SHOPEE Concatenated")
         else:
-            st.write("There are no CSV files to merge.")
+            st.write("No dataframes to concatenate")
         
         
         # Define the directory containing the CSV files
@@ -518,9 +513,9 @@ if uploaded_file is not None:
             output_file = '1. ABO/_merge/merge_QRIS Shopee.csv'
             concatenated_df.to_csv(output_file, index=False)
         
-            st.write("Concatenated CSV file saved to:", output_file)
+            st.write('File QRIS SHOPEE Concatenated')
         else:
-            st.write("There are no CSV files to concatenate.")
+            st.write("No dataframes to concatenate")
         
         st.write('QRIS IA')
          #Specify the directory where the HTML files are located
@@ -547,7 +542,7 @@ if uploaded_file is not None:
                                 df['Folder'] = subfolder_name
                                 dataframes.append(df)
                     except Exception as e:
-                        st.write(f"Error reading {file_path}: {e}")
+                        ptint.write(f"Error reading {file_path}: {e}")
         
         if dataframes:
             # Concatenate all DataFrames into one DataFrame
@@ -558,9 +553,9 @@ if uploaded_file is not None:
             # Save the merged DataFrame to a CSV file without row index
             output_file = '1. ABO/_merge/merge_QRIS IA.csv'
             merged_qris_ia.to_csv(output_file, index=False)
-            st.write("Merged CSV file saved to:", output_file)
+            st.write("File QRIS TELKOM Concatenated")
         else:
-            st.write("There are no QRIS TELKOM files to process. No CSV file generated.")
+            st.write("No dafaframes to concatenate")
         
         st.write('WEB')
         # Specify the directory where the HTML files are located
@@ -600,14 +595,16 @@ if uploaded_file is not None:
             # Save the DataFrame without row index to a new CSV file
             final_web.to_csv(output_file, index=False)
         
-            st.write("Concatenated WEB Exported to:", output_file)
+            st.write("FIle WEB Concatenated")
         else:
-            st.write("There are no HTML files to process.")           
+            st.write("No dataframes to concatenate")           
 
+        st.markdown('###Preparing')
         
         gojek1_path       = '1. ABO/_merge/merge_Gojek 1.csv'
         outputgojek1_path = '1. ABO/_final/Final Gojek 1.csv'
         
+        st.write('GOJEK 1')
         if os.path.exists(gojek1_path):
             #Read data merge GOJEK 1
             df_go1      =       pd.read_csv(gojek1_path).fillna('')
@@ -639,13 +636,14 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_go1.to_csv(outputgojek1_path, index=False)
-            st.write(f"File processed and saved as {outputgojek1_path}")
+            st.write(f"File GOJEK 1 processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
         gojek2_path       = '1. ABO/_merge/merge_Gojek 2.csv'
         outputgojek2_path = '1. ABO/_final/Final Gojek 2.csv'
         
+        st.write('GOJEK 2')
         if os.path.exists(gojek2_path):
             #Read data merge GOJEK 2
             df_go2      =       pd.read_csv(gojek2_path).fillna('')
@@ -683,13 +681,14 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_go2.to_csv(outputgojek2_path, index=False)
-            st.write(f"File processed and saved as {outputgojek2_path}")
+            st.write(f"File GOJEK 2 processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
         gojek3_path       = '1. ABO/_merge/merge_Gojek 3.csv'
         outputgojek3_path = '1. ABO/_final/Final Gojek 3.csv'
         
+        st.write('GOJEK 3')
         if os.path.exists(gojek3_path):
             # Read data merge GOJEK 3
             df_go3 = pd.read_csv(gojek3_path).fillna('')
@@ -721,13 +720,14 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_go3.to_csv(outputgojek3_path, index=False)
-            st.write(f"File processed and saved as {outputgojek3_path}")
+            st.write(f"File GOJEK 3 processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
         shopee_path       = '1. ABO/_merge/merge_Shopee Food.csv'
         outputshopee_path = '1. ABO/_final/Final Shopee Food.csv'
         
+        st.write('SHOPEE FOOD')
         if os.path.exists(shopee_path):
             # Read data merge Shopee Food
             df_shopee = pd.read_csv(shopee_path).fillna('')
@@ -763,7 +763,7 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_shopee.to_csv(outputshopee_path, index=False)
-            st.write(f"File processed and saved as {outputshopee_path}")
+            st.write(f"File SHOPEE FOOD processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
@@ -774,7 +774,8 @@ if uploaded_file is not None:
         # Check for the existence of grab files
         grab1_exists = os.path.exists(grab1_path)
         grab2_exists = os.path.exists(grab2_path)
-        
+
+        st.write('GRAB')
         # Process based on the existence of files
         if grab1_exists or grab2_exists:
             # Initialize an empty list to hold dataframes
@@ -848,14 +849,14 @@ if uploaded_file is not None:
         
                 # Save the final result to a new CSV file
                 loc_grab.to_csv(outputgrab_path, index=False)
-                st.write(f"File processed and saved as {outputgrab_path}")
+                st.write(f"File GRAB processed and saved")
         else:
-            st.write("File Grab1 and Grab2 does not exist. Please double check")
+            st.write("File does not exist. Please double check")
         
         
         qrisshopee_path       = '1. ABO/_merge/merge_QRIS Shopee.csv'
         outputqrishopee_path  = '1. ABO/_final/Final QRIS Shopee.csv'
-        
+        st.write('QRIS SHOPEE')
         if os.path.exists(qrisshopee_path):
             # Read data merge QRIS Shopee
             df_shopee = pd.read_csv(qrisshopee_path).fillna('')
@@ -919,16 +920,14 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_qristelkom.to_csv(outputqristelekom_path, index=False)
-            st.write(f"File processed and saved as {outputqristelekom_path}")
+            st.write(f"File QRIS SHOPEE processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
-        import pandas as pd
-        import os
         
         # Path to the CSV file
         file_path = '1. ABO/_merge/merge_ESB.csv'
-        
+        st.write('QRIS ESB')
         # Check if the file exists
         if os.path.exists(file_path):
             # Read the CSV file
@@ -959,10 +958,12 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             df_esb.to_csv('1. ABO/_final/Final ESB.csv', index=False)
+            st.write("File QRIS ESB processed and saved)
         else:
             # st.write a message if the file is not found
             st.write("File does not exist. Please double check")
-        
+
+        st.write('WEB')
         #Read data merge WEB
         df_web       =   pd.read_csv('1. ABO/_merge/merge_WEB.csv')
         
@@ -989,6 +990,7 @@ if uploaded_file is not None:
                     return pd.to_datetime(x, format='%H:%M:%S').strftime('%H:%M:%S')
                 except ValueError as e:
                     return pd.NaT
+                    
         web_final['TIME'] = web_final['TIME'].apply(convert_time)
         web_final         =   web_final[web_final['DATE'].isin(all_date)]
         web_final['DATE'] = pd.to_datetime(web_final['DATE'])
@@ -1005,8 +1007,10 @@ if uploaded_file is not None:
         df_concat   =   df_concat[df_concat['DATE'].isin(all_date)] #CHANGE
         df_concat['DATE'] = df_concat['DATE'].dt.strftime('%d/%m/%Y')
         df_concat.to_csv('1. ABO/_final/ALL/INVOICE.csv', index=False) #CHANGE
-        
+
+        st.write('WEB')
         st.write(web_final)
+        st.write('INVOICE')
         st.write(df_concat)
 
         all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
@@ -1733,6 +1737,7 @@ if uploaded_file is not None:
         
         combined_dataframes.append(df_all)
         final_df = pd.concat(combined_dataframes)
+        st.write('Breakdown')
         st.write(final_df)
         #final_df.to_csv(f'_final/COMBINE/{save_as}', index=False)
                 
