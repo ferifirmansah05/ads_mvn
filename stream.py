@@ -615,7 +615,8 @@ if uploaded_file is not None:
                                                                               'Folder' : 'CAB',
                                                                               'Nomor Pesanan' : 'ID',
                                                                               'Gross Amount' : 'NOM'}).fillna('')
-            loc_go1['DATETIME'] = loc_go1['DATETIME'].str.replace('Jun', 'June')
+            loc_go1['DATETIME'] = loc_go1['DATETIME'].str.replace('Apr', 'April')
+            loc_go1['DATETIME'] = loc_go1['DATETIME'].str.replace('Jun', 'June')            
         
             # Parse datetime column
             loc_go1['DATETIME']    =   pd.to_datetime(loc_go1['DATETIME'], utc=True)
