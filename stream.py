@@ -990,7 +990,7 @@ if uploaded_file is not None:
         web_final['DATE'] = pd.to_datetime(web_final['DATE'])
         web_final         =   web_final[web_final['DATE'].isin([all_date])]
         web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
-        web_final = web_final[(web_final['CAB'].str.isin(all_cab))]
+        web_final = web_final[web_final['CAB'].isin(all_cab)]
         web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
         web_exp          =       web_final.to_csv('1. ABO/_final/ALL/WEB {saveas}.csv', index=False)
         
