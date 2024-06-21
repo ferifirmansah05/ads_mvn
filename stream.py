@@ -63,7 +63,7 @@ if (start_date is not None) & (end_date is not None):
     all_date = []
     current_date = start_date
     while current_date <= end_date:
-        date_range.append(current_date.strftime('%Y-%m-%d'))
+        all_date.append(current_date.strftime('%Y-%m-%d'))
         current_date += dt.timedelta(days=1)
 
 st.markdown('### Upload file *Zip')
