@@ -80,7 +80,7 @@ if uploaded_file is not None:
         if combined_dataframes:
             # Concatenate dataframes from all subfolders
             final_df_ = pd.concat(combined_dataframes)
-            final_df.to_csv(f'{path}/_merge/merge_Gojek 2.csv', index=False)
+            final_df.to_csv('1. ABO/_merge/merge_Gojek 2.csv', index=False)
             st.write("Concatenated GOJEK 2")
         else:
             st.write("No dataframes GOJEK 2 to concatenate.")
@@ -104,7 +104,7 @@ if uploaded_file is not None:
             concatenated_df = pd.concat(dfs, ignore_index=True)
         
             # Lookup
-            storename = pd.read_csv(f'{path}/_bahan/bahan/Store Name GOJEK.csv')
+            storename = pd.read_csv('1. ABO/_bahan/bahan/Store Name GOJEK.csv')
             concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Outlet name').fillna('')
             concatenated_df.to_csv('1. ABO/_merge/merge_Gojek 3.csv', index=False)
             st.write("Concatenated GOJEK 3")
