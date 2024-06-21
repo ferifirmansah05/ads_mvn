@@ -641,7 +641,7 @@ if uploaded_file is not None:
         gojek2_path       = '1. ABO/_merge/merge_Gojek 2.csv'
         outputgojek2_path = '1. ABO/_final/Final Gojek 2.csv'
         
-        if os.path.exists(gojek1_path):
+        if os.path.exists(gojek2_path):
             #Read data merge GOJEK 2
             df_go2      =       pd.read_csv(gojek2_path).fillna('')
         
