@@ -886,13 +886,13 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_qrisshopee.to_csv(outputqrishopee_path, index=False)
-            st.write(f"File processed and saved as {outputqrishopee_path}")
+            st.write(f"File QRIS SHOPEE processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
         qristelekom_path        = '1. ABO/_merge/merge_QRIS IA.csv'
         outputqristelekom_path  = '1. ABO/_final/Final QRIS Telkom.csv'
-        
+        st.write('QRIS TELKOM')
         if os.path.exists(qristelekom_path):
             # Read data merge QRIS Telkom
             df_qristelkom = pd.read_csv(qristelekom_path).fillna('')
@@ -920,7 +920,7 @@ if uploaded_file is not None:
         
             # Save the final result to a new CSV file
             loc_qristelkom.to_csv(outputqristelekom_path, index=False)
-            st.write(f"File QRIS SHOPEE processed and saved")
+            st.write(f"File QRIS TELKOM processed and saved")
         else:
             st.write("File does not exist. Please double check")
         
