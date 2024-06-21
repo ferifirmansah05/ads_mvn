@@ -9,7 +9,16 @@ st.title('Unggah dan Gabungkan File CSV dari ZIP')
 
 uploaded_file = st.file_uploader("Pilih file ZIP", type="zip")
 
+main_folder = '/path/to/your/main/folder'
 
+# Periksa apakah main_folder ada dan dapat diakses
+if os.path.exists(main_folder) and os.path.isdir(main_folder):
+    # Gunakan list comprehension untuk mendapatkan subfolder
+    subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
+    st.write(f'Subfolders di {main_folder}: {subfolders}')
+else:
+    st.write(f'Folder {main_folder} tidak ditemukan atau tidak dapat diakses.')
+    
 if st.button('Process'):
     with zipfile.ZipFile(uploaded_file, 'r') as z:
       z.extractall()
