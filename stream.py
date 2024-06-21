@@ -1010,6 +1010,7 @@ if uploaded_file is not None:
         st.write(df_concat)
 
         all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
+        ket = ''
         time_go = 150
         time_qs = 5
         time_gf = 150
