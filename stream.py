@@ -974,8 +974,17 @@ if uploaded_file is not None:
         
         web_final       =       web_final[web_final['TIME']     !=      'TOTAL']
         web_final       =       web_final[web_final['TIME']     !=      'CO']
-        
-        web_final['TIME'] = pd.to_datetime(web_final['TIME'])
+
+
+        def convert_time(x):
+            try:
+                return pd.to_datetime(x).strftime('%H:%M:%S')
+            except ValueError:
+                try:
+                    return pd.to_datetime(x, format='%H:%M:%S').strftime('%H:%M:%S')
+                except ValueError as e:
+                    return pd.NaT
+        web_final['TIME'] = web_final['TIME'].apply(convert_time)
         web_final['DATE'] = pd.to_datetime(web_final['DATE'])
         web_final         =   web_final[web_final['DATE'].isin([all_date])]
         web_final['TIME'] = web_final['TIME'].dt.strftime('%H:%M:%S')
