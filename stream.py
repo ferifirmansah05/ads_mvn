@@ -996,7 +996,7 @@ if uploaded_file is not None:
         
         df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob('1. ABO/_final/Final*')], ignore_index = True).fillna('')
         df_concat = df_concat[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
-        df_concat = df_concat[(df_concat['CAB'].str.isin(all_cab))]
+        df_concat = df_concat[(df_concat['CAB'].isin(all_cab))]
         df_concat = df_concat[df_concat['DATE']     !=      '']
         df_concat['DATE'] = pd.to_datetime(df_concat['DATE'], format='%d/%m/%Y')
         df_concat   =   df_concat[df_concat['DATE'].isin(all_date)] #CHANGE
