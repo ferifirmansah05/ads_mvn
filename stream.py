@@ -8,7 +8,7 @@ import csv
 
 import subprocess
 def run_install_script():
-    result = subprocess.run(['python', 'install_packages.py'], check=True)
+    result = subprocess.run([ 'install_packages.py'], check=True)
 
 if __name__ == "__main__":
     run_install_script() 
