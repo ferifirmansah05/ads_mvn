@@ -9,6 +9,7 @@ import datetime
 import requests
 import pickle
 import os
+import openpyxl
 
 def download_file_from_github(url, save_path):
     response = requests.get(url)
@@ -21,14 +22,14 @@ def download_file_from_github(url, save_path):
 
 def load_csv(file_path):
     with open(file_path, 'rb') as file:
-        model = pd.read_csv(file)
+        model = pd.read_excel(file, engine='openpyxl')
     return model
 
 # URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
-url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/database.csv'
+url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/database provinsi.xlsx'
 
 # Path untuk menyimpan file yang diunduh
-save_path = 'database.csv'
+save_path = 'database provinsi.xlsx'
 
 # Unduh file dari GitHub
 download_file_from_github(url, save_path)
