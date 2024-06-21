@@ -374,7 +374,7 @@ if uploaded_file is not None:
                 if filename.endswith('.csv'):
                     file_path = os.path.join(dirpath, filename)
                     remove_separator_from_csv(file_path)
-                    st.write(f"Removed separator from {file_path}")
+                    print(f"Removed separator from {file_path}")
                     # Set the flag indicating CSV files were processed
                     csv_processed = True
         
@@ -599,7 +599,7 @@ if uploaded_file is not None:
         else:
             st.write("No dataframes to concatenate.")           
 
-        st.markdown('###Preparing')
+        st.markdown('### Preparing')
         
         gojek1_path       = '1. ABO/_merge/merge_Gojek 1.csv'
         outputgojek1_path = '1. ABO/_final/Final Gojek 1.csv'
@@ -963,7 +963,6 @@ if uploaded_file is not None:
             # st.write a message if the file is not found
             st.write("File does not exist. Please double check")
 
-        st.write('WEB')
         #Read data merge WEB
         df_web       =   pd.read_csv('1. ABO/_merge/merge_WEB.csv')
         
@@ -1008,6 +1007,7 @@ if uploaded_file is not None:
         df_concat['DATE'] = df_concat['DATE'].dt.strftime('%d/%m/%Y')
         df_concat.to_csv('1. ABO/_final/ALL/INVOICE.csv', index=False) #CHANGE
 
+        st.markdown('### Output')
         st.write('WEB')
         st.write(web_final)
         st.write('INVOICE')
