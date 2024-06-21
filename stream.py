@@ -9,7 +9,7 @@ st.title('Unggah dan Gabungkan File CSV dari ZIP')
 
 uploaded_file = st.file_uploader("Pilih file ZIP", type="zip")
 
-main_folder = '/path/to/your/main/folder'
+main_folder = '1. ABO'
 
 # Periksa apakah main_folder ada dan dapat diakses
 if os.path.exists(main_folder) and os.path.isdir(main_folder):
