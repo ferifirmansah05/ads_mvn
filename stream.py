@@ -1385,8 +1385,8 @@ if uploaded_file is not None:
                     all = pd.concat([qsw,qsi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True]).reset_index(drop=True)
                     if ket == 'selisih':
                         all = all[~(all['KET'].str.contains('Balance'))].sort_values(['TIME','KET','SOURCE'])
-                    all.loc[all[not(all['HELP'].str.contains('Bayar'))].index,'HELP'] = all.loc[all[not(all['HELP'].str.contains('Bayar'))].index,'KET'].apply(lambda x: label_1(x))
-                    all.loc[all[not(all['HELP'].str.contains('Bayar'))].index,'KET'] = all.loc[all[not(all['HELP'].str.contains('Bayar'))].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
+                    all.loc[all[~all['HELP'].str.contains('Bayar')].index,'HELP'] = all.loc[all[~all['HELP'].str.contains('Bayar')].index,'KET'].apply(lambda x: label_1(x))
+                    all.loc[all[~all['HELP'].str.contains('Bayar')].index,'KET'] = all.loc[all[~all['HELP'].str.contains('Bayar')].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
                     all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                     all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                     all.to_csv(f'1. ABO/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
