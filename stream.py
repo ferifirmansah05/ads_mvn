@@ -7,7 +7,24 @@ from glob import glob
 import csv
 
 
+st.title('Automate Breakdown Ojol')
+st.title('Pilihan Tanggal')
 
+# Tampilkan widget untuk memilih rentang tanggal
+start_date = st.date_input("Pilih Tanggal Awal")
+end_date = st.date_input("Pilih Tanggal Akhir")
+
+# Jika tombol ditekan untuk memproses rentang tanggal
+if (start_date is not None) & (end_date is not None):
+    date_range = []
+    
+    # Konversi rentang tanggal menjadi format YY-MM-DD dan tambahkan ke dalam list
+    current_date = start_date
+    while current_date <= end_date:
+        date_range.append(current_date.strftime('%Y-%m-%d'))
+        current_date += datetime.timedelta(days=1)
+    st.write(date_range)
+st.markdown('### Upload file *Zip')
 uploaded_file = st.file_uploader("Pilih file ZIP", type="zip")
 
 if uploaded_file is not None:
