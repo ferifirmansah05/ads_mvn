@@ -5,6 +5,7 @@ import io
 import os
 from glob import glob
 import csv
+import subprocess
 def run_install_script():
     result = subprocess.run(['python', 'install_packages.py'], check=True)
 
