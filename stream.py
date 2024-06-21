@@ -5,12 +5,14 @@ import io
 import os
 from glob import glob
 import csv
-import datetime
 import requests
 import pickle
 import os
 import openpyxl
-
+import numpy as np
+import time
+import datetime as dt
+import re
 def download_file_from_github(url, save_path):
     response = requests.get(url)
     if response.status_code == 200:
@@ -62,8 +64,8 @@ if (start_date is not None) & (end_date is not None):
     current_date = start_date
     while current_date <= end_date:
         date_range.append(current_date.strftime('%Y-%m-%d'))
-        current_date += datetime.timedelta(days=1)
-    st.write(date_range)
+        current_date += dt.timedelta(days=1)
+
 st.markdown('### Upload file *Zip')
 uploaded_file = st.file_uploader("Pilih file ZIP", type="zip")
 
@@ -595,10 +597,405 @@ if uploaded_file is not None:
         
             st.write("Concatenated WEB Exported to:", output_file)
         else:
-            st.write("There are no HTML files to process.")
-                
+            st.write("There are no HTML files to process.")           
+
+        
+        gojek1_path       = '1. ABO/_merge/merge_Gojek 1.csv'
+        outputgojek1_path = '1. ABO/_final/Final Gojek 1.csv'
+        
+        if os.path.exists(gojek1_path):
+            #Read data merge GOJEK 1
+            df_go1      =       pd.read_csv(gojek1_path).fillna('')
+            loc_go1     =       df_go1.loc[:,['Waktu Transaksi',
+                                              'Folder',
+                                              'Nomor Pesanan',
+                                              'Gross Amount']].rename(columns={'Waktu Transaksi' : 'DATETIME',
+                                                                              'Folder' : 'CAB',
+                                                                              'Nomor Pesanan' : 'ID',
+                                                                              'Gross Amount' : 'NOM'}).fillna('')
+            loc_go1['DATETIME'] = loc_go1['DATETIME'].str.replace('Jun', 'June')
+        
+            # Parse datetime column
+            loc_go1['DATETIME']    =   pd.to_datetime(loc_go1['DATETIME'], utc=True)
+        
+            loc_go1['DATE']        =   loc_go1['DATETIME'].dt.strftime('%d/%m/%Y')
+            loc_go1['TIME']        =   loc_go1['DATETIME'].dt.time
+            del loc_go1['DATETIME']
+        
+            loc_go1['NOM']         =   pd.to_numeric(loc_go1['NOM']).astype(int)
+        
+            loc_go1['CODE']        =   ''
+        
+            loc_go1['KAT']         =   'GO RESTO'
+            loc_go1['SOURCE']      =   'INVOICE'
+        
+            # re-order columns
+            loc_go1        =   loc_go1[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+            # Save the final result to a new CSV file
+            loc_go1.to_csv(outputgojek1_path, index=False)
+            st.write(f"File processed and saved as {outputgojek1_path}")
+        else:
+            st.write("File does not exist. Please double check")
+        
+        gojek2_path       = '1. ABO/_merge/merge_Gojek 2.csv'
+        outputgojek2_path = '1. ABO/_final/Final Gojek 2.csv'
+        
+        if os.path.exists(gojek1_path):
+            #Read data merge GOJEK 2
+            df_go2      =       pd.read_csv(gojek2_path).fillna('')
+        
+            #Rename columns to match the database schema
+            loc_go2     =       df_go2.loc[:,['Waktu Transaksi',
+                                              'Folder',
+                                              'Nomor Pesanan',
+                                              'Gross Amount']].rename(columns={'Waktu Transaksi' : 'DATETIME',
+                                                                        'Folder' : 'CAB',
+                                                                        'Nomor Pesanan' : 'ID',
+                                                                        'Gross Amount' : 'NOM'}).fillna('')
+            loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
+            loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Jun', 'June')
+        
+            # Parse datetime column
+            loc_go2['DATETIME']    =   pd.to_datetime(loc_go2['DATETIME'], utc=True)
+        
+            loc_go2['DATE']        =   loc_go2['DATETIME'].dt.strftime('%d/%m/%Y')
+            loc_go2['TIME']        =   loc_go2['DATETIME'].dt.time
+            del loc_go2['DATETIME']
+        
+            loc_go2['NOM']         =   pd.to_numeric(loc_go2['NOM']).astype(int)
+        
+            loc_go2['CODE']        =   ''
+        
+            loc_go2['KAT']         =   'GO RESTO'
+            loc_go2['SOURCE']      =   'INVOICE'
+        
+            # re-order columns
+            loc_go2        =   loc_go2[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+            # Save the final result to a new CSV file
+            final_go2      =   loc_go2.to_csv('1. ABO/_final/Final Gojek 2.csv', index=False)
+        
+            # Save the final result to a new CSV file
+            loc_go2.to_csv(outputgojek2_path, index=False)
+            st.write(f"File processed and saved as {outputgojek2_path}")
+        else:
+            st.write("File does not exist. Please double check")
+        
+        gojek3_path       = '1. ABO/_merge/merge_Gojek 3.csv'
+        outputgojek3_path = '1. ABO/_final/Final Gojek 3.csv'
+        
+        if os.path.exists(gojek3_path):
+            # Read data merge GOJEK 3
+            df_go3 = pd.read_csv(gojek3_path).fillna('')
+        
+            # Rename columns to match the database schema
+            loc_go3 = df_go3.loc[:, ['Transaction time', 'Order ID', 'Amount', 'CAB']].rename(
+                columns={'Transaction time': 'DATETIME', 'Order ID': 'ID', 'Amount': 'NOM'}).fillna('')
+        
+            loc_go3['DATETIME'] = loc_go3['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
+            loc_go3['DATETIME'] = loc_go3['DATETIME'].str.replace('Jun', 'June')
+            loc_go3['ID'] = loc_go3['ID'].str.replace("'", '').str.slice(0, 19)
+        
+            # Parse datetime column
+            loc_go3['DATETIME'] = pd.to_datetime(loc_go3['DATETIME'], utc=True)
+        
+            loc_go3['DATE'] = loc_go3['DATETIME'].dt.strftime('%d/%m/%Y')
+            loc_go3['TIME'] = loc_go3['DATETIME'].dt.time
+            del loc_go3['DATETIME']
+        
+            loc_go3['NOM'] = pd.to_numeric(loc_go3['NOM']).astype(int)
+        
+            loc_go3['CODE'] = ''
+        
+            loc_go3['KAT'] = 'GO RESTO'
+            loc_go3['SOURCE'] = 'INVOICE'
+        
+            # Re-order columns
+            loc_go3 = loc_go3[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+            # Save the final result to a new CSV file
+            loc_go3.to_csv(outputgojek3_path, index=False)
+            st.write(f"File processed and saved as {outputgojek3_path}")
+        else:
+            st.write("File does not exist. Please double check")
+        
+        shopee_path       = '1. ABO/_merge/merge_Shopee Food.csv'
+        outputshopee_path = '1. ABO/_final/Final Shopee Food.csv'
+        
+        if os.path.exists(shopee_path):
+            # Read data merge Shopee Food
+            df_shopee = pd.read_csv(shopee_path).fillna('')
+        
+            #Rename columns to match the database schema
+            loc_shopee   =   df_shopee.loc[:,['Order Pick up ID',
+                                                  'Folder',
+                                                  'Order Complete/Cancel Time',
+                                                  'Order Amount',
+                                                  'Order Status']].rename(columns={'Order Pick up ID' : 'ID',
+                                                                                  'Folder' : 'CAB',
+                                                                                  'Order Complete/Cancel Time' : 'DATETIME',
+                                                                                  'Order Amount' : 'NOM',
+                                                                                  'Order Status' : 'Status'}).fillna('')
+        
+            #loc_shopee['DATETIME'] = loc_shopee['DATETIME'].str.replace('Jun', 'June')
+        
+            loc_shopee['DATETIME']    =   pd.to_datetime(loc_shopee['DATETIME'], format='%d/%m/%Y %H:%M:%S')
+            loc_shopee['DATE']        =   loc_shopee['DATETIME'].dt.strftime('%d/%m/%Y')
+            loc_shopee['TIME']        =   loc_shopee['DATETIME'].dt.time
+            del loc_shopee['DATETIME']
+        
+            loc_shopee['NOM']         =   pd.to_numeric(loc_shopee['NOM']).astype(int)
+            loc_shopee                =  loc_shopee.drop(loc_shopee[loc_shopee['Status'] == 'Cancelled'].index)
+        
+            loc_shopee['CODE']        =   ''
+        
+            loc_shopee['KAT']         =   'SHOPEEPAY'
+            loc_shopee['SOURCE']      =   'INVOICE'
+        
+            # re-order columns
+            loc_shopee                =   loc_shopee[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+            # Save the final result to a new CSV file
+            loc_shopee.to_csv(outputshopee_path, index=False)
+            st.write(f"File processed and saved as {outputshopee_path}")
+        else:
+            st.write("File does not exist. Please double check")
+        
+        outputgrab_path   = '1. ABO/_final/Final Grab.csv'
+        grab1_path        = '1. ABO/_merge/merge_Grab 1.csv'
+        grab2_path        = '1. ABO/_merge/merge_Grab 2.csv'
+        
+        # Check for the existence of grab files
+        grab1_exists = os.path.exists(grab1_path)
+        grab2_exists = os.path.exists(grab2_path)
+        
+        # Process based on the existence of files
+        if grab1_exists or grab2_exists:
+            # Initialize an empty list to hold dataframes
+            dfs = []
+        
+            # Read the existing files
+            if grab1_exists:
+                df_grab1 = pd.read_csv(grab1_path).fillna('')
+                dfs.append(df_grab1)
+            if grab2_exists:
+                df_grab2 = pd.read_csv(grab2_path).fillna('')
+                dfs.append(df_grab2)
+        
+            # Concatenate all dataframes in the list
+            if dfs:
+                df_grab = pd.concat(dfs, ignore_index=True)
+        
+                # Rename columns to match the database schema
+                loc_grab = df_grab.loc[:, ['CAB', 'Updated On', 'Category', 'Status', 'Short Order ID', 'Amount', 'Net Sales']].rename(
+                    columns={'Store Name': 'CAB', 'Updated On': 'DATETIME', 'Status': 'Status', 'Short Order ID': 'ID', 'Net Sales': 'NOM1'}).fillna('')
+        
+                def parse_datetime(date_str):
+                    formats = ['%d %b %Y %I:%M %p', '%d/%m/%Y %H:%M']
+                    for fmt in formats:
+                        try:
+                            return pd.to_datetime(date_str, format=fmt)
+                        except (ValueError, TypeError):
+                            continue
+                    return None  # Return None if no format matches
+        
+                # Apply the custom parsing function to the DATETIME column
+                loc_grab['DATETIME'] = loc_grab['DATETIME'].apply(parse_datetime)
+        
+                # Extract DATE and TIME from DATETIME, then delete the DATETIME column
+                loc_grab['DATE'] = loc_grab['DATETIME'].dt.strftime('%d/%m/%Y')
+                loc_grab['TIME'] = loc_grab['DATETIME'].dt.time
+                del loc_grab['DATETIME']
+        
+                # Convert 'NOM' and 'Amount' columns to numeric, handling non-numeric issues
+                loc_grab['NOM1'] = pd.to_numeric(loc_grab['NOM1'], errors='coerce').astype(float)
+                loc_grab['Amount'] = pd.to_numeric(loc_grab['Amount'].str.replace('.', ''), errors='coerce').astype(float)
+        
+                # Drop rows where 'Category' is 'Canceled'
+                loc_grab = loc_grab[loc_grab['Category'] != 'Canceled']
+        
+                # Define conditions and choices for 'NOM'
+                loc_grabcon = [
+                    (loc_grab['Category'] == 'Adjustment'),
+                    (loc_grab['Category'] == 'Payment'),
+                ]
+                pilih = [loc_grab['Amount'], loc_grab['NOM1']]
+                loc_grab['NOM'] = np.select(loc_grabcon, pilih, default='Cek')
+        
+                # Define conditions and choices for 'ID'
+                loc_grabcon2 = [
+                    (loc_grab['Category'] == 'Adjustment'),
+                    (loc_grab['Category'] == 'Payment'),
+                ]
+                pilih2 = [loc_grab['ID'] + 'A', loc_grab['ID']]
+                loc_grab['ID'] = np.select(loc_grabcon2, pilih2, default='Cek')
+        
+                # Additional processing
+                loc_grab['CODE'] = ''
+                loc_grab['KAT'] = 'GRAB FOOD'
+                loc_grab['SOURCE'] = 'INVOICE'
+        
+                loc_grab = loc_grab[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+                # Filter CAB
+                loc_grab = loc_grab[loc_grab['CAB'] != '']
+        
+                # Save the final result to a new CSV file
+                loc_grab.to_csv(outputgrab_path, index=False)
+                st.write(f"File processed and saved as {outputgrab_path}")
+        else:
+            st.write("File Grab1 and Grab2 does not exist. Please double check")
         
         
+        qrisshopee_path       = '1. ABO/_merge/merge_QRIS Shopee.csv'
+        outputqrishopee_path  = '1. ABO/_final/Final QRIS Shopee.csv'
+        
+        if os.path.exists(qrisshopee_path):
+            # Read data merge QRIS Shopee
+            df_shopee = pd.read_csv(qrisshopee_path).fillna('')
+        
+            # Rename columns to match the database schema
+            loc_qrisshopee = df_shopee.loc[:, ['Folder', 'Transaction ID', 'DATE', 'TIME', 'Transaction Amount', 'Transaction Type']].rename(
+                columns={'Folder': 'CAB', 'Transaction ID': 'ID', 'Transaction Amount': 'NOM'}).fillna('')
+        
+            loc_qrisshopee['DATE'] = loc_qrisshopee['DATE'].str.replace('Jun', 'June')
+        
+            loc_qrisshopee['DATE'] = pd.to_datetime(loc_qrisshopee['DATE'], format='%d/%m/%Y')
+            loc_qrisshopee['DATE'] = loc_qrisshopee['DATE'].dt.strftime('%d/%m/%Y')
+            loc_qrisshopee['TIME'] = pd.to_datetime(loc_qrisshopee['TIME'], format='%H:%M:%S')
+            loc_qrisshopee['TIME'] = loc_qrisshopee['TIME'].dt.time
+        
+            loc_qrisshopee['NOM'] = pd.to_numeric(loc_qrisshopee['NOM']).astype(float)
+        
+            loc_qrisshopee['CODE'] = ''
+            loc_qrisshopee['KAT'] = 'QRIS SHOPEE'
+            loc_qrisshopee['SOURCE'] = 'INVOICE'
+        
+            # Filter out 'Withdrawal' transactions
+            loc_qrisshopee = loc_qrisshopee[loc_qrisshopee['Transaction Type'] != 'Withdrawal']
+        
+            # Re-order columns
+            loc_qrisshopee = loc_qrisshopee[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+            # Save the final result to a new CSV file
+            loc_qrisshopee.to_csv(outputqrishopee_path, index=False)
+            st.write(f"File processed and saved as {outputqrishopee_path}")
+        else:
+            st.write("File does not exist. Please double check")
+        
+        qristelekom_path        = '1. ABO/_merge/merge_QRIS IA.csv'
+        outputqristelekom_path  = '1. ABO/_final/Final QRIS Telkom.csv'
+        
+        if os.path.exists(qristelekom_path):
+            # Read data merge QRIS Telkom
+            df_qristelkom = pd.read_csv(qristelekom_path).fillna('')
+        
+            # Rename columns to match the database schema
+            loc_qristelkom = df_qristelkom.loc[:, ['Folder', 'Waktu Transaksi', 'Nama Customer', 'Nominal (termasuk Tip)']].rename(
+                columns={'Folder': 'CAB', 'Waktu Transaksi': 'DATETIME', 'Nama Customer': 'ID', 'Nominal (termasuk Tip)': 'NOM'}).fillna('')
+        
+            loc_qristelkom['DATETIME'] = loc_qristelkom['DATETIME'].str.replace('Jun', 'June')
+        
+            # Convert 'DATETIME' column to datetime
+            loc_qristelkom['DATETIME'] = pd.to_datetime(loc_qristelkom['DATETIME'])
+        
+            # Extract date and time into new columns
+            loc_qristelkom['DATE'] = loc_qristelkom['DATETIME'].dt.strftime('%d/%m/%Y')
+            loc_qristelkom['TIME'] = loc_qristelkom['DATETIME'].dt.time
+            del loc_qristelkom['DATETIME']
+        
+            loc_qristelkom['CODE'] = ''
+            loc_qristelkom['KAT'] = 'QRIS Telkom'
+            loc_qristelkom['SOURCE'] = 'INVOICE'
+        
+            # Re-order columns
+            loc_qristelkom = loc_qristelkom[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        
+            # Save the final result to a new CSV file
+            loc_qristelkom.to_csv(outputqristelekom_path, index=False)
+            st.write(f"File processed and saved as {outputqristelekom_path}")
+        else:
+            st.write("File does not exist. Please double check")
+        
+        import pandas as pd
+        import os
+        
+        # Path to the CSV file
+        file_path = '1. ABO/_merge/merge_ESB.csv'
+        
+        # Check if the file exists
+        if os.path.exists(file_path):
+            # Read the CSV file
+            df_esb = pd.read_csv(file_path)
+        
+            # Add new columns with default values
+            df_esb['SOURCE'] = 'INVOICE'
+            df_esb['CODE'] = ''
+            df_esb['KAT'] = 'QRIS ESB'
+        
+            # Convert 'Transaction Date' to datetime and extract date and time components
+            #df_esb['DATE'] = df_esb['DATE'].str.replace('Jun', 'June')
+            df_esb['Transaction Date'] = pd.to_datetime(df_esb['Transaction Date'], format='%Y-%m-%d %H:%M:%S')
+            df_esb['DATE'] = df_esb['Transaction Date'].dt.strftime('%d/%m/%Y')
+            df_esb['TIME'] = df_esb['Transaction Date'].dt.time
+        
+            # Filter rows where 'Payment Transaction Status' is 'settlement'
+            df_esb = df_esb[df_esb['Payment Transaction Status'] == 'settlement']
+        
+            # Extract text after the dot in the 'CAB' column
+            df_esb['CAB'] = df_esb['Branch Name'].str.split('.').str[1]
+        
+            # Rename columns to match the database schema
+            df_esb = df_esb.rename(columns={'POS Sales Number': 'ID', 'Amount': 'NOM'}).fillna('')
+        
+            # Select and sort the relevant columns
+            df_esb = df_esb.loc[:, ['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']].sort_values('DATE', ascending=False)
+        
+            # Save the final result to a new CSV file
+            df_esb.to_csv('1. ABO/_final/Final ESB.csv', index=False)
+        else:
+            # st.write a message if the file is not found
+            st.write("File does not exist. Please double check")
+        
+        #Read data merge WEB
+        df_web       =   pd.read_csv('1. ABO/_merge/merge_WEB.csv')
+        
+        df_web['DATE'] = df_web['DATE'].str.replace('Jun', 'June')
+        
+        df_web['SOURCE']     =   'WEB'
+        
+        #Rename columns to match the database schema
+        df_web       =       df_web.rename(columns={'CO':'TIME','TOTAL':'NOM','KATEGORI':'KAT','CUSTOMER':'ID'}).fillna('')
+        df_web       =       df_web.loc[:,['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE']].sort_values('DATE', ascending=[False])
+        
+        final_web       =       df_web.to_csv('1. ABO/_final/WEB Akhir.csv', index=False)
+        web_final       =       pd.read_csv('1. ABO/_final/WEB Akhir.csv')
+        
+        web_final       =       web_final[web_final['TIME']     !=      'TOTAL']
+        web_final       =       web_final[web_final['TIME']     !=      'CO']
+        
+        web_final['TIME'] = pd.to_datetime(web_final['TIME'])
+        web_final['DATE'] = pd.to_datetime(web_final['DATE'])
+        web_final         =   web_final[web_final['DATE'].isin([all_date])]
+        web_final['TIME'] = web_final['TIME'].dt.strftime('%H:%M:%S')
+        web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
+        web_final = web_final[(web_final['CAB'].str.isin(all_cab))]
+        web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
+        web_exp          =       web_final.to_csv('1. ABO/_final/ALL/WEB {saveas}.csv', index=False)
+        
+        df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob.glob('1. ABO/_final/Final*')], ignore_index = True).fillna('')
+        df_concat = df_concat[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+        df_concat = df_concat[(df_concat['CAB'].str.isin(all_cab))]
+        df_concat = df_concat[df_concat['DATE']     !=      '']
+        df_concat['DATE'] = pd.to_datetime(df_concat['DATE'], format='%d/%m/%Y')
+        df_concat   =   df_concat[df_concat['DATE'].isin(all_date)] #CHANGE
+        df_concat['DATE'] = df_concat['DATE'].dt.strftime('%d/%m/%Y')
+        df_concatx  =   df_concat.to_csv('1. ABO/_final/ALL/INVOICE {saveas}.csv', index=False) #CHANGE
+        st.write(web_final)
+        st.write(df_concat)
+
+
         
         
         
