@@ -54,6 +54,8 @@ list_cab = df_prov['Nama Cabang'].str.extract(r'\((.*?)\)')[0].values
 st.title('Automate Breakdown Ojol')
 
 all_cab = st.multiselect('Pilih Cabang', list_cab)
+all_cab = list(all_cab)
+
 # Tampilkan widget untuk memilih rentang tanggal
 start_date = st.date_input("Pilih Tanggal Awal")
 end_date = st.date_input("Pilih Tanggal Akhir")
