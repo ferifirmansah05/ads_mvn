@@ -7,7 +7,6 @@ from glob import glob
 import csv
 def run_install_script():
     result = subprocess.run(['python', 'install_packages.py'], check=True)
-    if result.returncode == 0:
 
 if __name__ == "__main__":
     run_install_script() 
