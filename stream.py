@@ -987,7 +987,7 @@ if uploaded_file is not None:
                 except ValueError as e:
                     return pd.NaT
         web_final['TIME'] = web_final['TIME'].apply(convert_time)
-        web_final         =   web_final[web_final['DATE'].isin([all_date])]
+        st.write(all_date)
 
         
         df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob('1. ABO/_final/Final*')], ignore_index = True).fillna('')
