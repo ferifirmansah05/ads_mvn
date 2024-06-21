@@ -1729,7 +1729,7 @@ if uploaded_file is not None:
                         files.append(f'_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
         
                 # Concatenate CSV files within each subfolder
-        df_all = pd.concat([pd.read_excel(file) for file in files])
+        df_all = pd.concat([pd.read_csv(file) for file in files])
         
         combined_dataframes.append(df_all)
         final_df = pd.concat(combined_dataframes)
