@@ -20,7 +20,7 @@ def download_file_from_github(url, save_path):
     else:
         print(f"Failed to download file. Status code: {response.status_code}")
 
-def load_csv(file_path):
+def load_excel(file_path):
     with open(file_path, 'rb') as file:
         model = pd.read_excel(file, engine='openpyxl')
     return model
@@ -36,14 +36,22 @@ download_file_from_github(url, save_path)
 
 # Muat model dari file yang diunduh
 if os.path.exists(save_path):
-    model = load_csv(save_path)
+    df_prov = load_excel(save_path)
     print("Model loaded successfully")
 else:
     print("Model file does not exist")
 
+df_prov = df_prov[3:].dropna(subset=['Unnamed: 4']) 
+df_prov.columns = df_prov.loc[3,:].values
+df_prov = df_prov.loc[4:,]
+df_prov = df_prov.loc[:265, ['Nama','Provinsi Alamat','Kota Alamat']]
+df_prov = df_prov.rename(columns={'Nama':'Nama Cabang','Provinsi Alamat':'Provinsi', 'Kota Alamat': 'Kota/Kabupaten'})
+list_cab = df_prov['Nama Cabang'].str.extract(r'\((.*?)\)')[0].values
+
 
 st.title('Automate Breakdown Ojol')
 
+selected_options = st.multiselect('Pilih Cabang', list_cab)
 # Tampilkan widget untuk memilih rentang tanggal
 start_date = st.date_input("Pilih Tanggal Awal")
 end_date = st.date_input("Pilih Tanggal Akhir")
