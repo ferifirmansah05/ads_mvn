@@ -987,7 +987,6 @@ if uploaded_file is not None:
         web_final['TIME'] = web_final['TIME'].apply(convert_time)
         web_final['DATE'] = pd.to_datetime(web_final['DATE'])
         web_final         =   web_final[web_final['DATE'].isin([all_date])]
-        web_final['TIME'] = web_final['TIME'].dt.strftime('%H:%M:%S')
         web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
         web_final = web_final[(web_final['CAB'].str.isin(all_cab))]
         web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
