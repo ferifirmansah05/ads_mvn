@@ -987,6 +987,7 @@ if uploaded_file is not None:
                 except ValueError as e:
                     return pd.NaT
         web_final['TIME'] = web_final['TIME'].apply(convert_time)
+        web_final['DATE'] = pd.to_datetime(web_final['DATE']).dt.strftime('%Y-%m-%d')
         web_final         =   web_final[web_final['DATE'].astype('str').isin([all_date])]
         web_final['DATE'] = pd.to_datetime(web_final['DATE'])
         web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
