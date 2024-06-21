@@ -13,6 +13,9 @@ import numpy as np
 import time
 import datetime as dt
 import re
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
 def download_file_from_github(url, save_path):
     response = requests.get(url)
     if response.status_code == 200:
@@ -992,9 +995,8 @@ if uploaded_file is not None:
         web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
         web_final = web_final[web_final['CAB'].isin(all_cab)]
         web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
-        web_exp          =       web_final.to_csv('1. ABO/_final/ALL/WEB {saveas}.csv', index=False)
+        web_final.to_csv('1. ABO/_final/ALL/WEB.csv', index=False)
 
-        
         df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob('1. ABO/_final/Final*')], ignore_index = True).fillna('')
         df_concat = df_concat[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
         df_concat = df_concat[(df_concat['CAB'].isin(all_cab))]
@@ -1002,11 +1004,735 @@ if uploaded_file is not None:
         df_concat['DATE'] = pd.to_datetime(df_concat['DATE'], format='%d/%m/%Y')
         df_concat   =   df_concat[df_concat['DATE'].isin(all_date)] #CHANGE
         df_concat['DATE'] = df_concat['DATE'].dt.strftime('%d/%m/%Y')
-        df_concatx  =   df_concat.to_csv('1. ABO/_final/ALL/INVOICE {saveas}.csv', index=False) #CHANGE
+        df_concat.to_csv('1. ABO/_final/ALL/INVOICE.csv', index=False) #CHANGE
+        
         st.write(web_final)
         st.write(df_concat)
 
-
+        all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
+        time_go = 150
+        time_qs = 5
+        time_gf = 150
+        time_sp = 150
+        time_qe = 150
+        time_qt = 150
+        
+        main_folder = '1. ABO/_bahan/CANCEL_NOTA'
+        
+        # Get the list of subfolders within the main folder
+        subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
+        
+        # List to store concatenated dataframes
+        combined_dataframes = []
+        
+        # Iterate over each subfolder
+        for subfolder in subfolders:
+            # Glob pattern to get all CSV files in the subfolder
+            files = glob(os.path.join(main_folder, subfolder, '*.xlsx'))
+            # Concatenate CSV files within each subfolder
+            dfs = [pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0).dropna().reset_index(drop=True)
+        for file in files]
+            if dfs:
+                df = pd.concat(dfs)
+                # Add a new column for the folder name
+                df['Folder'] = subfolder
+                combined_dataframes.append(df)
+            else:
+                print(f"No CSV files found in subfolder: {subfolder}")
+        
+        # Check if there are any dataframes to concatenate
+        if combined_dataframes:
+            # Concatenate dataframes from all subfolders
+            final_df = pd.concat(combined_dataframes)
+            
+            # Optionally, you can save the final dataframe to a CSV file
+            final_df.to_csv('1. ABO/_merge/merge_cancel_nota.csv', index=False)
+        
+            print("Concatenated CANCEL NOTA Exported to:", '_merge/merge_cancel_nota.csv')
+        else:
+            print("No dataframes to concatenate.")
+            
+        cn = pd.read_csv('1. ABO/_merge/merge_cancel_nota.csv')
+        cn.columns = cn.loc[0,:].values
+        cn = cn.loc[1:,]
+        cn = cn[cn['TANGGAL']!='TANGGAL']
+        cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
+        cn.columns =  cn.columns[:-1].to_list() + ['CAB']
+        cn['KET'] = ''
+        cn = cn[cn['TOTAL BILL']>0]
+        
+        dfinv   =   pd.read_csv('1. ABO/_final/ALL/WEB.csv')
+        dfweb   =   pd.read_csv('1. ABO/_final/ALL/INVOICE.csv')
+        
+        dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
+        dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%Y-%m-%d')
+        
+        try:
+            dfweb['DATE'] = pd.to_datetime(dfweb['DATE'], format='%d/%m/%Y')
+        except ValueError:
+            try:
+                dfweb['DATE'] = pd.to_datetime(dfweb['DATE'], format='%Y-%m-%d')
+            except ValueError as e:
+                print(f"Error dalam mengonversi tanggal: {e}")
+        
+        dfweb['TIME'] = pd.to_datetime(dfweb['TIME'] , format='%H:%M:%S')
+        dfinv['TIME'] = pd.to_datetime(dfinv['TIME'] , format='%H:%M:%S')
+        
+        dfinv = dfinv[~(dfinv['NOM']=='Cek')]
+        
+        dfinv['NOM'] = pd.to_numeric(dfinv['NOM'])
+        dfweb['NOM'] = pd.to_numeric(dfweb['NOM'])
+        
+        dfinv = dfinv[dfinv['NOM']>0]
+        dfweb = dfweb[dfweb['NOM']>0]
+        
+        dfinv['KET']   =   ""
+        dfweb['KET']   =   ""
+        dfinv['HELP']   =   ""
+        dfweb['HELP']   =   ""
+        
+        dfweb['KAT'] = dfweb['KAT'].str.upper()
+        cash = dfweb[dfweb['KAT']=='CASH']
+        
+        def difference(value1, value2):
+            diff = value1 - value2
+            return f' (+{str(int(diff))})'
+        def label_1(x):
+            if 'Selisih' in x:
+                return 'Selisih IT'
+            if 'Balance' in x:
+                return 'Balance'
+            else:
+                return x
+        
+        for cab in all_cab:
+            for date in all_date:
+                
+                if 'GOJEK' in all_kat:
+                    goi   =   dfinv[dfinv['KAT']  ==  "GO RESTO"]
+                    gow   =   dfweb[dfweb['KAT']  ==  "GO RESTO"]
+                    goi   =   goi[goi['CAB']  ==  cab]
+                    gow   =   gow[gow['CAB']  ==  cab]
+                    goi = goi[goi['DATE']==date]
+                    gow = gow[gow['DATE']==date]
+        
+                    goi = goi.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
+                    gow = gow.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
+        
+                    goi.drop_duplicates(inplace=True)
+        
+                    for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
+                        x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                        gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(str(x).upper(), str(cn.loc[i,'NAMA TAMU']).upper())).sort_values().index[-1],'KET'] = 'Cancel Nota'
+                        cn.loc[i, 'KET'] = 'Done'
+                    goi['KET'] = goi['ID']
+        
+                    def compare_time(df_i, df_w, time):
+                        for i in range(0,df_w.shape[0]):
+                            if df_w.loc[i,'KET']=='' :
+                                list_ind = df_i[((df_i['NOM'] - df_w.loc[i,'NOM'])<=200) & ((df_i['NOM']-df_w.loc[i,'NOM'])>=0) & (df_i['HELP']=='')].index
+                                for x in list(list_ind):
+                                    if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  >= dt.timedelta(minutes=0)):
+                                        if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                break
+                                            else:
+                                                df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                break                              
+                                    if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
+                                        if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                break
+                                            else:
+                                                df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                break   
+                                                                    
+        
+                        for i in df_w[df_w['KET']==''].index :
+                            if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
+                                df_w.loc[i,'KET'] = 'Invoice Beda Hari'
+                            else:
+                                df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+        
+                        for i in df_i[df_i['HELP']==''].index :
+                            if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                                df_i.loc[i,'HELP'] = 'Transaksi Kemarin'
+                            else:
+                                df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web'   
+                                df_i.loc[i,'HELP'] = 'Tidak Ada Transaksi di Web'  
+                                
+                    compare_time(goi, gow, time_go)
+                    goi.loc[goi[~(goi['KET']=='Transaksi Kemarin')].index,'KET'] = goi.loc[goi[~(goi['KET']=='Cancel Nota')].index, 'ID']
+                    gow.loc[gow[~(gow['KET']=='Cancel Nota')].index, 'KET'] = ''
+                    goi.loc[goi[~(goi['KET']=='Transaksi Kemarin')].index,'HELP'] = ''
+                    gow.loc[gow[~(gow['KET']=='Cancel Nota')].index, 'HELP'] =''
+        
+                    goi = goi.sort_values(by=['TIME'], ascending=[True]).reset_index(drop=True)
+                    gow = gow.sort_values(by=['TIME'], ascending=[True]).reset_index(drop=True)
+        
+                    compare_time(goi, gow, time_go)
+        
+                    goi.loc[goi[(goi['KET'].str.contains('F')) & ~(goi['KET'].str.contains('Balance'))].index,'KET'] = goi.loc[goi[(goi['KET'].str.contains('F')) & ~(goi['KET'].str.contains('Balance'))].index, 'ID']
+                    gow.loc[gow[~(gow['KET'].str.contains('Cancel Nota')) & ~(gow['KET'].str.contains('Balance'))].index, 'KET'] = ''
+                    goi.loc[goi[(goi['KET'].str.contains('F')) & ~(goi['KET'].str.contains('Balance'))].index,'HELP'] = ''
+        
+                    goi = goi.sort_values(by=['TIME'], ascending=[True]).reset_index(drop=True)
+                    gow = gow.sort_values(by=['TIME'], ascending=[True]).reset_index(drop=True)
+                    compare_time(goi, gow, time_go)
+        
+                    all = pd.concat([gow,goi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
+                    all_1 = all[(all['KET'].str.contains('F'))].reset_index(drop=True)
+                    all_2 = all[~(all['KET'].str.contains('F')) & ~(all['KET'].isin(['Cancel Nota','Transaksi Kemarin']))].reset_index(drop=True)
+        
+                    for c in range(0,100):
+                        step=0
+                        for i in all_2.index:  
+                            if all_2.loc[i,'SOURCE'] =='WEB':
+                                  source = 'INVOICE'
+                            else:
+                                  source = 'WEB'
+                            tab =  all_1[(all_1['TIME'] > (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S')
+                        ))) & (all_1['SOURCE']==source) & (all_1['NOM']>=all_2.loc[i,'NOM']) & (all_1['NOM']-all_2.loc[i,'NOM']<=200)]
+                            if tab.shape[0]>0:
+                                x = abs(tab['TIME'] - all_2.loc[i,'TIME']).sort_values().index[0]
+                                if all_2.loc[i,'SOURCE'] =='WEB':
+                                    y = x-1
+                                if all_2.loc[i,'SOURCE'] =='INVOICE':
+                                    y = x+1
+                                if abs(all_2.loc[i,'TIME'] - all_1.loc[x,'TIME']) < abs(all_1.loc[y,'TIME'] - all_1.loc[x,'TIME']):
+                                    step = step + 1
+                                    note = all_2.loc[i,'KET']
+                                    if all_2.loc[i,'NOM'] == all_1.loc[x,'NOM']:
+                                        all_1.loc[y,'KET'] = note
+                                        all_2.loc[i,'KET'] = 'Balance '+ all_1.loc[x,'ID']
+                                        all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[x,'ID']
+                                        
+                                    else:
+                                        all_1.loc[y,'KET'] = note
+                                        if all_2.loc[i,'SOURCE'] =='WEB':
+                                            all_2.loc[i,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                        else:
+                                            all_2.loc[i,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
+                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
+        
+                            all_3 = pd.concat([all_1,all_2]).sort_values(['CAB','DATE','KET','SOURCE','NOM'],ascending=[True,True,True,False,True])
+                            all_1 = all_3[(all_3['KET'].str.contains('F'))].reset_index(drop=True)
+                            all_2 = all_3[~(all_3['KET'].str.contains('F'))].reset_index(drop=True)                    
+                                    
+                        if step == 0:
+                            break
+                    print(step)
+        
+                    for i in all_2[all_2['SOURCE']=='WEB'].index:
+                            list_ind = all_2[(all_2['SOURCE']=='INVOICE') & (abs(all_2['NOM'] - all_2.loc[i,'NOM'])<=200)
+                                        & ((abs(all_2.loc[i,'TIME'] - all_2['TIME'])) < dt.timedelta(minutes=150))].index
+        
+                            if len(list_ind)>0:
+                                x = (abs(all_2.loc[i,'TIME'] - all_2.loc[list_ind, 'TIME'])).sort_values().index[0]
+                                if ((all_2.loc[x,'NOM']-all_2.loc[i,'NOM'])==0):
+                                                        all_2.loc[i,'KET'] = 'Balance '+ all_2.loc[x,'ID']
+                                                        all_2.loc[x,'KET'] = 'Balance '+ all_2.loc[x,'ID']
+                                                        
+                                else:
+                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
+        
+                    all = pd.concat([all[all['KET'].isin(['Cancel Nota','Transaksi Kemarin'])],all_1,all_2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
+                    if ket == 'selisih':
+                        all = all[~(all['KET'].str.contains('Balance'))]
+                    all['HELP'] = all['KET'].apply(lambda x: label_1(x))
+                    all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
+                    all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                    all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                    all.to_csv(f'1. ABO/_final/GOJEK/{cab}/GOJEK_{cab}_{date.replace('/','-')}.csv', index=False)
+        
+                if 'QRIS SHOPEE' in all_kat:
+                    qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
+                    qsw   =   dfweb[dfweb['KAT']  ==  "QRIS SHOPEE"]
+                    qsi   =   qsi[qsi['CAB']  ==  cab]
+                    qsw   =   qsw[qsw['CAB']  ==  cab]
+                    qsi = qsi[qsi['DATE'] == date]
+                    qsw = qsw[qsw['DATE'] == date]
+        
+                    qsi = qsi.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
+                    qsw = qsw.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
+        
+                    qsi.drop_duplicates(inplace=True)
+        
+                    for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS SHOPEE')].index:
+                        x = qsw[(qsw['DATE']==date) & (qsw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                        qsw.loc[qsw.loc[x,'ID'].apply(lambda x: fuzz.ratio(str(x).upper(), str(cn.loc[i,'NAMA TAMU']).upper())).sort_values().index[-1],'KET'] = 'Cancel Nota'
+                        cn.loc[i, 'KET'] = 'Done'
+                    qsi['KET'] = qsi['ID']
+        
+                    def compare_time(df_i, df_w, time):
+                        for i in range(0,df_w.shape[0]):
+                            if df_w.loc[i,'KET']=='' :
+                                list_ind = df_i[((df_i['NOM'] == df_w.loc[i,'NOM'])) & (df_i['HELP']=='')].index
+                                for x in list(list_ind):
+                                    if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  >= dt.timedelta(minutes=0)):
+                                        if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                break                           
+                                    if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
+                                        if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                break
+        
+                        for c in range (0,50):
+                            step = 0
+                            for i in df_w[df_w['KET']==''].index:
+                                list_ind = df_i[(df_i['NOM']==df_w.loc[i,'NOM'])
+                                            & ((abs(df_w.loc[i,'TIME'] - df_i['TIME'])) < dt.timedelta(minutes=5))
+                                                ].index
+                                if len(list_ind)>0:
+                                        x = (abs(df_w.loc[i,'TIME'] - df_i.loc[list_ind,'TIME'])).sort_values().index[0]
+                                        if abs(df_w.loc[i,'TIME'] - df_i.loc[x,'TIME']) < abs(df_w.loc[df_w[df_w['KET']==df_i.loc[x,'KET']].index[0],'TIME'] - df_i.loc[x,'TIME']):
+                                            df_w.loc[df_w[df_w['KET']==df_i.loc[x,'KET']].index, 'KET'] = ''
+                                            df_w.loc[i,'KET'] = df_i.loc[x,'KET']
+                                            step+=1
+                            if step == 0:
+                                break
+                                        
+        
+                        for i in df_i[df_i['HELP']==''].sort_values('TIME').index:
+                                if df_i.loc[i,'HELP']=='':
+                                    id = df_w[(df_w['KET']=='') & (((df_w['TIME']) - df_i.loc[i,'TIME'] + dt.timedelta(minutes=1)) >= dt.timedelta(minutes=0))].sort_values('TIME').index
+                                    z=0
+                                    for x in range(0, len(id)-1):
+                                        z=+1
+                                        if df_i.loc[i,'HELP'] == '':
+                                            for y in range(z, len(id)):
+                                                if ((df_i.loc[i,'NOM']==(df_w.loc[id[x],'NOM']+df_w.loc[id[y],'NOM']))
+                                                    & (df_w.loc[id[x],'KET']=='') & (df_w.loc[id[y],'KET']=='')
+                                                    & ((df_w.loc[id[x],'TIME'] - df_i.loc[i,'TIME'])  <= dt.timedelta(minutes=3))
+                                                    & ((df_w.loc[id[y],'TIME'] - df_i.loc[i,'TIME'])  <= dt.timedelta(minutes=3))):
+                                                    df_i.loc[i,'KET'] = df_i.loc[i,'ID']
+                                                    df_w.loc[id[x],'KET'] = df_i.loc[i,'ID']
+                                                    df_w.loc[id[y],'KET'] = df_i.loc[i,'ID']
+                                                    df_w.loc[id[x],'HELP'] = 'Bayar 1 Kali - Banyak Struk (QRIS)'
+                                                    df_w.loc[id[y],'HELP'] = 'Bayar 1 Kali - Banyak Struk (QRIS)'
+                                                    df_i.loc[i,'HELP'] = 'Bayar 1 Kali - Banyak Struk (QRIS)'
+                                                break
+                                            
+                        for i in df_w[df_w['KET']==''].sort_values('TIME', ascending=False).index:
+                                if df_w.loc[i,'KET']=='':
+                                    id = df_i[(df_i['HELP']=='') & ((df_w.loc[i,'TIME'] - df_i['TIME'] + dt.timedelta(minutes=1)) >= dt.timedelta(minutes=0))].sort_values('TIME',ascending=False).index
+                                    z=0
+                                    for x in range(0, len(id)-1):
+                                        z=+1
+                                        if df_w.loc[i,'KET'] == '':
+                                            for y in range(z, len(id)):
+                                                if ((df_w.loc[i,'NOM']==(df_i.loc[id[x],'NOM']+df_i.loc[id[y],'NOM']))
+                                                    & (df_i.loc[id[x],'HELP']=='') & (df_i.loc[id[y],'HELP']=='')
+                                                    & ((df_w.loc[i,'TIME'] - df_i.loc[id[x],'TIME'])  <= dt.timedelta(minutes=3))
+                                                    & ((df_w.loc[i,'TIME'] - df_i.loc[id[y],'TIME'])  <= dt.timedelta(minutes=3))
+                                                    & (df_i.loc[id[x],'ID']!=df_i.loc[id[y],'ID'])):
+                                                    df_w.loc[i,'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
+                                                    df_i.loc[id[x],'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
+                                                    df_i.loc[id[y],'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
+                                                    df_w.loc[i,'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
+                                                    df_i.loc[id[x],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
+                                                    df_i.loc[id[y],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
+                                                break
+                                                                    
+                        for i in df_w[df_w['KET']==''].index :
+                            list_ind = df_w[(df_w['NOM']-df_w.loc[i,'NOM'])==0].index
+                            for x in list_ind:
+                                if ((df_w.loc[i,'TIME'] - df_w.loc[x,'TIME']) < dt.timedelta(minutes=2)) & ((df_w.loc[i,'TIME'] - df_w.loc[x,'TIME']) > dt.timedelta(seconds=0)):
+                                    df_w.loc[i,'KET'] = 'Double Input'
         
         
+                        for i in df_i[df_i['HELP']==''].index :
+                            cash_ind = cash[(cash['CAB']==df_i.loc[i,'CAB']) & (cash['DATE']==df_i.loc[i,'DATE']) & (cash['NOM']==df_i.loc[i,'NOM'])].index
+                            for x in cash_ind:
+                                if (((df_i.loc[i,'TIME'] - cash.loc[x,'TIME']) < dt.timedelta(minutes=2)) & ((df_i.loc[i,'TIME'] - cash.loc[x,'TIME']) >= dt.timedelta(minutes=0))):
+                                    df_i.loc[i,'KET'] = 'QRIS to Cash(' + str(cash.loc[x,'CODE']) + ')'
+                                    df_i.loc[i,'HELP'] = 'QRIS to Cash(' + str(cash.loc[x,'CODE']) + ')'
+                                    break   
+                            if df_i.loc[i,'HELP'] == '':
+                                if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                    df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                                else:
+                                    df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web' 
         
+                        for i in df_w[df_w['KET']==''].index :
+                            if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
+                                df_w.loc[i,'KET'] = 'Invoice Beda Hari'
+                            else:
+                                df_w.loc[i,'KET'] = 'Tidak Ada Invoice QRIS'  
+        
+                    compare_time(qsi, qsw, time_qs)
+                    all = pd.concat([qsw,qsi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True]).reset_index(drop=True)
+                    if ket == 'selisih':
+                        all = all[~(all['KET'].str.contains('Balance'))].sort_values(['TIME','KET','SOURCE'])
+                    all.loc[all[~(all['HELP'].str.contains('Bayar'))].index,'HELP'] = all.loc[all[~(all['HELP'].str.contains('Bayar'))].index,'KET'].apply(lambda x: label_1(x))
+                    all.loc[all[~(all['HELP'].str.contains('Bayar'))].index,'KET'] = all.loc[all[~(all['HELP'].str.contains('Bayar'))].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
+                    all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                    all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                    all.to_csv(f'1. ABO/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date.replace('/','-')}.csv', index=False)
+        
+                if 'GRAB' in all_kat:
+                    gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
+                    gfw   =   dfweb[dfweb['KAT']  ==  "GRAB FOOD"]
+                    gfi   =   gfi[gfi['CAB']  ==  cab]
+                    gfw   =   gfw[gfw['CAB']  ==  cab]
+                    gfi = gfi[gfi['DATE']==date]
+                    gfw = gfw[gfw['DATE']==date]
+        
+                    gfi = gfi.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, False]).reset_index(drop=True)
+                    gfw = gfw.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, False]).reset_index(drop=True)
+        
+                    gfi.drop_duplicates(inplace=True)
+        
+                    gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
+                    gfw['ID2'] = gfw['ID'].apply(lambda x: re.findall(r'\d+', x)[-1])
+                    gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1])
+        
+                    gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
+                    for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
+                        x = gfw[(gfw['ID2']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
+                                & (gfw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                        if len(x) >= 1:
+                            gfw.loc[x[0], 'KET']='Cancel Nota'
+                            cn.loc[i, 'KET'] = 'Done'
+        
+                    gfi['KET'] = gfi['ID']
+                    def compare_time(df_i, df_w, time):
+                        for i in range(0,df_w.shape[0]):
+                            if df_w.loc[i,'KET']=='':
+                                list_ind = df_i[((df_w.loc[i,'NOM']-df_i['NOM'])<=10) & ((df_w.loc[i,'NOM']-df_i['NOM'])>=0) 
+                                            & (df_i['ID2']==df_w.loc[i,'ID2'])
+                                            & (df_i['HELP']=='')].index
+                                for x in list_ind:
+                                        if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
+                                            if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=time)):
+                                                if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                    df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break
+                                                else:
+                                                    df_w.loc[i,'KET'] = 'Promo Marketing/Adjustment'
+                                                    df_i.loc[x,'KET'] = 'Promo Marketing/Adjustment'
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break                              
+                                        if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
+                                            if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
+                                                if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                    df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break
+                                                else:
+                                                    df_w.loc[i,'KET'] = 'Promo Marketing/Adjustment'
+                                                    df_i.loc[x,'KET'] = 'Promo Marketing/Adjustment'
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break 
+        
+                        for i in df_w[df_w['KET']==''].index :
+                            if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
+                                df_w.loc[i,'KET'] = 'Invoice Beda Hari'
+                            else:
+                                df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+        
+                        for i in df_i[df_i['HELP']==''].index :
+                            if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                            else:
+                                df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web'                       
+        
+                    compare_time(gfi, gfw, time_gf)
+        
+                    all = pd.concat([gfw,gfi]).sort_values(['CAB','DATE','KET', 'ID2','SOURCE','NOM'],ascending=[True,True, True,True,False,True])
+                    if ket == 'selisih':
+                        all = all[~(all['KET'].str.contains('Balance'))]
+                    all['HELP'] = all['KET'].apply(lambda x: label_1(x))
+                    all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
+                    all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                    all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                    all.to_csv(f'1. ABO/_final/GRAB/{cab}/GRAB_{cab}_{date.replace('/','-')}.csv', index=False)
+        
+                if 'SHOPEEPAY' in all_kat:
+                    spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
+                    spw   =   dfweb[dfweb['KAT']  ==  "SHOPEEPAY"]
+                    spi   =   spi[spi['CAB']  ==  cab]
+                    spw   =   spw[spw['CAB']  ==  cab]
+                    spi = spi[spi['DATE']==date]
+                    spw = spw[spw['DATE']==date]
+        
+                    spi = spi.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
+                    spw = spw.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
+        
+        
+                    spi.drop_duplicates(inplace=True)
+                    spw['ID'] = spw['ID'].str.upper()
+                    spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
+                    spw['ID2'] = spw['ID'].apply(lambda x: '#'+str(int(re.search(r'\d+$', x).group())) if re.search(r'\d+$', x) else x)
+                    spi['ID2'] = spi['ID']
+        
+                    spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
+                    for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='SHOPEEPAY')].index:
+                        x = spw[(spw['ID2']=='#'+(str(int(re.search(r'\d+$', cn.loc[i,'NAMA TAMU']).group()))  if re.search(r'\d+$', cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU']))
+                                & (spw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                        if len(x) >= 1:
+                            spw.loc[x[0], 'KET']='Cancel Nota'
+                            cn.loc[i, 'KET'] = 'Done'
+        
+                    spi['KET'] = spi['ID']
+        
+                    def compare_time(df_i, df_w, time):
+                        for i in range(0,df_w.shape[0]):
+                                if df_w.loc[i,'KET']=='':
+                                    list_ind = df_i[((df_i['NOM']-df_w.loc[i,'NOM'])<=500) & ((df_i['NOM']-df_w.loc[i,'NOM'])>=0) 
+                                                & (df_i['ID2']==df_w.loc[i,'ID2'])
+                                                & (df_i['HELP']=='')].index
+                                    for x in list_ind:
+                                            if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
+                                                if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=150)):
+                                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                        df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                                        df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                                        df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                                        break
+                                                    else:
+                                                        df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                        df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                        df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                                        break                              
+                                            if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
+                                                if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=150)):
+                                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                        df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                                        df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                                        df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                                        break
+                                                    else:
+                                                        df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                        df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                        df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                                        break 
+        
+                        for i in df_w[df_w['KET']==''].index :
+                                list_ind_i = df_i[(df_i['HELP']=='') & ((df_i['NOM']-df_w.loc[i,'NOM'])==0) 
+                                                  & (df_i['ID2']==df_w.loc[i,'ID2'])].index
+                                for x in list_ind_i:
+                                    if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=120)) & ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) > dt.timedelta(seconds=0)):
+                                        if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                            df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                            df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                            df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                            break
+                                        else:
+                                            df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                            df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                            df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                            break    
+                                            
+                        for i in df_w[df_w['KET']==''].index :
+                                if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
+                                    df_w.loc[i,'KET'] = 'Invoice Beda Hari'
+                                else:
+                                    df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+        
+                        for i in df_i[df_i['HELP']==''].index :
+                                if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                    df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                                    df_i.loc[i,'HELP'] = 'Transaksi Kemarin'
+                                if df_i[df_i['ID2']==df_i.loc[i,'ID2']]['ID2'].duplicated().nunique()>=2:
+                                    df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                                    df_i.loc[i,'HELP'] = 'Transaksi Kemarin'
+                                if df_i.loc[i,'HELP']=='':
+                                    df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web'   
+                    
+                    compare_time(spi, spw, time_sp)
+                    all = pd.concat([spw,spi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM','TIME'],ascending=[True,True,True,False,True,True])
+                    if ket == 'selisih':
+                        all = all[~(all['KET'].str.contains('Balance'))]
+                    all['HELP'] = all['KET'].apply(lambda x: label_1(x))
+                    all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
+                    all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                    all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                    all.to_csv(f'1. ABO/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date.replace('/','-')}.csv', index=False)
+        
+                if not ((dfinv[((dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")) & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                     (dfweb[((dfweb['KAT']  ==  "QRIS ESB") | (dfweb['KAT']  ==  "QRIS ESB ORDER")) & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
+                    qei   =   dfinv[(dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")]
+                    qew   =   dfweb[(dfweb['KAT']  ==  "QRIS ESB") | (dfweb['KAT']  ==  "QRIS ESB ORDER")]
+                    qei   =   qei[qei['CAB']  ==  cab]
+                    qew   =   qew[qew['CAB']  ==  cab]
+                    qei = qei[qei['DATE']==date]
+                    qew = qew[qew['DATE']==date]
+        
+                    qei = qei.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, False]).reset_index(drop=True)
+                    qew = qew.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, False]).reset_index(drop=True)
+        
+                    qei.drop_duplicates(inplace=True)
+                    for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS qew')].index:
+                        x = qew[(qew['ID']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
+                                & (qew['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                        if len(x) >= 1:
+                            qew.loc[x[0], 'KET']='Cancel Nota'
+                            cn.loc[i, 'KET'] = 'Done'
+        
+                    qei['KET'] = qei['ID']
+        
+                    def compare_time(df_i, df_w, time):
+                        for i in range(0,df_w.shape[0]):
+                            if df_w.loc[i,'KET']=='':
+                                list_ind = df_i[((df_w.loc[i,'NOM']-df_i['NOM'])<=10) & ((df_w.loc[i,'NOM']-df_i['NOM'])>=0) 
+                                            & (df_i['ID']==df_w.loc[i,'CODE'])
+                                            & (df_i['HELP']=='')].index
+                                for x in list_ind:
+                                        if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
+                                            if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=time)):
+                                                if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                    df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break
+                                                else:
+                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break                              
+                                        if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
+                                            if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
+                                                if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                    df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break
+                                                else:
+                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                    df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
+                                                    break 
+        
+                        for i in df_w[df_w['KET']==''].index :
+                            if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
+                                df_w.loc[i,'KET'] = 'Invoice Beda Hari'
+                            else:
+                                df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+        
+                        for i in df_i[df_i['HELP']==''].index :
+                            if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                            else:
+                                df_i.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'                       
+                    
+                    compare_time(qei, qew, time_qe)
+        
+                    all = pd.concat([qew,qei]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM','TIME'],ascending=[True,True,True,False,True,True])
+                    if ket == 'selisih':
+                        all = all[~(all['KET'].str.contains('Balance'))]
+                    all['HELP'] = all['KET'].apply(lambda x: label_1(x))
+                    all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
+                    all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                    all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                    all['KAT'] = 'QRIS ESB'
+                    all.to_csv(f'1. ABO/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date.replace('/','-')}.csv', index=False)
+        
+                if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                     (dfweb[(dfweb['KAT']  ==  "QRIS Telkom") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
+                    qti   =   dfinv[(dfinv['KAT']  ==  "QRIS Telkom")]
+                    qtw   =   dfweb[(dfweb['KAT']  ==  "QRIS TELKOM")]
+                    qti   =   qti[qti['CAB']  ==  cab]
+                    qtw   =   qtw[qtw['CAB']  ==  cab]
+                    qti = qti[qti['DATE']==date]
+                    qtw = qtw[qtw['DATE']==date]
+        
+                    qti = qti.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
+                    qtw = qtw.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
+        
+                    qti.drop_duplicates(inplace=True)
+        
+                    qtw.loc[qtw[qtw['ID'].isna()].index,'ID'] = ''
+                    for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS Telkom')].index:
+                                x = qtw[(qtw['ID']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
+                                        & (qtw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                if len(x) >= 1:
+                                    qtw.loc[x[0], 'KET']='Cancel Nota'
+                                    cn.loc[i, 'KET'] = 'Done'
+        
+                    qtw['KET'] = qtw['CODE']
+        
+                    def compare_time(df_w, df_i, time):
+                        for i in range(0,df_i.shape[0]):
+                            if df_i.loc[i,'KET']=='' :
+                                list_ind = df_w[((df_w['NOM'] - df_i.loc[i,'NOM'])==0) & ((df_w['NOM']-df_i.loc[i,'NOM'])>=0) & (df_w['HELP']=='')].index
+                                for x in list(list_ind):
+                                    if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME']  >= dt.timedelta(minutes=0)):
+                                        if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
+                                                df_i.loc[i,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
+                                                df_w.loc[x,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
+                                                df_w.loc[x,'HELP'] = df_i.loc[i,'CODE']
+                                                break                          
+                                    if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME']  < dt.timedelta(minutes=0)):
+                                        if ((df_i.loc[i,'TIME']) - df_w.loc[x,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM']))==0:
+                                                df_i.loc[i,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
+                                                df_w.loc[x,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
+                                                df_w.loc[x,'HELP'] = df_i.loc[i,'CODE']
+                                                break
+                                                                    
+        
+                        for i in df_i[df_i['KET']==''].index :
+                            if df_i.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
+                                df_i.loc[i,'KET'] = 'Invoice Beda Hari'
+                            else:
+                                df_i.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+        
+                        for i in df_w[df_w['HELP']==''].index :
+                            if df_w.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                df_w.loc[i,'KET'] = 'Transaksi Kemarin'
+                            else:
+                                df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol' 
+                    compare_time(qtw, qti, time_qt)
+        
+                    all = pd.concat([qtw, qti,]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM','TIME'],ascending=[True,True,True,False,True,True]).drop(columns='HELP')
+                    if ket == 'selisih':
+                        all = all[~(all['KET'].str.contains('Balance'))]
+                    all['HELP'] = all['KET'].apply(lambda x: label_1(x))
+                    all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
+                    all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                    all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                    all['KAT'] = 'QRIS TELKOM'
+                    all.to_csv(f'1. ABO/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date.replace('/','-')}.csv', index=False)
+        
+        combined_dataframes = []
+        files = []
+        for cab in all_cab:
+             for date in all_date:
+                for ojol in all_kat:
+                    if os.path.exists(f'_final/{ojol}/{cab}/{ojol}_{cab}_{date.replace('/','-')}.csv'):
+                        files.append(f'_final/{ojol}/{cab}/{ojol}_{cab}_{date.replace('/','-')}.csv')
+        
+                # Concatenate CSV files within each subfolder
+        df_all = pd.concat([pd.read_excel(file) for file in files])
+        
+        combined_dataframes.append(df_all)
+        final_df = pd.concat(combined_dataframes)
+        st.write(final_df)
+        #final_df.to_csv(f'_final/COMBINE/{save_as}', index=False)
+                
+                
