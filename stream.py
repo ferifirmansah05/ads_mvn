@@ -87,18 +87,13 @@ if uploaded_file is not None:
                 zip_ref.extractall(tmpdirname)
                 st.write(f"Ekstrak file ke {tmpdirname}")
             
-            # Mendapatkan daftar semua file dan folder di dalam direktori
-            contents = os.listdir(tmpdirname)
-            
-            # Menampilkan semua file dan folder
-            for item in contents:
-                item_path = os.path.join(tmpdirname, item)
-                if os.path.isfile(item_path):
-                    st.write(f"File: {item}")
-                elif os.path.isdir(item_path):
-                    st.write(f"Folder: {item}")
-                else:
-                    st.write(f"Unknown: {item}") 
+            def list_files_in_directory(dir_path):
+                # Fungsi untuk mencetak semua isi dari suatu direktori
+                for root, dirs, files in os.walk(dir_path):
+                    print(f'Direktori: {root}')
+                    for file_name in files:
+                        print(f'  - {file_name}')
+            list_files_in_directory(tmpdirname)
                     
             st.markdown('### Cleaning')
             st.write('GOJEK 1')
@@ -1772,12 +1767,5 @@ if uploaded_file is not None:
             # Contoh penggunaan: menghapus semua isi dari sebuah folder
             delete_folder_contents(tmpdirname)
                     
-            for item in contents:
-                item_path = os.path.join(tmpdirname, item)
-                if os.path.isfile(item_path):
-                    st.write(f"File: {item}")
-                elif os.path.isdir(item_path):
-                    st.write(f"Folder: {item}")
-                else:
-                    st.write(f"Unknown: {item}") 
+            list_files_in_directory(tmpdirname)
                     
