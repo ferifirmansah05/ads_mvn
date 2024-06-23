@@ -75,7 +75,7 @@ if (start_date is not None) & (end_date is not None):
 
 st.markdown('### Upload file *Zip')
 uploaded_file = st.file_uploader("Pilih file ZIP", type="zip")
-st.write(uploaded_file.name)
+st.code(uploaded_file.read())
 if uploaded_file is not None:
     st.write('File berhasil diupload')
     # Baca konten zip file
