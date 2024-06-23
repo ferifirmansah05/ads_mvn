@@ -6,12 +6,28 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, storage
 
+def download_file_from_github(url, save_path):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(save_path, 'wb') as file:
+            file.write(response.content)
+        print(f"File downloaded successfully and saved to {save_path}")
+    else:
+        print(f"Failed to download file. Status code: {response.status_code}")
+
+
+# URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
+url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/serviceAccountKey.json'
+
+# Path untuk menyimpan file yang diunduh
+save_path = 'serviceAccountKey.json'
+
+download_file_from_github(url, save_path)
+
 def initialize_firebase():
     # Path ke file service account JSON yang diunduh dari Firebase Console
-    cred = credentials.Certificate("path/to/your/service-account-file.json")
-    firebase_admin.initialize_app(cred, {
-        'storageBucket': 'your-project-id.appspot.com'
-    })
+    cred = credentials.Certificate("serviceAccountKey.json")
+    firebase_admin.initialize_app(cred)
 
 def get_storage_bucket():
     if not firebase_admin._apps:
