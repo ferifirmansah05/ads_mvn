@@ -1008,7 +1008,7 @@ if uploaded_file is not None:
             st.write('INVOICE')
             st.write(df_concat)
     
-            all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
+            all_kat = ['SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
             time_go = 150
             time_qs = 5
@@ -1652,7 +1652,7 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
             
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
-                         (dfweb[(dfweb['KAT']  ==  "QRIS Telkom") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
+                         (dfweb[(dfweb['KAT']  ==  "QRIS TELKOM") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         qti   =   dfinv[(dfinv['KAT']  ==  "QRIS Telkom")]
                         qtw   =   dfweb[(dfweb['KAT']  ==  "QRIS TELKOM")]
                         qti   =   qti[qti['CAB']  ==  cab]
