@@ -1735,7 +1735,12 @@ if uploaded_file is not None:
             final_df = pd.concat(combined_dataframes)
             st.write('Breakdown')
             st.write(final_df)
-            
-        shutil.rmtree(tmpdirname)      
+        
+        try:
+            # Clean up: Delete all files in temporary directory
+            shutil.rmtree(tmpdirname)
+            st.write("Temporary directory cleaned up.")
+        except Exception as e:
+            st.error(f"Failed to delete temporary directory: {str(e)}")    
                     
                     
