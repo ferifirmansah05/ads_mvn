@@ -1008,7 +1008,7 @@ if uploaded_file is not None:
             st.write('INVOICE')
             st.write(df_concat)
     
-            all_kat = ['SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
+            all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
             time_go = 150
             time_qs = 5
@@ -1061,8 +1061,8 @@ if uploaded_file is not None:
             cn['KET'] = ''
             cn = cn[cn['TOTAL BILL']>0]
             
-            dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
-            dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
+            dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
+            dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
             
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%Y-%m-%d')
