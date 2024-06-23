@@ -1256,7 +1256,7 @@ if uploaded_file is not None:
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(ff'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
+                        all.to_csv(f'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
             
                     if 'QRIS SHOPEE' in all_kat:
                         qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
@@ -1388,7 +1388,7 @@ if uploaded_file is not None:
                         all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'] = all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(ff'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
+                        all.to_csv(f'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
             
                     if 'GRAB' in all_kat:
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
@@ -1469,7 +1469,7 @@ if uploaded_file is not None:
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(ff'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
+                        all.to_csv(f'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
             
                     if 'SHOPEEPAY' in all_kat:
                         spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
@@ -1571,7 +1571,7 @@ if uploaded_file is not None:
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(ff'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
+                        all.to_csv(f'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
             
                     if not ((dfinv[((dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")) & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[((dfweb['KAT']  ==  "QRIS ESB") | (dfweb['KAT']  ==  "QRIS ESB ORDER")) & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
@@ -1649,7 +1649,7 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS ESB'
-                        all.to_csv(ff'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
+                        all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
             
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[(dfweb['KAT']  ==  "QRIS Telkom") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
@@ -1717,15 +1717,15 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS TELKOM'
-                        all.to_csv(ff'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
+                        all.to_csv(f'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
             
             combined_dataframes = []
             files = []
             for cab in all_cab:
                  for date in all_date:
                     for ojol in all_kat:
-                        if os.path.exists(ff'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
-                            files.append(ff'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
+                        if os.path.exists(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
+                            files.append(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat([pd.read_csv(file) for file in files])
