@@ -86,6 +86,20 @@ if uploaded_file is not None:
             with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
                 zip_ref.extractall(tmpdirname)
                 st.write(f"Ekstrak file ke {tmpdirname}")
+            
+            # Mendapatkan daftar semua file dan folder di dalam direktori
+            contents = os.listdir(tmpdirname)
+            
+            # Menampilkan semua file dan folder
+            for item in contents:
+                item_path = os.path.join(folder_path, item)
+                if os.path.isfile(item_path):
+                    print(f"File: {item}")
+                elif os.path.isdir(item_path):
+                    print(f"Folder: {item}")
+                else:
+                    print(f"Unknown: {item}") 
+                    
             st.markdown('### Cleaning')
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
@@ -1736,11 +1750,22 @@ if uploaded_file is not None:
             st.write('Breakdown')
             st.write(final_df)
         
-        try:
-            # Clean up: Delete all files in temporary directory
-            shutil.rmtree(tmpdirname)
-            st.write("Temporary directory cleaned up.")
-        except Exception as e:
-            st.error(f"Failed to delete temporary directory: {str(e)}")    
+
+        for item in os.listdir(tmpdirname):
+            item_path = os.path.join(tmpdirname, item)
+            if os.path.isfile(item_path) or os.path.islink(item_path):
+                os.unlink(item_path)
+            elif os.path.isdir(item_path):
+                shutil.rmtree(item_path)        
+        # Menampilkan semua file dan folder
+        contents = os.listdir(tempdirname)
+        for item in contents:
+            item_path = os.path.join(folder_path, item)
+            if os.path.isfile(item_path):
+                print(f"File: {item}")
+            elif os.path.isdir(item_path):
+                print(f"Folder: {item}")
+            else:
+                print(f"Unknown: {item}") 
                     
                     
