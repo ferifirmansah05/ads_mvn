@@ -90,9 +90,9 @@ if uploaded_file is not None:
             def list_files_in_directory(dir_path):
                 # Fungsi untuk mencetak semua isi dari suatu direktori
                 for root, dirs, files in os.walk(dir_path):
-                    print(f'Direktori: {root}')
+                    st.write(f'Direktori: {root}')
                     for file_name in files:
-                        print(f'  - {file_name}')
+                        st.write(f'  - {file_name}')
             list_files_in_directory(tmpdirname)
                     
             st.markdown('### Cleaning')
