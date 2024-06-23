@@ -28,7 +28,7 @@ def initialize_firebase():
     # Path ke file service account JSON yang diunduh dari Firebase Console
     cred = credentials.Certificate("serviceAccountKey.json")
     firebase_admin.initialize_app(cred, {
-        'storageBucket': 'gs://abov1-2d892.appspot.com'
+        'storageBucket': 'abov1-2d892.appspot.com'
     })
 
 def get_storage_bucket():
