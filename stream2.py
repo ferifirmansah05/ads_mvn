@@ -107,6 +107,7 @@ def main():
         # Gunakan direktori sementara
         with tempfile.TemporaryDirectory() as tmpdirname:
             # Ekstrak file ZIP ke direktori sementara
+            st.write(tmpdirname)
             with zipfile.ZipFile(uploaded_zip, 'r') as zip_ref:
                 zip_ref.extractall(tmpdirname)
                 st.write(f"Ekstrak file ke {tmpdirname}")
