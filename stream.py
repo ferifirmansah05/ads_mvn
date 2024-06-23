@@ -1751,13 +1751,26 @@ if uploaded_file is not None:
             st.write(final_df)
         
 
-            for item in os.listdir(tmpdirname):
-                item_path = os.path.join(tmpdirname, item)
-                if os.path.isfile(item_path) or os.path.islink(item_path):
-                    os.unlink(item_path)
-                elif os.path.isdir(item_path):
-                    shutil.rmtree(item_path)     
-                    st.write(f'delete, {item_path}')
+            def delete_folder_contents(folder_path):
+                # Iterasi semua item di dalam folder
+                for item in os.listdir(folder_path):
+                    item_path = os.path.join(folder_path, item)
+                    # Jika item adalah folder, panggil fungsi ini secara rekursif
+                    if os.path.isdir(item_path):
+                        delete_folder_contents(item_path)
+                    # Hapus file atau folder
+                    try:
+                        if os.path.isfile(item_path):
+                            os.remove(item_path)  # Hapus file
+                        elif os.path.isdir(item_path):
+                            shutil.rmtree(item_path)  # Hapus folder beserta isinya
+                        else:
+                            os.remove(item_path)  # Hapus item lainnya jika diperlukan
+                    except Exception as e:
+                        print(f"Failed to delete {item_path}: {e}")
+            
+            # Contoh penggunaan: menghapus semua isi dari sebuah folder
+            delete_folder_contents(tmpdirname)
                     
             for item in contents:
                 item_path = os.path.join(tmpdirname, item)
