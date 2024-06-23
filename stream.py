@@ -1751,12 +1751,12 @@ if uploaded_file is not None:
             st.write(final_df)
         
 
-        for item in os.listdir(tmpdirname):
-            item_path = os.path.join(tmpdirname, item)
-            if os.path.isfile(item_path) or os.path.islink(item_path):
-                os.unlink(item_path)
-            elif os.path.isdir(item_path):
-                shutil.rmtree(item_path)     
-                st.write(f'delete, {item_path}')
+            for item in os.listdir(tmpdirname):
+                item_path = os.path.join(tmpdirname, item)
+                if os.path.isfile(item_path) or os.path.islink(item_path):
+                    os.unlink(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)     
+                    st.write(f'delete, {item_path}')
                     
                     
