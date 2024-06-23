@@ -94,11 +94,11 @@ if uploaded_file is not None:
             for item in contents:
                 item_path = os.path.join(tmpdirname, item)
                 if os.path.isfile(item_path):
-                    print(f"File: {item}")
+                    st.write(f"File: {item}")
                 elif os.path.isdir(item_path):
-                    print(f"Folder: {item}")
+                    st.write(f"Folder: {item}")
                 else:
-                    print(f"Unknown: {item}") 
+                    st.write(f"Unknown: {item}") 
                     
             st.markdown('### Cleaning')
             st.write('GOJEK 1')
@@ -1762,10 +1762,10 @@ if uploaded_file is not None:
         for item in contents:
             item_path = os.path.join(tmpdirname, item)
             if os.path.isfile(item_path):
-                print(f"File: {item}")
+                st.write(f"File: {item}")
             elif os.path.isdir(item_path):
-                print(f"Folder: {item}")
+                st.write(f"Folder: {item}")
             else:
-                print(f"Unknown: {item}") 
+                st.write(f"Unknown: {item}") 
                     
                     
