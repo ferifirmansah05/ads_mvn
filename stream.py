@@ -92,7 +92,7 @@ if uploaded_file is not None:
             
             # Menampilkan semua file dan folder
             for item in contents:
-                item_path = os.path.join(folder_path, item)
+                item_path = os.path.join(tmpdirname, item)
                 if os.path.isfile(item_path):
                     print(f"File: {item}")
                 elif os.path.isdir(item_path):
@@ -1760,7 +1760,7 @@ if uploaded_file is not None:
         # Menampilkan semua file dan folder
         contents = os.listdir(tempdirname)
         for item in contents:
-            item_path = os.path.join(folder_path, item)
+            item_path = os.path.join(tmpdirname, item)
             if os.path.isfile(item_path):
                 print(f"File: {item}")
             elif os.path.isdir(item_path):
