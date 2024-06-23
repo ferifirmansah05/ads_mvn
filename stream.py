@@ -16,6 +16,7 @@ import re
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import tempfile
+import shutil
 
 def download_file_from_github(url, save_path):
     response = requests.get(url)
@@ -993,20 +994,20 @@ if uploaded_file is not None:
             web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
             web_final.to_csv(f'{tmpdirname}/_final/ALL/WEB.csv', index=False)
     
-            df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob(f'{tmpdirname}/_final/Final*')], ignore_index = True).fillna('')
-            df_concat = df_concat[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
-            df_concat = df_concat[(df_concat['CAB'].isin(all_cab))]
-            df_concat = df_concat[df_concat['DATE']     !=      '']
-            df_concat['DATE'] = pd.to_datetime(df_concat['DATE'], format='%d/%m/%Y')
-            df_concat   =   df_concat[df_concat['DATE'].isin(all_date)] #CHANGE
-            df_concat['DATE'] = df_concat['DATE'].dt.strftime('%d/%m/%Y')
-            df_concat.to_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv', index=False) #CHANGE
+            invoice_final = pd.concat([pd.read_csv(f, dtype=str) for f in glob(f'{tmpdirname}/_final/Final*')], ignore_index = True).fillna('')
+            invoice_final = invoice_final[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+            invoice_final = invoice_final[(invoice_final['CAB'].isin(all_cab))]
+            invoice_final = invoice_final[invoice_final['DATE']     !=      '']
+            invoice_final['DATE'] = pd.to_datetime(invoice_final['DATE'], format='%d/%m/%Y')
+            invoice_final   =   invoice_final[invoice_final['DATE'].isin(all_date)] #CHANGE
+            invoice_final['DATE'] = invoice_final['DATE'].dt.strftime('%d/%m/%Y')
+            invoice_final.to_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv', index=False) #CHANGE
     
             st.markdown('### Output')
             st.write('WEB')
             st.write(web_final)
             st.write('INVOICE')
-            st.write(df_concat)
+            st.write(invoice_final)
     
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
@@ -1734,6 +1735,7 @@ if uploaded_file is not None:
             final_df = pd.concat(combined_dataframes)
             st.write('Breakdown')
             st.write(final_df)
-            #final_df.to_csv(f'_final/COMBINE/{save_as}', index=False)
+            
+        shutil.rmtree(tmpdirname)      
                     
                     
