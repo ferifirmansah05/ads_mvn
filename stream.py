@@ -1759,4 +1759,12 @@ if uploaded_file is not None:
                     shutil.rmtree(item_path)     
                     st.write(f'delete, {item_path}')
                     
+            for item in contents:
+                item_path = os.path.join(tmpdirname, item)
+                if os.path.isfile(item_path):
+                    st.write(f"File: {item}")
+                elif os.path.isdir(item_path):
+                    st.write(f"Folder: {item}")
+                else:
+                    st.write(f"Unknown: {item}") 
                     
