@@ -87,7 +87,7 @@ if uploaded_file is not None:
                 st.write(f"Ekstrak file ke {tmpdirname}")
             st.markdown('### Cleaning')
             st.write('GOJEK 1')
-            main_folder = 'tmpdirname/_bahan/GOJEK 1'
+            main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
             combined_dataframes = []
             
@@ -107,13 +107,13 @@ if uploaded_file is not None:
         
             if combined_dataframes:
                 final_df = pd.concat(combined_dataframes)
-                final_df.to_csv('tmpdirname/_merge/merge_Gojek 1.csv', index=False)
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 1.csv', index=False)
                 st.write("File GOJEK 1 Concatenated")
             else:
                 st.write("No dataframes to concatenate.")  
     
             st.write('GOJEK 2')
-            main_folder = 'tmpdirname/_bahan/GOJEK 2'
+            main_folder = f'{tmpdirname}/_bahan/GOJEK 2'
             
             # Get the list of subfolders within the main folder
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
@@ -139,13 +139,13 @@ if uploaded_file is not None:
             if combined_dataframes:
                 # Concatenate dataframes from all subfolders
                 final_df_ = pd.concat(combined_dataframes)
-                final_df.to_csv('tmpdirname/_merge/merge_Gojek 2.csv', index=False)
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 2.csv', index=False)
                 st.write("File GOJEK 2 Concantenated")
             else:
                 st.write("No dataframes to concatenate.")    
     
             st.write('GOJEK 3')
-            folder_path = 'tmpdirname/_bahan/GOJEK 3/'
+            folder_path = f'{tmpdirname}/_bahan/GOJEK 3/'
             
             # Initialize an empty list to store dataframes
             dfs = []
@@ -163,15 +163,15 @@ if uploaded_file is not None:
                 concatenated_df = pd.concat(dfs, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv('tmpdirname/_bahan/bahan/Store Name GOJEK.csv')
+                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.csv')
                 concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Outlet name').fillna('')
-                concatenated_df.to_csv('tmpdirname/_merge/merge_Gojek 3.csv', index=False)
+                concatenated_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 3.csv', index=False)
                 st.write("FIle GOEJEK 3 Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
     
             st.write('SHOPEE FOOD')
-            main_folder = 'tmpdirname/_bahan/SHOPEE FOOD'
+            main_folder = f'{tmpdirname}/_bahan/SHOPEE FOOD'
             
             # List to store concatenated dataframes
             combined_dataframes = []
@@ -196,7 +196,7 @@ if uploaded_file is not None:
             if combined_dataframes:
                 # Concatenate dataframes from all subfolders
                 final_df = pd.concat(combined_dataframes, ignore_index=True)
-                final_df.to_csv('tmpdirname/_merge/merge_Shopee Food.csv', index=False)
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_Shopee Food.csv', index=False)
                 st.write("File SHOPEE FOOD Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
@@ -204,7 +204,7 @@ if uploaded_file is not None:
             
             st.write('GRAB *csv')
             # Set the directory containing the files
-            folder_path = 'tmpdirname/_bahan/GRAB/csv'
+            folder_path = f'{tmpdirname}/_bahan/GRAB/csv'
             
             # Initialize an empty list to store dataframes
             dfs = []
@@ -222,11 +222,11 @@ if uploaded_file is not None:
                 concatenated_df = pd.concat(dfs, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv('tmpdirname/_bahan/bahan/Store Name GRAB.csv')
+                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.csv')
                 concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Store Name').fillna('')
             
                 # Export the concatenated dataframe to CSV in the specified path
-                output_path = 'tmpdirname/_merge/merge_Grab 1.csv'
+                output_path = f'{tmpdirname}/_merge/merge_Grab 1.csv'
                 concatenated_df.to_csv(output_path, index=False)
             
                 st.write("File GRAB *csv Concatenated")
@@ -235,7 +235,7 @@ if uploaded_file is not None:
             
             st.write('GRAB *xls')
             # Specify the directory where the files are located
-            folder_path = 'tmpdirname/_bahan/GRAB/xls'
+            folder_path = f'{tmpdirname}/_bahan/GRAB/xls'
             
             # Initialize a list to store DataFrames from each file
             dataframes = []
@@ -263,11 +263,11 @@ if uploaded_file is not None:
                 merged_df = pd.concat(dataframes, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv('tmpdirname/_bahan/bahan/Store Name GRAB.csv')
+                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.csv')
                 merged_df = pd.merge(merged_df, storename, how='left', on='Store Name').fillna('')
             
                 # Save the merged DataFrame to a CSV file without row index
-                output_file = 'tmpdirname/_merge/merge_Grab 2.csv'
+                output_file = f'{tmpdirname}/_merge/merge_Grab 2.csv'
                 os.makedirs(os.path.dirname(output_file), exist_ok=True)
                 merged_df.to_csv(output_file, index=False)
             
@@ -304,7 +304,7 @@ if uploaded_file is not None:
             
             st.write('QRIS SHOPEE *,')
             # Path to the folder containing the subfolders
-            main_folder = 'tmpdirname/_bahan/QRIS_SHOPEE/QRIS A (Separator ,)/'
+            main_folder = f'{tmpdirname}/_bahan/QRIS_SHOPEE/QRIS A (Separator ,)/'
             
             # Get the list of subfolders within the main folder
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
@@ -336,7 +336,7 @@ if uploaded_file is not None:
                 final_df['TIME'] = final_df['Update Time'].dt.time
             
                 # Save the final dataframe to a CSV file
-                output_path = 'tmpdirname/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_A.csv'
+                output_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_A.csv'
                 final_df.to_csv(output_path, index=False)
             
                 st.write("File QRIS SHOPEE *, Concatenated")
@@ -346,7 +346,7 @@ if uploaded_file is not None:
             
             st.write('QRIS SHOPEE *;')
             # Define the base folder path
-            base_folder_path = 'tmpdirname/_bahan/QRIS_SHOPEE/QRIS B (Separator ;)'
+            base_folder_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/QRIS B (Separator ;)'
             
             # Function to remove separator "," from a CSV file and export to a new file
             def remove_separator_from_csv(file_path):
@@ -377,7 +377,7 @@ if uploaded_file is not None:
                     st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
     
             
-            base_folder_path = 'tmpdirname/_bahan/QRIS_SHOPEE/QRIS B (Separator ;)'
+            base_folder_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/QRIS B (Separator ;)'
             
             # Function to recursively find all CSV files in a directory and its subdirectories
             def find_csv_files(directory):
@@ -425,7 +425,7 @@ if uploaded_file is not None:
                     st.write(f"Error formatting time: {e}")
             
                 # Export DataFrame to CSV
-                output_file_path = 'tmpdirname/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv'
+                output_file_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv'
                 df.to_csv(output_file_path, index=False)
                 st.write(f"File QRIS SHOPEE *; Concatenated")
             else:
@@ -433,8 +433,8 @@ if uploaded_file is not None:
             
             st.write('QRIS SHOPEE')
             # Define the folder path
-            folder_path = 'tmpdirname/_bahan/QRIS_SHOPEE/QRIS C (Normal)'
-            output_path = 'tmpdirname/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_C.csv'
+            folder_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/QRIS C (Normal)'
+            output_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_C.csv'
             
             # Function to add the "Folder" column to a CSV file
             def add_folder_column(csv_file_path, folder_name):
@@ -483,7 +483,7 @@ if uploaded_file is not None:
             
             
             # Define the directory containing the CSV files
-            directory = 'tmpdirname/_bahan/QRIS_SHOPEE/merge'
+            directory = f'{tmpdirname}/_bahan/QRIS_SHOPEE/merge'
             
             # Initialize an empty list to store DataFrames
             dfs = []
@@ -504,7 +504,7 @@ if uploaded_file is not None:
                 concatenated_df = pd.concat(dfs, ignore_index=True)
             
                 # Export the concatenated DataFrame to a CSV file
-                output_file = 'tmpdirname/_merge/merge_QRIS Shopee.csv'
+                output_file = f'{tmpdirname}/_merge/merge_QRIS Shopee.csv'
                 concatenated_df.to_csv(output_file, index=False)
             
                 st.write('File QRIS SHOPEE Concatenated')
@@ -513,7 +513,7 @@ if uploaded_file is not None:
             
             st.write('QRIS IA')
              #Specify the directory where the HTML files are located
-            folder_path = 'tmpdirname/_bahan/QRIS_IA/'
+            folder_path = f'{tmpdirname}/_bahan/QRIS_IA/'
             
              #Initialize a list to store DataFrames from each file
             dataframes = []
@@ -545,7 +545,7 @@ if uploaded_file is not None:
                 merged_qris_ia = merged_qris_ia[merged_qris_ia['ID Transaksi']      !=      "Summary"]
             
                 # Save the merged DataFrame to a CSV file without row index
-                output_file = 'tmpdirname/_merge/merge_QRIS IA.csv'
+                output_file = f'{tmpdirname}/_merge/merge_QRIS IA.csv'
                 merged_qris_ia.to_csv(output_file, index=False)
                 st.write("File QRIS TELKOM Concatenated")
             else:
@@ -553,7 +553,7 @@ if uploaded_file is not None:
             
             st.write('WEB')
             # Specify the directory where the HTML files are located
-            folder_path = 'tmpdirname/_bahan/WEB/'
+            folder_path = f'{tmpdirname}/_bahan/WEB/'
             
             # Initialize a list to store DataFrames from each file
             dataframes = []
@@ -577,7 +577,7 @@ if uploaded_file is not None:
                 merged_web = pd.concat(dataframes, ignore_index=True)
             
                 # Save the merged DataFrame to a CSV file without row index
-                output_file = 'tmpdirname/_merge/merge_WEB.csv'
+                output_file = f'{tmpdirname}/_merge/merge_WEB.csv'
                 merged_web.to_csv(output_file, index=False)
             
                 # Read the CSV file skipping the first row
@@ -595,8 +595,8 @@ if uploaded_file is not None:
     
             st.markdown('### Preparing')
             
-            gojek1_path       = 'tmpdirname/_merge/merge_Gojek 1.csv'
-            outputgojek1_path = 'tmpdirname/_final/Final Gojek 1.csv'
+            gojek1_path       = f'{tmpdirname}/_merge/merge_Gojek 1.csv'
+            outputgojek1_path = f'{tmpdirname}/_final/Final Gojek 1.csv'
             
             st.write('GOJEK 1')
             if os.path.exists(gojek1_path):
@@ -635,8 +635,8 @@ if uploaded_file is not None:
             else:
                 st.write("File does not exist. Please double check")
             
-            gojek2_path       = 'tmpdirname/_merge/merge_Gojek 2.csv'
-            outputgojek2_path = 'tmpdirname/_final/Final Gojek 2.csv'
+            gojek2_path       = f'{tmpdirname}/_merge/merge_Gojek 2.csv'
+            outputgojek2_path = f'{tmpdirname}/_final/Final Gojek 2.csv'
             
             st.write('GOJEK 2')
             if os.path.exists(gojek2_path):
@@ -672,7 +672,7 @@ if uploaded_file is not None:
                 loc_go2        =   loc_go2[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             
                 # Save the final result to a new CSV file
-                final_go2      =   loc_go2.to_csv('tmpdirname/_final/Final Gojek 2.csv', index=False)
+                final_go2      =   loc_go2.to_csv(f'{tmpdirname}/_final/Final Gojek 2.csv', index=False)
             
                 # Save the final result to a new CSV file
                 loc_go2.to_csv(outputgojek2_path, index=False)
@@ -680,8 +680,8 @@ if uploaded_file is not None:
             else:
                 st.write("File does not exist. Please double check")
             
-            gojek3_path       = 'tmpdirname/_merge/merge_Gojek 3.csv'
-            outputgojek3_path = 'tmpdirname/_final/Final Gojek 3.csv'
+            gojek3_path       = f'{tmpdirname}/_merge/merge_Gojek 3.csv'
+            outputgojek3_path = f'{tmpdirname}/_final/Final Gojek 3.csv'
             
             st.write('GOJEK 3')
             if os.path.exists(gojek3_path):
@@ -719,8 +719,8 @@ if uploaded_file is not None:
             else:
                 st.write("File does not exist. Please double check")
             
-            shopee_path       = 'tmpdirname/_merge/merge_Shopee Food.csv'
-            outputshopee_path = 'tmpdirname/_final/Final Shopee Food.csv'
+            shopee_path       = f'{tmpdirname}/_merge/merge_Shopee Food.csv'
+            outputshopee_path = f'{tmpdirname}/_final/Final Shopee Food.csv'
             
             st.write('SHOPEE FOOD')
             if os.path.exists(shopee_path):
@@ -762,9 +762,9 @@ if uploaded_file is not None:
             else:
                 st.write("File does not exist. Please double check")
             
-            outputgrab_path   = 'tmpdirname/_final/Final Grab.csv'
-            grab1_path        = 'tmpdirname/_merge/merge_Grab 1.csv'
-            grab2_path        = 'tmpdirname/_merge/merge_Grab 2.csv'
+            outputgrab_path   = f'{tmpdirname}/_final/Final Grab.csv'
+            grab1_path        = f'{tmpdirname}/_merge/merge_Grab 1.csv'
+            grab2_path        = f'{tmpdirname}/_merge/merge_Grab 2.csv'
             
             # Check for the existence of grab files
             grab1_exists = os.path.exists(grab1_path)
@@ -849,8 +849,8 @@ if uploaded_file is not None:
                 st.write("File does not exist. Please double check")
             
             
-            qrisshopee_path       = 'tmpdirname/_merge/merge_QRIS Shopee.csv'
-            outputqrishopee_path  = 'tmpdirname/_final/Final QRIS Shopee.csv'
+            qrisshopee_path       = f'{tmpdirname}/_merge/merge_QRIS Shopee.csv'
+            outputqrishopee_path  = f'{tmpdirname}/_final/Final QRIS Shopee.csv'
             st.write('QRIS SHOPEE')
             if os.path.exists(qrisshopee_path):
                 # Read data merge QRIS Shopee
@@ -885,8 +885,8 @@ if uploaded_file is not None:
             else:
                 st.write("File does not exist. Please double check")
             
-            qristelekom_path        = 'tmpdirname/_merge/merge_QRIS IA.csv'
-            outputqristelekom_path  = 'tmpdirname/_final/Final QRIS Telkom.csv'
+            qristelekom_path        = f'{tmpdirname}/_merge/merge_QRIS IA.csv'
+            outputqristelekom_path  = f'{tmpdirname}/_final/Final QRIS Telkom.csv'
             st.write('QRIS TELKOM')
             if os.path.exists(qristelekom_path):
                 # Read data merge QRIS Telkom
@@ -921,7 +921,7 @@ if uploaded_file is not None:
             
             
             # Path to the CSV file
-            file_path = 'tmpdirname/_merge/merge_ESB.csv'
+            file_path = f'{tmpdirname}/_merge/merge_ESB.csv'
             st.write('QRIS ESB')
             # Check if the file exists
             if os.path.exists(file_path):
@@ -952,14 +952,14 @@ if uploaded_file is not None:
                 df_esb = df_esb.loc[:, ['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']].sort_values('DATE', ascending=False)
             
                 # Save the final result to a new CSV file
-                df_esb.to_csv('tmpdirname/_final/Final ESB.csv', index=False)
+                df_esb.to_csv(f'{tmpdirname}/_final/Final ESB.csv', index=False)
                 st.write("File QRIS ESB processed and saved")
             else:
                 # st.write a message if the file is not found
                 st.write("File does not exist. Please double check")
     
             #Read data merge WEB
-            df_web       =   pd.read_csv('tmpdirname/_merge/merge_WEB.csv')
+            df_web       =   pd.read_csv(f'{tmpdirname}/_merge/merge_WEB.csv')
             
             df_web['DATE'] = df_web['DATE'].str.replace('Jun', 'June')
             
@@ -969,8 +969,8 @@ if uploaded_file is not None:
             df_web       =       df_web.rename(columns={'CO':'TIME','TOTAL':'NOM','KATEGORI':'KAT','CUSTOMER':'ID'}).fillna('')
             df_web       =       df_web.loc[:,['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE']].sort_values('DATE', ascending=[False])
             
-            final_web       =       df_web.to_csv('tmpdirname/_final/WEB Akhir.csv', index=False)
-            web_final       =       pd.read_csv('tmpdirname/_final/WEB Akhir.csv')
+            final_web       =       df_web.to_csv(f'{tmpdirname}/_final/WEB Akhir.csv', index=False)
+            web_final       =       pd.read_csv(f'{tmpdirname}/_final/WEB Akhir.csv')
             
             web_final       =       web_final[web_final['TIME']     !=      'TOTAL']
             web_final       =       web_final[web_final['TIME']     !=      'CO']
@@ -991,16 +991,16 @@ if uploaded_file is not None:
             web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
             web_final = web_final[web_final['CAB'].isin(all_cab)]
             web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
-            web_final.to_csv('tmpdirname/_final/ALL/WEB.csv', index=False)
+            web_final.to_csv(f'{tmpdirname}/_final/ALL/WEB.csv', index=False)
     
-            df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob('tmpdirname/_final/Final*')], ignore_index = True).fillna('')
+            df_concat = pd.concat([pd.read_csv(f, dtype=str) for f in glob(f'{tmpdirname}/_final/Final*')], ignore_index = True).fillna('')
             df_concat = df_concat[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             df_concat = df_concat[(df_concat['CAB'].isin(all_cab))]
             df_concat = df_concat[df_concat['DATE']     !=      '']
             df_concat['DATE'] = pd.to_datetime(df_concat['DATE'], format='%d/%m/%Y')
             df_concat   =   df_concat[df_concat['DATE'].isin(all_date)] #CHANGE
             df_concat['DATE'] = df_concat['DATE'].dt.strftime('%d/%m/%Y')
-            df_concat.to_csv('tmpdirname/_final/ALL/INVOICE.csv', index=False) #CHANGE
+            df_concat.to_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv', index=False) #CHANGE
     
             st.markdown('### Output')
             st.write('WEB')
@@ -1017,7 +1017,7 @@ if uploaded_file is not None:
             time_qe = 150
             time_qt = 150
             
-            main_folder = 'tmpdirname/_bahan/CANCEL_NOTA'
+            main_folder = f'{tmpdirname}/_bahan/CANCEL_NOTA'
             
             # Get the list of subfolders within the main folder
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
@@ -1046,13 +1046,13 @@ if uploaded_file is not None:
                 final_df = pd.concat(combined_dataframes)
                 
                 # Optionally, you can save the final dataframe to a CSV file
-                final_df.to_csv('tmpdirname/_merge/merge_cancel_nota.csv', index=False)
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv', index=False)
             
                 print("Concatenated CANCEL NOTA Exported to:", '_merge/merge_cancel_nota.csv')
             else:
                 print("No dataframes to concatenate.")
                 
-            cn = pd.read_csv('tmpdirname/_merge/merge_cancel_nota.csv')
+            cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
             cn.columns = cn.loc[0,:].values
             cn = cn.loc[1:,]
             cn = cn[cn['TANGGAL']!='TANGGAL']
@@ -1061,8 +1061,8 @@ if uploaded_file is not None:
             cn['KET'] = ''
             cn = cn[cn['TOTAL BILL']>0]
             
-            dfinv   =   pd.read_csv('tmpdirname/_final/ALL/WEB.csv')
-            dfweb   =   pd.read_csv('tmpdirname/_final/ALL/INVOICE.csv')
+            dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
+            dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
             
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%Y-%m-%d')
@@ -1256,7 +1256,7 @@ if uploaded_file is not None:
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(f'tmpdirname/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
+                        all.to_csv(ff'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
             
                     if 'QRIS SHOPEE' in all_kat:
                         qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
@@ -1388,7 +1388,7 @@ if uploaded_file is not None:
                         all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'] = all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(f'tmpdirname/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
+                        all.to_csv(ff'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
             
                     if 'GRAB' in all_kat:
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
@@ -1469,7 +1469,7 @@ if uploaded_file is not None:
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(f'tmpdirname/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
+                        all.to_csv(ff'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
             
                     if 'SHOPEEPAY' in all_kat:
                         spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
@@ -1571,7 +1571,7 @@ if uploaded_file is not None:
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(f'tmpdirname/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
+                        all.to_csv(ff'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
             
                     if not ((dfinv[((dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")) & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[((dfweb['KAT']  ==  "QRIS ESB") | (dfweb['KAT']  ==  "QRIS ESB ORDER")) & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
@@ -1649,7 +1649,7 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS ESB'
-                        all.to_csv(f'tmpdirname/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
+                        all.to_csv(ff'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
             
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[(dfweb['KAT']  ==  "QRIS Telkom") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
@@ -1717,15 +1717,15 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS TELKOM'
-                        all.to_csv(f'tmpdirname/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
+                        all.to_csv(ff'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
             
             combined_dataframes = []
             files = []
             for cab in all_cab:
                  for date in all_date:
                     for ojol in all_kat:
-                        if os.path.exists(f'tmpdirname/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
-                            files.append(f'tmpdirname/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
+                        if os.path.exists(ff'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
+                            files.append(ff'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat([pd.read_csv(file) for file in files])
