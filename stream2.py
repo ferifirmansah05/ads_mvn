@@ -29,7 +29,7 @@ download_file_from_github(url, save_path)
 def get_storage_bucket():
     try:
         cred_path = "serviceAccountKey.json"
-        bucket_name = "gs://abov1-2d892.appspot.com"
+        bucket_name = "abov1-2d892.appspot.com"
         # Periksa apakah aplikasi Firebase sudah diinisialisasi
         if not firebase_admin._apps:
             st.write(f"Using credentials from: {cred_path}")
