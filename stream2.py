@@ -28,25 +28,34 @@ download_file_from_github(url, save_path)
 # Fungsi untuk menginisialisasi Firebase dan mendapatkan bucket storage
 def get_storage_bucket():
     try:
+        cred_path = "serviceAccountKey.json"
+        bucket_name = "gs://abov1-2d892.appspot.com"
+        # Periksa apakah aplikasi Firebase sudah diinisialisasi
         if not firebase_admin._apps:
-            cred_path = "serviceAccountKey.json"
-            bucket_name = "gs://abov1-2d892.appspot.com"
             st.write(f"Using credentials from: {cred_path}")
             st.write(f"Using bucket name: {bucket_name}")
-
+            
+            # Inisialisasi aplikasi Firebase
             cred = credentials.Certificate(cred_path)
             firebase_admin.initialize_app(cred, {
                 'storageBucket': bucket_name
             })
-
+            
             st.write("Firebase app initialized successfully.")
         
-        bucket = storage.bucket()
+        # Ambil bucket storage
+        bucket = storage.bucket(bucket_name)
         st.write("Bucket retrieved successfully.")
         return bucket
+    except ValueError as ve:
+        st.error(f"ValueError in get_storage_bucket: {ve}")
+        raise  # Raise exception to see full traceback
+    except firebase_admin.exceptions.FirebaseError as fe:
+        st.error(f"FirebaseError in get_storage_bucket: {fe}")
+        raise  # Raise exception to see full traceback
     except Exception as e:
-        st.error(f"Error in get_storage_bucket: {e}")
-        return None
+        st.error(f"Unexpected error in get_storage_bucket: {e}")
+        raise  # Raise exception to see full traceback
 
 # Fungsi untuk mengunggah file ke Firebase Storage
 def upload_file_to_firebase(file, blob_name):
