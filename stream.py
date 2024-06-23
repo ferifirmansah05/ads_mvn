@@ -1756,16 +1756,7 @@ if uploaded_file is not None:
             if os.path.isfile(item_path) or os.path.islink(item_path):
                 os.unlink(item_path)
             elif os.path.isdir(item_path):
-                shutil.rmtree(item_path)        
-        # Menampilkan semua file dan folder
-        contents = os.listdir(tempdirname)
-        for item in contents:
-            item_path = os.path.join(tmpdirname, item)
-            if os.path.isfile(item_path):
-                st.write(f"File: {item}")
-            elif os.path.isdir(item_path):
-                st.write(f"Folder: {item}")
-            else:
-                st.write(f"Unknown: {item}") 
+                shutil.rmtree(item_path)     
+                st.write(f'delete, {item_path}')
                     
                     
