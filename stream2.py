@@ -27,7 +27,9 @@ download_file_from_github(url, save_path)
 def initialize_firebase():
     # Path ke file service account JSON yang diunduh dari Firebase Console
     cred = credentials.Certificate("serviceAccountKey.json")
-    firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': 'gs://abov1-2d892.appspot.com'
+    })
 
 def get_storage_bucket():
     if not firebase_admin._apps:
