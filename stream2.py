@@ -29,8 +29,8 @@ download_file_from_github(url, save_path)
 def get_storage_bucket():
     try:
         if not firebase_admin._apps:
-            cred_path = "path/to/your/service-account-file.json"
-            bucket_name = "your-project-id.appspot.com"
+            cred_path = "serviceAccountKey.json"
+            bucket_name = "gs://abov1-2d892.appspot.com"
             st.write(f"Using credentials from: {cred_path}")
             st.write(f"Using bucket name: {bucket_name}")
 
