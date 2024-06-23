@@ -85,15 +85,6 @@ if uploaded_file is not None:
             # Ekstrak file ZIP ke direktori sementara
             with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
                 zip_ref.extractall(tmpdirname)
-                st.write(f"Ekstrak file ke {tmpdirname}")
-            
-            def list_files_in_directory(dir_path):
-                # Fungsi untuk mencetak semua isi dari suatu direktori
-                for root, dirs, files in os.walk(dir_path):
-                    st.write(f'Direktori: {root}')
-                    for file_name in files:
-                        st.write(f'  - {file_name}')
-            list_files_in_directory(tmpdirname)
                     
             st.markdown('### Cleaning')
             st.write('GOJEK 1')
@@ -1744,7 +1735,6 @@ if uploaded_file is not None:
             final_df = pd.concat(combined_dataframes)
             st.write('Breakdown')
             st.write(final_df)
-        
 
             def delete_folder_contents(folder_path):
                 # Iterasi semua item di dalam folder
@@ -1767,5 +1757,4 @@ if uploaded_file is not None:
             # Contoh penggunaan: menghapus semua isi dari sebuah folder
             delete_folder_contents(tmpdirname)
                     
-            list_files_in_directory(tmpdirname)
                     
