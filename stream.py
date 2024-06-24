@@ -564,13 +564,16 @@ if uploaded_file is not None:
                 if file_name.endswith('.xls'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
                     try:
-                        html_file = pd.read_html(file_path)
+                        html_file = pd.read_html(file_path, encoding='utf-8')
+                    except (ValueError, UnicodeDecodeError):
+                        try:
+                            html_file = pd.read_html(file_path, encoding='latin-1')
+                        except (ValueError, UnicodeDecodeError):
+                            html_file = pd.read_html(file_path, encoding='ISO-8859-1')
                         # Get the DataFrame corresponding to each file
                         if html_file:
                             df = html_file[0].iloc[1:]  # Remove the first row
                             dataframes.append(df)
-                    except Exception as e:
-                        st.write(f"Error reading {file_path}: {e}")
             
             # Check if any HTML files were processed
             if dataframes:
