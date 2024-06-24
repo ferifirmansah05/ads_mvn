@@ -746,7 +746,6 @@ if uploaded_file is not None:
                 loc_shopee['DATE']        =   loc_shopee['DATETIME'].dt.strftime('%d/%m/%Y')
                 loc_shopee['TIME']        =   loc_shopee['DATETIME'].dt.time
                 del loc_shopee['DATETIME']
-                st.write(loc_shopee)
                 loc_shopee = loc_shopee[loc_shopee['NOM']!='']
                 loc_shopee['NOM']         =   pd.to_numeric(loc_shopee['NOM']).astype(int)
                 loc_shopee                =  loc_shopee.drop(loc_shopee[loc_shopee['Status'] == 'Cancelled'].index)
