@@ -653,8 +653,8 @@ if uploaded_file is not None:
                                                                             'Nomor Pesanan' : 'ID',
                                                                             'Gross Amount' : 'NOM'}).fillna('')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
+                loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Apr', 'April')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Jun', 'June')
-            
                 # Parse datetime column
                 loc_go2['DATETIME']    =   pd.to_datetime(loc_go2['DATETIME'], utc=True)
             
@@ -694,6 +694,7 @@ if uploaded_file is not None:
                     columns={'Transaction time': 'DATETIME', 'Order ID': 'ID', 'Amount': 'NOM'}).fillna('')
             
                 loc_go3['DATETIME'] = loc_go3['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
+                loc_go3['DATETIME'] = loc_go3['DATETIME'].str.replace('Apr', 'April')
                 loc_go3['DATETIME'] = loc_go3['DATETIME'].str.replace('Jun', 'June')
                 loc_go3['ID'] = loc_go3['ID'].str.replace("'", '').str.slice(0, 19)
             
@@ -739,8 +740,8 @@ if uploaded_file is not None:
                                                                                       'Order Amount' : 'NOM',
                                                                                       'Order Status' : 'Status'}).fillna('')
             
-                #loc_shopee['DATETIME'] = loc_shopee['DATETIME'].str.replace('Jun', 'June')
-            
+                #loc_shopee['DATETIME'] = loc_shopee['DATETIME'].str.replace('Apr', 'April')
+                #loc_shopee['DATETIME'] = loc_shopee['DATETIME'].str.replace('Jun', 'June')            
                 loc_shopee['DATETIME']    =   pd.to_datetime(loc_shopee['DATETIME'], format='%d/%m/%Y %H:%M:%S')
                 loc_shopee['DATE']        =   loc_shopee['DATETIME'].dt.strftime('%d/%m/%Y')
                 loc_shopee['TIME']        =   loc_shopee['DATETIME'].dt.time
@@ -860,7 +861,7 @@ if uploaded_file is not None:
                 # Rename columns to match the database schema
                 loc_qrisshopee = df_shopee.loc[:, ['Folder', 'Transaction ID', 'DATE', 'TIME', 'Transaction Amount', 'Transaction Type']].rename(
                     columns={'Folder': 'CAB', 'Transaction ID': 'ID', 'Transaction Amount': 'NOM'}).fillna('')
-            
+                loc_qrisshopee['DATE'] = loc_qrisshopee['DATE'].str.replace('Apr', 'April')          
                 loc_qrisshopee['DATE'] = loc_qrisshopee['DATE'].str.replace('Jun', 'June')
             
                 loc_qrisshopee['DATE'] = pd.to_datetime(loc_qrisshopee['DATE'], format='%d/%m/%Y')
@@ -896,7 +897,7 @@ if uploaded_file is not None:
                 # Rename columns to match the database schema
                 loc_qristelkom = df_qristelkom.loc[:, ['Folder', 'Waktu Transaksi', 'Nama Customer', 'Nominal (termasuk Tip)']].rename(
                     columns={'Folder': 'CAB', 'Waktu Transaksi': 'DATETIME', 'Nama Customer': 'ID', 'Nominal (termasuk Tip)': 'NOM'}).fillna('')
-            
+                loc_qristelkom['DATETIME'] = loc_qristelkom['DATETIME'].str.replace('Apr', 'April')            
                 loc_qristelkom['DATETIME'] = loc_qristelkom['DATETIME'].str.replace('Jun', 'June')
             
                 # Convert 'DATETIME' column to datetime
@@ -961,7 +962,7 @@ if uploaded_file is not None:
     
             #Read data merge WEB
             df_web       =   pd.read_csv(f'{tmpdirname}/_merge/merge_WEB.csv')
-            
+            df_web['DATE'] = df_web['DATE'].str.replace('Apr', 'April')            
             df_web['DATE'] = df_web['DATE'].str.replace('Jun', 'June')
             
             df_web['SOURCE']     =   'WEB'
