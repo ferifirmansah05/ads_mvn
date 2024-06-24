@@ -564,7 +564,7 @@ if uploaded_file is not None:
                 if file_name.endswith('.xls'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
                     try:
-                        html_file = pd.read_html(file_path)
+                        html_file = pd.read_html(file_path, encoding='ISO-8859-1')
                         # Get the DataFrame corresponding to each file
                         if html_file:
                             df = html_file[0].iloc[1:]  # Remove the first row
@@ -747,7 +747,6 @@ if uploaded_file is not None:
                 loc_shopee['TIME']        =   loc_shopee['DATETIME'].dt.time
                 del loc_shopee['DATETIME']
                 st.write(loc_shopee)
-                loc_shopee['NOM']         = loc_shopee['NOM'].fillna('')
                 loc_shopee['NOM']         =   pd.to_numeric(loc_shopee['NOM']).astype(int)
                 loc_shopee                =  loc_shopee.drop(loc_shopee[loc_shopee['Status'] == 'Cancelled'].index)
             
