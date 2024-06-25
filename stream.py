@@ -714,8 +714,6 @@ if uploaded_file is not None:
                 # re-order columns
                 loc_go2        =   loc_go2[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             
-                # Save the final result to a new CSV file
-                final_go2      =   loc_go2.to_csv(f'{tmpdirname}/_final/Final Gojek 2.csv', index=False)
             
                 # Save the final result to a new CSV file
                 loc_go2.to_csv(outputgojek2_path, index=False)
@@ -1051,7 +1049,18 @@ if uploaded_file is not None:
             st.write(web_final)
             st.write('INVOICE')
             st.write(invoice_final)
-    
+            
+            def list_files_in_directory(dir_path):
+                # Fungsi untuk mencetak semua isi dari suatu direktori
+                for root, dirs, files in os.walk(dir_path):
+                    st.write(f'Direktori: {root}')
+                    for file_name in files:
+                        st.write(f'  - {file_name}')
+            
+            # Contoh penggunaan
+            # Ekstrak file ZIP
+            list_files_in_directory(tmpdirname)
+            -
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
             time_go = 150
