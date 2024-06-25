@@ -114,10 +114,12 @@ if uploaded_file is not None:
                 st.write("No dataframes to concatenate.")  
     
             st.write('GOJEK 2')
+            # Path to the folder containing the subfolders
             main_folder = f'{tmpdirname}/_bahan/GOJEK 2'
             
             # Get the list of subfolders within the main folder
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
+            
             # List to store concatenated dataframes
             combined_dataframes = []
             
@@ -125,27 +127,25 @@ if uploaded_file is not None:
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
                 files = glob(os.path.join(main_folder, subfolder, '*.csv'))
-                st.write(files)
                 # Concatenate CSV files within each subfolder
                 dfs = [pd.read_csv(file) for file in files]
                 if dfs:
                     df = pd.concat(dfs)
-                    
                     # Add a new column for the folder name
                     df['Folder'] = subfolder
-                    st.write(df)
                     combined_dataframes.append(df)
                 else:
-                    st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
-            st.write(pd.concat(combined_dataframes))
-            # Check if there are any dataframes to concatenate
-            try:
-                # Concatenate dataframes from all subfolders
-                final_df_ = pd.concat(combined_dataframes)
-                st.write(final_df)
-                final_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 2.csv', index=False)
-                st.write("File GOJEK 2 Concantenated")
-            except:
-                st.write("No dataframes to concatenate.")   
-            st.write(final_df)
+                    print(f"No CSV files found in subfolder: {subfolder}")
             
+            # Check if there are any dataframes to concatenate
+            if combined_dataframes:
+                # Concatenate dataframes from all subfolders
+                final_df = pd.concat(combined_dataframes)
+                
+                # Optionally, you can save the final dataframe to a CSV file
+                final_df.to_csv(f'{tmpdirname}_merge/merge_Gojek 2.csv', index=False)
+            
+                print("Concatenated GOJEK 2 Exported to:", '_merge/merge_Gojek 2.csv')
+            else:
+                print("No dataframes to concatenate.")
+            st.write(pd.read_csv(f'{tmpdirname}/_merge/merge_Gojek 2.csv'))
