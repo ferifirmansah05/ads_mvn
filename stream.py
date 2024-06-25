@@ -135,7 +135,7 @@ if uploaded_file is not None:
                     df['Folder'] = subfolder
                     combined_dataframes.append(df)
                 else:
-                    print(f"No CSV files found in subfolder: {subfolder}")
+                    st.write(f"No CSV files found in subfolder: {subfolder}")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
@@ -144,9 +144,9 @@ if uploaded_file is not None:
                 
                 # Optionally, you can save the final dataframe to a CSV file
                 final_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 2.csv', index=False)
-                print("File Gojek 2 Concatenated)
+                st.write("File Gojek 2 Concatenated")
             else:
-                print("No dataframes to concatenate.")
+                st.write("No dataframes to concatenate.")
 
             st.write('GOJEK 3')
             folder_path = f'{tmpdirname}/_bahan/GOJEK 3/'
