@@ -723,7 +723,6 @@ if uploaded_file is not None:
                 st.write(f"File GOJEK 2 processed and saved")
             else:
                 st.write("File does not exist. Please double check")
-            st.write(loc_go2)
             
             gojek3_path       = f'{tmpdirname}/_merge/merge_Gojek 3.csv'
             outputgojek3_path = f'{tmpdirname}/_final/Final Gojek 3.csv'
@@ -1039,7 +1038,6 @@ if uploaded_file is not None:
             web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
             web_final.to_csv(f'{tmpdirname}/_final/ALL/WEB.csv', index=False)
 
-            st.write(glob(f'{tmpdirname}/_final/Final*'))
             invoice_final = pd.concat([pd.read_csv(f, dtype=str) for f in glob(f'{tmpdirname}/_final/Final*')], ignore_index = True).fillna('')
             invoice_final = invoice_final[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             invoice_final = invoice_final[(invoice_final['CAB'].isin(all_cab))]
