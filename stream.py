@@ -130,6 +130,7 @@ if uploaded_file is not None:
                 dfs = [pd.read_csv(file) for file in files]
                 if dfs:
                     df = pd.concat(dfs)
+                    st.write(df)
                     # Add a new column for the folder name
                     df['Folder'] = subfolder
                     combined_dataframes.append(df)
