@@ -551,6 +551,48 @@ if uploaded_file is not None:
                 st.write("File QRIS TELKOM Concatenated")
             else:
                 st.write("No dafaframes to concatenate.")
+
+            st.write('QRIS ESB')
+            # Specify the directory where the HTML files are located
+            folder_path = f'{tmpdirname}/_bahan/QRIS_ESB/'
+            
+            # Initialize a list to store DataFrames from each file
+            dataframes = []
+            
+            # Loop through each file in the folder
+            for file_name in os.listdir(folder_path):
+                if file_name.endswith('.xlsx'):  # Make sure only HTML files are processed
+                    file_path = os.path.join(folder_path, file_name)
+                    try:
+                        html_file = pd.read_html(file_path)
+                        # Get the DataFrame corresponding to each file
+                        if html_file:
+                            df = html_file[0].iloc[8:]  # Remove the first row
+                            dataframes.append(df)
+                    except Exception as e:
+                        print(f"Error reading {file_path}: {e}")
+            
+            # Check if any HTML files were processed
+            if dataframes:
+                # Concatenate all DataFrames into one DataFrame
+                merged_web = pd.concat(dataframes, ignore_index=True)
+            
+                # Save the merged DataFrame to a CSV file without row index
+                output_file = f'{tmpdirname}/_merge/merge_ESB.csv'
+                merged_web.to_csv(output_file, index=False)
+            
+                # Read the CSV file skipping the first row
+                final_web = pd.read_csv(output_file, skiprows=[0])
+            
+                # Filter out rows where the 'DATE' column contains "DATE" or "TOTAL"
+                #final_web = final_web[~final_web['DATE'].str.contains('DATE|TOTAL')]
+            
+                # Save the DataFrame without row index to a new CSV file
+                final_web.to_csv(output_file, index=False)
+            
+                st.write("FIle QRIS ESB Concatenated")
+            else:
+                st.write("No dataframes to concatenate.")     
             
             st.write('WEB')
             # Specify the directory where the HTML files are located
