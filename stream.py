@@ -119,7 +119,7 @@ if uploaded_file is not None:
             # Get the list of subfolders within the main folder
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
             # List to store concatenated dataframes
-            combined_dataframes_go2 = []
+            combined_dataframes = []
             
             # Iterate over each subfolder
             for subfolder in subfolders:
@@ -134,14 +134,14 @@ if uploaded_file is not None:
                     # Add a new column for the folder name
                     df['Folder'] = subfolder
                     st.write(df)
-                    combined_dataframes_go2.append(df)
+                    combined_dataframes.append(df)
                 else:
                     st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
-            st.write(combined_dataframes_go2)
+            st.write(pd.concat(combined_dataframes))
             # Check if there are any dataframes to concatenate
-            if combined_dataframes_go2:
+            if combined_dataframes:
                 # Concatenate dataframes from all subfolders
-                final_df_ = pd.concat(combined_dataframes_go2)
+                final_df_ = pd.concat(combined_dataframes)
                 st.write(final_df)
                 final_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 2.csv', index=False)
                 st.write("File GOJEK 2 Concantenated")
