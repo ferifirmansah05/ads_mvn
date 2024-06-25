@@ -1034,7 +1034,8 @@ if uploaded_file is not None:
             web_final = web_final[web_final['CAB'].isin(all_cab)]
             web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
             web_final.to_csv(f'{tmpdirname}/_final/ALL/WEB.csv', index=False)
-    
+
+            st.write(glob(f'{tmpdirname}/_final/Final*'))
             invoice_final = pd.concat([pd.read_csv(f, dtype=str) for f in glob(f'{tmpdirname}/_final/Final*')], ignore_index = True).fillna('')
             invoice_final = invoice_final[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             invoice_final = invoice_final[(invoice_final['CAB'].isin(all_cab))]
@@ -1049,17 +1050,7 @@ if uploaded_file is not None:
             st.write(web_final)
             st.write('INVOICE')
             st.write(invoice_final)
-            
-            def list_files_in_directory(dir_path):
-                # Fungsi untuk mencetak semua isi dari suatu direktori
-                for root, dirs, files in os.walk(dir_path):
-                    st.write(f'Direktori: {root}')
-                    for file_name in files:
-                        st.write(f'  - {file_name}')
-            
-            # Contoh penggunaan
-            # Ekstrak file ZIP
-            st.write(list_files_in_directory(tmpdirname))
+        
             
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
