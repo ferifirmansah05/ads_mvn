@@ -137,11 +137,12 @@ if uploaded_file is not None:
                     combined_dataframes.append(df)
                 else:
                     st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
-            
+            st.write(combined_dataframes)
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
                 # Concatenate dataframes from all subfolders
                 final_df_ = pd.concat(combined_dataframes)
+                st.write(final_df)
                 final_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 2.csv', index=False)
                 st.write("File GOJEK 2 Concantenated")
             else:
