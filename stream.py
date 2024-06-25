@@ -1059,8 +1059,8 @@ if uploaded_file is not None:
             
             # Contoh penggunaan
             # Ekstrak file ZIP
-            list_files_in_directory(tmpdirname)
-            -
+            st.write(list_files_in_directory(tmpdirname))
+            
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
             time_go = 150
