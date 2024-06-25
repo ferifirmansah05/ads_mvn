@@ -144,7 +144,7 @@ if uploaded_file is not None:
                 st.write("File GOJEK 2 Concantenated")
             else:
                 st.write("No dataframes to concatenate.")    
-    
+            st.write(final_df)
             st.write('GOJEK 3')
             folder_path = f'{tmpdirname}/_bahan/GOJEK 3/'
             
@@ -722,7 +722,7 @@ if uploaded_file is not None:
                 st.write(f"File GOJEK 2 processed and saved")
             else:
                 st.write("File does not exist. Please double check")
-            
+            st.write(loc_go2)
             gojek3_path       = f'{tmpdirname}/_merge/merge_Gojek 3.csv'
             outputgojek3_path = f'{tmpdirname}/_final/Final Gojek 3.csv'
             
