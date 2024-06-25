@@ -118,7 +118,6 @@ if uploaded_file is not None:
             
             # Get the list of subfolders within the main folder
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
-            
             # List to store concatenated dataframes
             combined_dataframes = []
             
@@ -126,6 +125,7 @@ if uploaded_file is not None:
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
                 files = glob(os.path.join(main_folder, subfolder, '*.csv'))
+                st.write(files)
                 # Concatenate CSV files within each subfolder
                 dfs = [pd.read_csv(file) for file in files]
                 if dfs:
@@ -145,3 +145,4 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")    
             st.write(final_df)
+            
