@@ -1046,13 +1046,6 @@ if uploaded_file is not None:
             invoice_final   =   invoice_final[invoice_final['DATE'].isin(all_date)] #CHANGE
             invoice_final['DATE'] = invoice_final['DATE'].dt.strftime('%d/%m/%Y')
             invoice_final.to_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv', index=False) #CHANGE
-    
-            st.markdown('### Output')
-            st.write('WEB')
-            st.write(web_final)
-            st.write('INVOICE')
-            st.write(invoice_final)
-        
             
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
@@ -1157,6 +1150,8 @@ if uploaded_file is not None:
                 for date in all_date:
                     
                     if 'GOJEK' in all_kat:
+                        
+                        st.write('GOJEK / ',cab,' / ', date)
                         goi   =   dfinv[dfinv['KAT']  ==  "GO RESTO"]
                         gow   =   dfweb[dfweb['KAT']  ==  "GO RESTO"]
                         goi   =   goi[goi['CAB']  ==  cab]
@@ -1438,7 +1433,8 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
-            
+                        st.write('-------------DONE')
+                    
                     if 'GRAB' in all_kat:
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
                         gfw   =   dfweb[dfweb['KAT']  ==  "GRAB FOOD"]
@@ -1781,6 +1777,12 @@ if uploaded_file is not None:
             
             combined_dataframes.append(df_all)
             final_df = pd.concat(combined_dataframes)
+            
+            st.markdown('### Output')
+            st.write('WEB')
+            st.write(web_final)
+            st.write('INVOICE')
+            st.write(invoice_final)
             st.write('Breakdown')
             st.write(final_df)
 
@@ -1803,6 +1805,7 @@ if uploaded_file is not None:
                         print(f"Failed to delete {item_path}: {e}")
             
             # Contoh penggunaan: menghapus semua isi dari sebuah folder
+            
             delete_folder_contents(tmpdirname)
             #st.cache_data.clear()
                     
