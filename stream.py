@@ -1148,10 +1148,8 @@ if uploaded_file is not None:
             
             for cab in all_cab:
                 for date in all_date:
-                    
+    
                     if 'GOJEK' in all_kat:
-                        
-                        st.write('GOJEK / ',cab,' / ', date)
                         goi   =   dfinv[dfinv['KAT']  ==  "GO RESTO"]
                         gow   =   dfweb[dfweb['KAT']  ==  "GO RESTO"]
                         goi   =   goi[goi['CAB']  ==  cab]
@@ -1301,7 +1299,8 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
-            
+                        st.write(cab,'/',date,'/GOJEK', ': File processed')
+                        
                     if 'QRIS SHOPEE' in all_kat:
                         qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
                         qsw   =   dfweb[dfweb['KAT']  ==  "QRIS SHOPEE"]
@@ -1433,8 +1432,8 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
-                        st.write('-------------DONE')
-                    
+                        st.write(cab,'/',date,'/QRIS SHOPEE', ': File processed')
+                        
                     if 'GRAB' in all_kat:
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
                         gfw   =   dfweb[dfweb['KAT']  ==  "GRAB FOOD"]
@@ -1515,7 +1514,8 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
-            
+                        st.write(cab,'/',date,'/GRAB FOOD', ': File processed')
+                        
                     if 'SHOPEEPAY' in all_kat:
                         spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
                         spw   =   dfweb[dfweb['KAT']  ==  "SHOPEEPAY"]
