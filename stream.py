@@ -1075,16 +1075,18 @@ if uploaded_file is not None:
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
                 files = glob(os.path.join(main_folder, subfolder, '*.xlsx'))
-                # Concatenate CSV files within each subfolder
-                dfs = [pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0).dropna().reset_index(drop=True)
-            for file in files]
+                dfs = []
+                for file in files:
+                    df = pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0)
+                    df = df.loc[:,df.columns[:9]].dropna().reset_index(drop=True)
+                    dfs.append(df)
                 if dfs:
-                    df = pd.concat(dfs)
-                    # Add a new column for the folder name
-                    df['Folder'] = subfolder
-                    combined_dataframes.append(df)
+                        df = pd.concat(dfs)
+                        # Add a new column for the folder name
+                        df['Folder'] = subfolder
+                        combined_dataframes.append(df)
                 else:
-                    print(f"No CSV files found in subfolder: {subfolder}")
+                        print(f"No CSV files found in subfolder: {subfolder}")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
@@ -1801,7 +1803,7 @@ if uploaded_file is not None:
             
             # Contoh penggunaan: menghapus semua isi dari sebuah folder
             delete_folder_contents(tmpdirname)
-            st.cache_data.clear()
+            #st.cache_data.clear()
                     
                     
 
