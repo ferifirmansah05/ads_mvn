@@ -1148,8 +1148,10 @@ if uploaded_file is not None:
                     return x
             
             for cab in all_cab:
+                st.write(cab)
                 for date in all_date:
-    
+                    st.write(date)
+
                     if 'GOJEK' in all_kat:
                         goi   =   dfinv[dfinv['KAT']  ==  "GO RESTO"]
                         gow   =   dfweb[dfweb['KAT']  ==  "GO RESTO"]
@@ -1298,7 +1300,7 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
-                        st.write(cab,'/',date,'/GOJEK', ': File processed')
+                        st.write('GOJEK', ': File processed')
                         
                     if 'QRIS SHOPEE' in all_kat:
                         qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
@@ -1431,7 +1433,7 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
-                        st.write(cab,'/',date,'/QRIS SHOPEE', ': File processed')
+                        st.write('QRIS SHOPEE', ': File processed')
                         
                     if 'GRAB' in all_kat:
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
@@ -1513,7 +1515,7 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
-                        st.write(cab,'/',date,'/GRAB FOOD', ': File processed')
+                        st.write('GRAB FOOD', ': File processed')
                         
                     if 'SHOPEEPAY' in all_kat:
                         spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
@@ -1616,7 +1618,7 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
-                        st.write(cab,'/',date,'/SHOPEEPAY', ': File processed')
+                        st.write('SHOPEEPAY', ': File processed')
                         
                     if not ((dfinv[((dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")) & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[((dfweb['KAT']  ==  "QRIS ESB") | (dfweb['KAT']  ==  "QRIS ESB ORDER")) & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
@@ -1695,7 +1697,7 @@ if uploaded_file is not None:
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS ESB'
                         all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
-                        st.write(cab,'/',date,'/QRIS ESB', ': File processed')
+                        st.write('QRIS ESB', ': File processed')
                              
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[(dfweb['KAT']  ==  "QRIS TELKOM") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
@@ -1764,7 +1766,7 @@ if uploaded_file is not None:
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS TELKOM'
                         all.to_csv(f'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
-                        st.write(cab,'/',date,'/QRIS TELKOM', ': File processed')
+                        st.write('QRIS TELKOM', ': File processed')
             combined_dataframes = []
             files = []
             for cab in all_cab:
