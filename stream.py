@@ -1169,7 +1169,7 @@ if uploaded_file is not None:
             
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
                             x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                            gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(str(x).upper(), str(cn.loc[i,'NAMA TAMU']).upper())).sort_values().index[-1],'KET'] = 'Cancel Nota'
+                            gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
                             cn.loc[i, 'KET'] = 'Done'
                         goi['KET'] = goi['ID']
             
