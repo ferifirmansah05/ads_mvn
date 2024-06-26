@@ -1046,7 +1046,8 @@ if uploaded_file is not None:
             invoice_final   =   invoice_final[invoice_final['DATE'].isin(all_date)] #CHANGE
             invoice_final['DATE'] = invoice_final['DATE'].dt.strftime('%d/%m/%Y')
             invoice_final.to_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv', index=False) #CHANGE
-            
+
+            st.markdown('###Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
             time_go = 150
@@ -1617,7 +1618,8 @@ if uploaded_file is not None:
                         all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
-            
+                        st.write(cab,'/',date,'/SHOPEEPAY', ': File processed')
+                        
                     if not ((dfinv[((dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")) & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[((dfweb['KAT']  ==  "QRIS ESB") | (dfweb['KAT']  ==  "QRIS ESB ORDER")) & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         qei   =   dfinv[(dfinv['KAT']  ==  "QRIS ESB") | (dfinv['KAT']  ==  "QRIS ESB ORDER")]
@@ -1695,7 +1697,8 @@ if uploaded_file is not None:
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS ESB'
                         all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
-            
+                        st.write(cab,'/',date,'/QRIS ESB', ': File processed')
+                             
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[(dfweb['KAT']  ==  "QRIS TELKOM") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         qti   =   dfinv[(dfinv['KAT']  ==  "QRIS Telkom")]
@@ -1763,7 +1766,7 @@ if uploaded_file is not None:
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS TELKOM'
                         all.to_csv(f'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
-            
+                        st.write(cab,'/',date,'/QRIS TELKOM', ': File processed')
             combined_dataframes = []
             files = []
             for cab in all_cab:
