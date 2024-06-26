@@ -1047,7 +1047,7 @@ if uploaded_file is not None:
             invoice_final['DATE'] = invoice_final['DATE'].dt.strftime('%d/%m/%Y')
             invoice_final.to_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv', index=False) #CHANGE
 
-            st.markdown('###Processing')
+            st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
             ket = ''
             time_go = 150
@@ -1162,8 +1162,6 @@ if uploaded_file is not None:
                         gow = gow.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
             
                         goi.drop_duplicates(inplace=True)
-                        st.write(cab)
-                        st.write(date)
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
                                 x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
                                 gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
