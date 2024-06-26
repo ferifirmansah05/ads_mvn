@@ -1801,6 +1801,7 @@ if uploaded_file is not None:
             
             # Contoh penggunaan: menghapus semua isi dari sebuah folder
             delete_folder_contents(tmpdirname)
+            st.cache_data.clear()
                     
                     
 
