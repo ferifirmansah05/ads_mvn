@@ -1532,7 +1532,7 @@ if uploaded_file is not None:
                         spi.drop_duplicates(inplace=True)
                         spw['ID'] = spw['ID'].str.upper()
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
-                        spw['ID2'] = spw['ID'].apply(lambda x: '#'+str(int(re.search(r'\d+$', re.sub(r'[^\w\s]', '',x)).group())) if re.search(r'\d+$',  re.sub(r'[^\w\s]', '',x)) else x)
+                        spw['ID2'] = spw['ID'].apply(lambda x: '#'+str(int(re.search(r'\d+$', x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x).group())) if re.search(r'\d+$',  x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x) else x)
                         spi['ID2'] = spi['ID']
             
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
