@@ -1592,15 +1592,18 @@ if uploaded_file is not None:
                                                 df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
                                                 df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
                                                 break    
+                                                
                             for i in df_w[df_w['KET']==''].index :                              
                                 x = df_i[((df_i['NOM']-df_w.loc[i,'NOM'])<=500) & ((df_i['NOM']-df_w.loc[i,'NOM'])>=0) 
                                                     & (df_i['HELP']=='')
                                                     & ((df_i['TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=60)) 
                                                         & ((df_i['TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0))].index
                                 if len(x)>0:
-                                    if len(x) > 1:
-                                        x = [df_i.loc[x,'ID2'].apply(lambda x: fuzz.ratio(x, str(df_w.loc[i,'ID2']))).sort_values().index[-1]]
-                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']).values==0):
+                                    if len(x) == 1:
+                                         x = x[0]
+                                    else:
+                                        x = df_i.loc[x,'ID2'].apply(lambda x: fuzz.ratio(x, str(df_w.loc[i,'ID2']))).sort_values().index[-1]
+                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
                                                             df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                             df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                             df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
@@ -1608,7 +1611,8 @@ if uploaded_file is not None:
                                     else:
                                                             df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
                                                             df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
-                                                            df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])                                                    
+                                                            df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])      
+                                        
                             for i in df_w[df_w['KET']==''].index :
                                     if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
                                         df_w.loc[i,'KET'] = 'Invoice Beda Hari'
