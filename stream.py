@@ -17,7 +17,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import tempfile
 import shutil
-
+import subprocess
 def download_file_from_github(url, save_path):
     response = requests.get(url)
     if response.status_code == 200:
@@ -92,7 +92,11 @@ if uploaded_file is not None:
             # Ekstrak file ZIP ke direktori sementara
             with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
                 zip_ref.extractall(tmpdirname)
-                    
+            # Perintah untuk menghapus cache Streamlit
+            command = "streamlit cache clear"
+            
+            # Jalankan perintah menggunakan subprocess
+            subprocess.run(command, shell=True)
             st.markdown('### Cleaning')
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
