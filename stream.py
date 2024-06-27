@@ -39,7 +39,7 @@ def list_files_in_directory(dir_path):
         for file_name in files:
             st.write(f'  - {file_name}')
             
-st.write(list_files_in_directory('tmp'))
+st.write(list_files_in_directory('tmp/'))
 
 # URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
 url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/database provinsi.xlsx'
