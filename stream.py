@@ -19,11 +19,6 @@ import tempfile
 import shutil
 import subprocess
 
-script_path = os.path.abspath(__file__)
-
-# Perintah untuk menjalankan Streamlit dengan runOnSave=false
-command = f"streamlit run {script_path} --server.runOnSave=false"
-subprocess.run(command, shell=True)
 
 def download_file_from_github(url, save_path):
     response = requests.get(url)
