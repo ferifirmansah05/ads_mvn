@@ -20,8 +20,13 @@ import shutil
 import subprocess
 
 
-command = "streamlit cache clear"
-subprocess.run(command, shell=True)
+command_clear_cache = "streamlit cache clear"
+subprocess.run(command_clear_cache, shell=True)
+
+# Perintah untuk menjalankan Streamlit dengan runOnSave=false
+command_run_streamlit = "streamlit run app.py --server.runOnSave=false"
+subprocess.run(command_run_streamlit, shell=True)
+
 def download_file_from_github(url, save_path):
     response = requests.get(url)
     if response.status_code == 200:
