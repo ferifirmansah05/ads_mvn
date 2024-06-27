@@ -402,7 +402,6 @@ if uploaded_file is not None:
                             csv_files.append(os.path.relpath(os.path.join(root, file), directory))
                 return csv_files
             
-            # Function to read CSV files with ';' delimiter
             def read_csv_files(files, directory):
                 dfs = []
                 for file in files:
@@ -410,6 +409,17 @@ if uploaded_file is not None:
                         file_path = os.path.join(directory, file)
                         folder = os.path.basename(os.path.dirname(file_path))
                         df = pd.read_csv(file_path, delimiter=';')
+                        try:
+                            df['Update Time'] = pd.to_datetime(df['Update Time'], format='%d/%m/%Y %H:%M')
+                            df['DATE'] = df['Update Time'].dt.strftime('%d/%m/%Y')
+                            df['TIME'] = df['Update Time'].dt.time
+                        except Exception:
+                            try:
+                                df['Update Time'] = pd.to_datetime(df['Update Time'], format='%m/%d/%Y %H:%M')
+                                df['DATE'] = df['Update Time'].dt.strftime('%d/%m/%Y')
+                                df['TIME'] = df['Update Time'].dt.time
+                            except Exception as e:
+                                print(f"Error formatting time: {e}")
                         df['Folder'] = folder
                         dfs.append(df)
                     except Exception as e:
@@ -423,27 +433,17 @@ if uploaded_file is not None:
             if csv_files:
                 df = read_csv_files(csv_files, base_folder_path)
             else:
-                st.write("File does not exist. Please double check")
+                print("No CSV files found.")
                 df = pd.DataFrame()
             
             # Only proceed if the DataFrame is not empty
             if not df.empty:
-                # Format Time
-                try:
-                    df['Update Time'] = pd.to_datetime(df['Update Time'], format='%d/%m/%Y %H:%M')
-                    df['DATE'] = df['Update Time'].dt.strftime('%d/%m/%Y')
-                    df['TIME'] = df['Update Time'].dt.time
-                except KeyError:
-                    st.write("The column 'Update Time' does not exist in the data.")
-                except Exception as e:
-                    st.write(f"Error formatting time: {e}")
-            
                 # Export DataFrame to CSV
-                output_file_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv'
+                output_file_path = "_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv"
                 df.to_csv(output_file_path, index=False)
-                st.write(f"File QRIS SHOPEE *; Concatenated")
+                st.write("File QRIS SHOPEE *; Concatenated")
             else:
-                st.write("No dataframes to concatenate.")
+                st.write("No dafaframes to concatenate.")
             
             st.write('QRIS SHOPEE')
             # Define the folder path
