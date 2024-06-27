@@ -17,8 +17,6 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import tempfile
 import shutil
-import subprocess
-
 
 
 def download_file_from_github(url, save_path):
