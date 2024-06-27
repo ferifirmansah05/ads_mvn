@@ -3,4 +3,5 @@ openpyxl
 fuzzywuzzy
 firebase_admin
 pandas == 2.2.2
-streamlit
+streamlit == 0.51
+html5lib
