@@ -32,6 +32,14 @@ def load_excel(file_path):
         model = pd.read_excel(file, engine='openpyxl')
     return model
 
+def list_files_in_directory(dir_path):
+    # Fungsi untuk mencetak semua isi dari suatu direktori
+    for root, dirs, files in os.walk(dir_path):
+        st.write(f'Direktori: {root}')
+        for file_name in files:
+            st.write(f'  - {file_name}')
+list_files_in_directory('tmp/')
+
 # URL file model .pkl di GitHub (gunakan URL raw dari file .pkl di GitHub)
 url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/database provinsi.xlsx'
 
