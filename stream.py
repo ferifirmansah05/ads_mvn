@@ -601,8 +601,8 @@ if uploaded_file is not None:
             
                 # Save the DataFrame without row index to a new CSV file
                 final_web.to_csv(output_file, index=False)
-            
+                st.write(final_web)
                 st.write("FIle QRIS ESB Concatenated")
             else:
                 st.write("No dataframes to concatenate.")     
-            st.write(final_web)
+            
