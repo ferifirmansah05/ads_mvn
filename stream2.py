@@ -15,6 +15,8 @@ if response.status_code == 200:
 else:
     print(f"Failed to download file: {response.status_code}")
 
-# Menjalankan file yang diunduh
-with open(local_filename, 'r') as f:
-    exec(f.read())
+import subprocess
+
+# Perintah untuk menjalankan Streamlit dengan runOnSave=false
+command_run_streamlit = "streamlit stream.py --server.runOnSave=false"
+subprocess.run(command_run_streamlit, shell=True)
