@@ -438,7 +438,7 @@ if uploaded_file is not None:
             # Only proceed if the DataFrame is not empty
             if not df.empty:
                 # Export DataFrame to CSV
-                output_file_path = "_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv"
+                output_file_path = f"{tmpdirname}/_bahan/QRIS_SHOPEE/merge/merge_QRIS S_B.csv"
                 df.to_csv(output_file_path, index=False)
                 st.write("File QRIS SHOPEE *; Concatenated")
             else:
