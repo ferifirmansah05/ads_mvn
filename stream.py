@@ -575,35 +575,18 @@ if uploaded_file is not None:
             for file_name in os.listdir(folder_path):
                 if file_name.endswith('.xlsx'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
-                    try:
-                        html_file = pd.read_excel(file_path)
-                        st.write(html_file)
-                        # Get the DataFrame corresponding to each file
-                        if html_file:
-                            df = html_file[0].iloc[8:]  # Remove the first row
-                            st.write(df)
-                            dataframes.append(df)
-                    except Exception as e:
-                        st.write(f"Error reading {file_path}: {e}")
-            
-            # Check if any HTML files were processed
+                    df = pd.read_excel(file_path)
+                    st.write(df)
+                    df = df[~df['Unnamed: 2'].isna()]  # Remove the first row
+                    df.columns = df.loc[0,:].values
+                    df = df.loc[1:,]
+                    st.write(df)
+                    dataframes.append(df)
             if dataframes:
-                # Concatenate all DataFrames into one DataFrame
                 merged_web = pd.concat(dataframes, ignore_index=True)
-            
+                st.write(merged_web)
                 # Save the merged DataFrame to a CSV file without row index
                 output_file = f'{tmpdirname}/_merge/merge_ESB.csv'
-                merged_web.to_csv(output_file, index=False)
-            
-                # Read the CSV file skipping the first row
-                final_web = pd.read_csv(output_file, skiprows=[0])
-            
-                # Filter out rows where the 'DATE' column contains "DATE" or "TOTAL"
-                #final_web = final_web[~final_web['DATE'].str.contains('DATE|TOTAL')]
-            
-                # Save the DataFrame without row index to a new CSV file
-                final_web.to_csv(output_file, index=False)
-                st.write(final_web)
                 st.write("FIle QRIS ESB Concatenated")
             else:
                 st.write("No dataframes to concatenate.")     
