@@ -579,7 +579,7 @@ if uploaded_file is not None:
                         html_file = pd.read_html(file_path)
                         # Get the DataFrame corresponding to each file
                         if html_file:
-                            df = html_file[0].iloc[8:]  # Remove the first row
+                            #df = html_file[0].iloc[8:]  # Remove the first row
                             st.write(df)
                             dataframes.append(df)
                     except Exception as e:
