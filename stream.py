@@ -1239,7 +1239,7 @@ if uploaded_file is not None:
                                     source = 'INVOICE'
                                     tab =  all_1[(all_1['TIME'] > (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S')
                             ))) & (all_1['SOURCE']==source) & (all_1['NOM']>=all_2.loc[i,'NOM']) & (all_1['NOM']-all_2.loc[i,'NOM']<=200)]
-                                else:
+                                if all_2.loc[i,'SOURCE'] =='INVOICE':
                                     source = 'WEB'
                                     tab =  all_1[( (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S'))) > all_1['TIME']) 
                                     & (all_1['SOURCE']==source) & (all_2.loc[i,'NOM']>=all_1['NOM']) & (all_2.loc[i,'NOM']-all_1['NOM']<=200)]
