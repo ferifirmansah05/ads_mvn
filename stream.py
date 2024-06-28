@@ -577,7 +577,7 @@ if uploaded_file is not None:
                     file_path = os.path.join(folder_path, file_name)
                     df = pd.read_excel(file_path)
                     st.write(df)
-                    df = df[~df['Unnamed: 2'].isna()]  # Remove the first row
+                    df = df[~df['Unnamed: 2'].isna()].reset_index(drop=True)  # Remove the first row
                     df.columns = df.loc[0,:].values
                     df = df.loc[1:,]
                     st.write(df)
