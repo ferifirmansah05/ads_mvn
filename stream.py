@@ -582,7 +582,7 @@ if uploaded_file is not None:
                             df = html_file[0].iloc[8:]  # Remove the first row
                             dataframes.append(df)
                     except Exception as e:
-                        print(f"Error reading {file_path}: {e}")
+                        st,write(f"Error reading {file_path}: {e}")
             
             # Check if any HTML files were processed
             if dataframes:
