@@ -1236,11 +1236,13 @@ if uploaded_file is not None:
                             step=0
                             for i in all_2.index:  
                                 if all_2.loc[i,'SOURCE'] =='WEB':
-                                      source = 'INVOICE'
-                                else:
-                                      source = 'WEB'
-                                tab =  all_1[(all_1['TIME'] > (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S')
+                                    source = 'INVOICE'
+                                    tab =  all_1[(all_1['TIME'] > (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S')
                             ))) & (all_1['SOURCE']==source) & (all_1['NOM']>=all_2.loc[i,'NOM']) & (all_1['NOM']-all_2.loc[i,'NOM']<=200)]
+                                else:
+                                    source = 'WEB'
+                                    tab =  all_1[( (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S'))) > all_1['TIME']) 
+                                    & (all_1['SOURCE']==source) & (all_2.loc[i,'NOM']>=all_1['NOM']) & (all_2.loc[i,'NOM']-all_1['NOM']<=200)]
                                 if tab.shape[0]>0:
                                     x = abs(tab['TIME'] - all_2.loc[i,'TIME']).sort_values().index[0]
                                     if all_2.loc[i,'SOURCE'] =='WEB':
