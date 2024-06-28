@@ -576,7 +576,7 @@ if uploaded_file is not None:
                 if file_name.endswith('.xlsx'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
                     try:
-                        html_file = pd.read_html(file_path, encoding='ISO-8859-1')
+                        html_file = pd.read_html(file_path)
                         # Get the DataFrame corresponding to each file
                         if html_file:
                             df = html_file[0].iloc[8:]  # Remove the first row
