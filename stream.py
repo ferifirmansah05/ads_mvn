@@ -576,10 +576,11 @@ if uploaded_file is not None:
                 if file_name.endswith('.xlsx'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
                     try:
-                        html_file = pd.read_html(file_path)
+                        html_file = pd.read_excel(file_path)
+                        st.write(html_file)
                         # Get the DataFrame corresponding to each file
                         if html_file:
-                            #df = html_file[0].iloc[8:]  # Remove the first row
+                            df = html_file[0].iloc[8:]  # Remove the first row
                             st.write(df)
                             dataframes.append(df)
                     except Exception as e:
