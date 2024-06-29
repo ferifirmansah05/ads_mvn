@@ -1259,7 +1259,7 @@ if uploaded_file is not None:
                                                 all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[x,'ID']
                                             if all_2.loc[i,'SOURCE'] =='INVOICE':
                                                 all_2.loc[i,'KET'] = 'Balance '+ all_2.loc[i,'ID']
-                                                all_1.loc[x,'KET'] = 'Balance '+ all_2.loc[i,'ID']                                            
+                                                all_1.loc[x,'KET'] = 'Balance '+ all_2.loc[i,'ID']                                     
                                         else:
                                             all_1.loc[y,'KET'] = note
                                             if all_2.loc[i,'SOURCE'] =='WEB':
