@@ -1182,7 +1182,7 @@ if uploaded_file is not None:
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break                              
                                         if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
-                                            if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
+                                            if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=3)):
                                                 if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
                                                     df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                     df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
