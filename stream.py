@@ -1825,9 +1825,9 @@ if uploaded_file is not None:
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-                zip_file.writestr(f'INVOICE_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', csv1)
-                zip_file.writestr(f'WEB_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', csv2)
-                zip_file.writestr(f'BREAKDOWN_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', csv3)
+                zip_file.writestr(f'INVOICE_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', invoice_final.to_csv(index=False))
+                zip_file.writestr(f'WEB_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', web_final.to_csv(index=False))
+                zip_file.writestr(f'BREAKDOWN_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', final_df.to_csv(index=False))
             
             # Pastikan buffer ZIP berada di awal
             zip_buffer.seek(0)
