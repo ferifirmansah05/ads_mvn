@@ -179,7 +179,7 @@ if uploaded_file is not None:
                 concatenated_df = pd.concat(dfs, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv('_bahan/bahan/Store Name GOJEK.csv')
+                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.csv')
             
                 for subfolder in subfolders:
                     df = concatenated_df[concatenated_df['Outlet name'].str.contains(storename[storename['CAB']==subfolder]['Outlet name'].str.split().values[0][-1])]
