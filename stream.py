@@ -1822,13 +1822,8 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
-                        st.markdown('### Output')
-            st.write('WEB')
-            st.write(web_final)
-            st.write('INVOICE')
-            st.write(invoice_final)
-            st.write('Breakdown')
-            st.write(final_df)
+            st.markdown('### Output')
+        
             
             st.download_button(
                 label="Download File Invoice",
