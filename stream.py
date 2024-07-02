@@ -1790,7 +1790,7 @@ if uploaded_file is not None:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
                                 st.write(df_all3)
                                 st.write(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1))
-                                x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1))) 
+                                x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE')].index
                                 if len(x)>=1:
