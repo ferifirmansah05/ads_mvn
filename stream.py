@@ -158,15 +158,18 @@ if uploaded_file is not None:
                 st.write("No dataframes to concatenate.")
 
             st.write('GOJEK 3')
-            folder_path = f'{tmpdirname}/_bahan/GOJEK 3/'
+            main_folder = f'{tmpdirname}/_bahan/GOJEK 3/'
+            
+            subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
             
             # Initialize an empty list to store dataframes
             dfs = []
             
+            combined_dataframes = []
             # Iterate over each file in the folder
-            for filename in os.listdir(folder_path):
+            for filename in os.listdir(main_folder):
                 if filename.endswith('.csv'):  # Assuming all files are CSV format, adjust if needed
-                    file_path = os.path.join(folder_path, filename)
+                    file_path = os.path.join(main_folder, filename)
                     # Read each file into a dataframe and append to the list
                     dfs.append(pd.read_csv(file_path))
             
@@ -176,11 +179,17 @@ if uploaded_file is not None:
                 concatenated_df = pd.concat(dfs, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.csv')
-                concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Outlet name').fillna('')
-                concatenated_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 3.csv', index=False)
-                st.write("FIle GOJEK 3 Concatenated")
-                st.write(concatenated_df)
+                storename = pd.read_csv('_bahan/bahan/Store Name GOJEK.csv')
+            
+                for subfolder in subfolders:
+                    df = concatenated_df[concatenated_df['Outlet name'].str.contains(storename[storename['CAB']==subfolder]['Outlet name'].str.split().values[0][-1])]
+                    df['CAB'] = subfolder
+                    combined_dataframes.append(df)
+            
+                # Export the concatenated dataframe to CSV in the specified path
+                pd.concat(combined_dataframes).to_csv(f'{tmpdirname}/_merge/merge_Gojek 3.csv', index=False)
+            
+                st.write("File GOJEK 3 Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
     
@@ -756,7 +765,6 @@ if uploaded_file is not None:
                 # Save the final result to a new CSV file
                 loc_go3.to_csv(outputgojek3_path, index=False)
                 st.write(f"File GOJEK 3 processed and saved")
-                st.write(loc_go3)
             else:
                 st.write("File does not exist. Please double check")
             
