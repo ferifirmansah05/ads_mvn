@@ -1845,29 +1845,7 @@ if uploaded_file is not None:
                 mime='text/csv',
             )
 
-            def delete_folder_contents(folder_path):
-                # Iterasi semua item di dalam folder
-                for item in os.listdir(folder_path):
-                    item_path = os.path.join(folder_path, item)
-                    # Jika item adalah folder, panggil fungsi ini secara rekursif
-                    if os.path.isdir(item_path):
-                        delete_folder_contents(item_path)
-                    # Hapus file atau folder
-                    try:
-                        if os.path.isfile(item_path):
-                            os.remove(item_path)  # Hapus file
-                        elif os.path.isdir(item_path):
-                            shutil.rmtree(item_path)  # Hapus folder beserta isinya
-                        else:
-                            os.remove(item_path)  # Hapus item lainnya jika diperlukan
-                    except Exception as e:
-                        print(f"Failed to delete {item_path}: {e}")
-            
-            # Contoh penggunaan: menghapus semua isi dari sebuah folder
-            
-            delete_folder_contents(tmpdirname)
-            #st.cache_data.clear()
-                    
+
                     
 
     
