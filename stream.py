@@ -1822,28 +1822,24 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
-st.markdown('### Output')
-        
+            st.markdown('### Output')
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+                zip_file.writestr(f'INVOICE_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', csv1)
+                zip_file.writestr(f'WEB_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', csv2)
+                zip_file.writestr(f'BREAKDOWN_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', csv3)
             
-st.download_button(
-                label="Download File Invoice",
-                data=invoice_final.to_csv(index=False),
-                file_name=f'INVOICE_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv',
-                mime='text/csv',
-            )
-st.download_button(
-                label="Download File Web",
-                data=web_final.to_csv(index=False),
-                file_name=f'WEB_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv',
-                mime='text/csv',
-            )
+            # Pastikan buffer ZIP berada di awal
+            zip_buffer.seek(0)
             
-st.download_button(
-                label="Download File Breakdownn",
-                data=final_df.to_csv(index=False),
-                file_name=f'BREAKDOWN_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv',
-                mime='text/csv',
-            )
+            # Tombol untuk mengunduh file ZIP
+            st.download_button(
+                label="Download all Files",
+                data=zip_buffer,
+                file_name=f'ABO_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.zip',
+                mime='application/zip',
+            )  
+            
 
 
                     
