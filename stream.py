@@ -1279,8 +1279,8 @@ if uploaded_file is not None:
             
                         for i in all_2[all_2['SOURCE']=='WEB'].index:
                                 list_ind = all_2[(all_2['SOURCE']=='INVOICE') & (abs(all_2['NOM'] - all_2.loc[i,'NOM'])<=200)
-                                            & ((abs(all_2.loc[i,'TIME'] - all_2['TIME'])) < dt.timedelta(minutes=150))].index
-            
+                                            & (((((all_2['TIME']-all_2.loc[i,'TIME'])) < dt.timedelta(minutes=150)) & ((all_2['TIME']-all_2.loc[i,'TIME'])>=dt.timedelta(minutes=0)))
+                                               | ((((all_2.loc[i,'TIME']-all_2['TIME'])) < dt.timedelta(minutes=3)) & (((all_2.loc[i,'TIME']-all_2['TIME'])) >= dt.timedelta(minutes=0)) ))].index
                                 if len(list_ind)>0:
                                     x = (abs(all_2.loc[i,'TIME'] - all_2.loc[list_ind, 'TIME'])).sort_values().index[0]
                                     if ((all_2.loc[x,'NOM']-all_2.loc[i,'NOM'])==0):
@@ -1296,7 +1296,7 @@ if uploaded_file is not None:
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
-                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
                         st.write('GOJEK', ': File processed')
@@ -1429,7 +1429,7 @@ if uploaded_file is not None:
                             all = all[~(all['KET'].str.contains('Balance'))].sort_values(['TIME','KET','SOURCE'])
                         all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'HELP'] = all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'].apply(lambda x: label_1(x))
                         all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'] = all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
-                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
                         st.write('QRIS SHOPEE', ': File processed')
@@ -1511,7 +1511,7 @@ if uploaded_file is not None:
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
-                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
                         st.write('GRAB FOOD', ': File processed')
@@ -1615,7 +1615,7 @@ if uploaded_file is not None:
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
-                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
                         st.write('SHOPEEPAY', ': File processed')
@@ -1693,7 +1693,7 @@ if uploaded_file is not None:
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
-                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS ESB'
                         all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
@@ -1762,7 +1762,7 @@ if uploaded_file is not None:
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
-                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
                         all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS TELKOM'
                         all.to_csv(f'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
@@ -1778,9 +1778,40 @@ if uploaded_file is not None:
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat([pd.read_csv(file) for file in files])
+                        
+            df_concat = []
+            for cab in all_cab:
+                for kat in ['GO RESTO', 'QRIS SHOPEE', 'GRAB FOOD','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']:
+                    if not df_all[(df_all['CAB'] == cab) & (df_all['KAT']==kat)].empty:
+                        df_all2 = df_all[(df_all['CAB'] == cab) & (df_all['KAT']==kat)].reset_index(drop=True)
+                        df_all3 = df_all2.loc[df_all2[(df_all2['KET'].isna()) & (df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari'])))].index,].copy()
+                        df_all3.loc[:,'HELP'] = ''
+                        for i in df_all3[(df_all3['HELP']=='')].index:
+                            if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
+                                x = df_all3[(df_all3['DATE']==(df_all3.loc[i,'DATE'] + dt.timedelta(days=1))) 
+                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                        & (df_all3['SOURCE']=='INVOICE')].index
+                                if len(x)>=1:
+                                    x = abs(pd.to_datetime(str(df_all3.loc[i,'DATE'].strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((df_all3.loc[x,'DATE'].dt.strftime('%Y-%m-%d')) + ' ' + df_all3.loc[x,'TIME'])).sort_values().index[-1]
+                                    if df_all3.loc[i,'NOM']==df_all3.loc[x,'NOM']:
+                                        df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
+                                        df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'
+                                    else:
+                                        df_all3.loc[i, 'HELP'] = 'Selisih IT'
+                                        df_all3.loc[i, 'KET'] = 'Invoice Beda Hari Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM'])
+                                        df_all3.loc[x, 'HELP'] = 'Selisih IT' 
+                                        df_all3.loc[x, 'KET'] = 'Transaksi Kemarin Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM'])   
+                            if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
+                                df_all3.loc[i, 'HELP'] = f'Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}'
+                            if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
+                                df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
+                        all = pd.concat([df_all2.loc[df_all2[~((df_all2['KET'].isna()) & (df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari']))))].index,],df_all3]).sort_values(['CAB','DATE'])
+                        all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                        df_concat.append(all)
+                        #pd.to_datetime(str(df_all3.loc[i,'DATE'].strftime('%Y-%m-%d')) + ' ' + str(df_all3.loc[i,'TIME']))
             
-            combined_dataframes.append(df_all)
-            final_df = pd.concat(combined_dataframes)
+            #combined_dataframes.append(df_all)
+            final_df = pd.concat(df_concat)
             
             st.markdown('### Output')
             st.write('WEB')
