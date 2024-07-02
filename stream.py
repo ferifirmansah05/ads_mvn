@@ -695,8 +695,6 @@ if uploaded_file is not None:
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Apr', 'April')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Jun', 'June')
                 # Parse datetime column
-                st.write(loc_go2)
-                st.write(loc_go2[loc_go2['DATETIME']=='2024-06-03 15:23:24'])
                 loc_go2['DATETIME']    =   pd.to_datetime(loc_go2['DATETIME'], utc=True)
             
                 loc_go2['DATE']        =   loc_go2['DATETIME'].dt.strftime('%d/%m/%Y')
