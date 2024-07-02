@@ -179,7 +179,7 @@ if uploaded_file is not None:
                 storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.csv')
                 concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Outlet name').fillna('')
                 concatenated_df.to_csv(f'{tmpdirname}/_merge/merge_Gojek 3.csv', index=False)
-                st.write("FIle GOEJEK 3 Concatenated")
+                st.write("FIle GOJEK 3 Concatenated")
                 st.write(concatenated_df)
             else:
                 st.write("No dataframes to concatenate.")
