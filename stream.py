@@ -1288,7 +1288,7 @@ if uploaded_file is not None:
                         print(step)
             
                         for i in all_2[all_2['SOURCE']=='WEB'].index:
-                                list_ind = all_2[(all_2['SOURCE']=='INVOICE') & (abs(all_2['NOM'] - all_2.loc[i,'NOM'])<=200) & (all_2.loc['HELP'] != '')
+                                list_ind = all_2[(all_2['SOURCE']=='INVOICE') & (abs(all_2['NOM'] - all_2.loc[i,'NOM'])<=200) & (all_2['HELP'] != '')
                                             & (((((all_2['TIME']-all_2.loc[i,'TIME'])) < dt.timedelta(minutes=150)) & ((all_2['TIME']-all_2.loc[i,'TIME'])>=dt.timedelta(minutes=0)))
                                                | ((((all_2.loc[i,'TIME']-all_2['TIME'])) < dt.timedelta(minutes=3)) & (((all_2.loc[i,'TIME']-all_2['TIME'])) >= dt.timedelta(minutes=0)) ))].index
                                 if len(list_ind)>0:
