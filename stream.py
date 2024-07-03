@@ -1240,7 +1240,7 @@ if uploaded_file is not None:
             
                         all = pd.concat([gow,goi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
                         all_1 = all[(all['KET'].str.contains('F'))].reset_index(drop=True)
-                        all_2 = all[~(all['KET'].str.contains('F')) & ~(all['KET'].isin(['Cancel Nota','Transaksi Kemarin']))].reset_index(drop=True)
+                        all_2 = all[~(all['KET'].str.contains('F')) & ~(all['KET'].isin(['Cancel Nota']))].reset_index(drop=True)
             
                         for c in range(0,500):
                             step=0
@@ -1304,7 +1304,7 @@ if uploaded_file is not None:
                                                                         all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
                                                                         all_2.loc[x,'HELP'] = '' 
                             
-                        all = pd.concat([all[all['KET'].isin(['Cancel Nota','Transaksi Kemarin'])],all_1,all_2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
+                        all = pd.concat([all[all['KET'].isin(['Cancel Nota'])],all_1,all_2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
                         if ket == 'selisih':
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
