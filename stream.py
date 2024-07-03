@@ -1276,8 +1276,8 @@ if uploaded_file is not None:
                                                             all_2.loc[i,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_2.loc[i,'NOM'])
                                                             all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_2.loc[i,'NOM'])
                                                         else:
-                                                            all_2.loc[i,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
-                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
+                                                            all_2.loc[i,'KET'] =  'Selisih '+ str(all_1.loc[i,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[i,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
                         
                                 all_3 = pd.concat([all_1,all_2]).sort_values(['CAB','DATE','KET','SOURCE','NOM'],ascending=[True,True,True,False,True])
                                 all_1 = all_3[(all_3['KET'].str.contains('F'))].reset_index(drop=True)
