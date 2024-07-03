@@ -1252,7 +1252,7 @@ if uploaded_file is not None:
                                 if all_2.loc[i,'SOURCE'] =='INVOICE':
                                                 source = 'WEB'
                                                 tab =  all_1[((all_2.loc[i,'TIME'] + pd.Timedelta(minutes=15)) > all_1['TIME']) 
-                                                & (all_1['SOURCE']==source) & (all_2.loc[i,'NOM']>=all_1['NOM']) & (all_2.loc[i,'NOM']-all_1['NOM']<=200)]
+                                                & (all_1['SOURCE']==source) & abs(all_2.loc[i,'NOM']-all_1['NOM']<=200)]
                                 if tab.shape[0]>0:
                                                 x = abs(tab['TIME'] - all_2.loc[i,'TIME']).sort_values().index[0]
                                                 if all_2.loc[i,'SOURCE'] =='WEB':
