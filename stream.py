@@ -1288,7 +1288,7 @@ if uploaded_file is not None:
                         print(step)
             
                         for i in all_2[all_2['SOURCE']=='WEB'].index:
-                                list_ind = all_2[(all_2['SOURCE']=='INVOICE') & (abs(all_2['NOM'] - all_2.loc[i,'NOM'])<=200)
+                                list_ind = all_2[(all_2['SOURCE']=='INVOICE') & (abs(all_2['NOM'] - all_2.loc[i,'NOM'])<=200) & (all_2.loc['HELP'] != '')
                                             & (((((all_2['TIME']-all_2.loc[i,'TIME'])) < dt.timedelta(minutes=150)) & ((all_2['TIME']-all_2.loc[i,'TIME'])>=dt.timedelta(minutes=0)))
                                                | ((((all_2.loc[i,'TIME']-all_2['TIME'])) < dt.timedelta(minutes=3)) & (((all_2.loc[i,'TIME']-all_2['TIME'])) >= dt.timedelta(minutes=0)) ))].index
                                 if len(list_ind)>0:
@@ -1296,10 +1296,11 @@ if uploaded_file is not None:
                                     if ((all_2.loc[x,'NOM']-all_2.loc[i,'NOM'])==0):
                                                             all_2.loc[i,'KET'] = 'Balance '+ all_2.loc[x,'ID']
                                                             all_2.loc[x,'KET'] = 'Balance '+ all_2.loc[x,'ID']
-                                                            
+                                                            all_2.loc[x,'HELP'] = ''
                                     else:
                                                             all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
                                                             all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                                            all_2.loc[x,'HELP'] = ''
 
                         all = pd.concat([all[all['KET'].isin(['Cancel Nota','Transaksi Kemarin'])],all_1,all_2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
                         if ket == 'selisih':
