@@ -118,7 +118,7 @@ if uploaded_file is not None:
                         df.columns = df.loc[0,:].values
                         df = df.loc[1:,]
                         df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
-                        df.columns =  df.columns[:-1].to_list() + ['CAB']
+                        df['CAB'] = subfolder
                         df['KET'] = ''
                         df = df[df['TOTAL BILL']>0]
                         dfs.append(df)
@@ -127,7 +127,6 @@ if uploaded_file is not None:
                 if dfs:
                         df = pd.concat(dfs)
                         # Add a new column for the folder name
-                        df['Folder'] = subfolder
                         combined_dataframes.append(df)
                 else:
                         st.write(f"No CSV files found in subfolder: {subfolder}")
