@@ -121,15 +121,10 @@ if uploaded_file is not None:
                         df['CAB'] = subfolder
                         df['KET'] = ''
                         df = df[df['TOTAL BILL']>0]
-                        dfs.append(df)
-                    except Exception as excel_exception:
-                        st.write(f"Error process {file} as Excel: {excel_exception}")
-                if dfs:
-                        df = pd.concat(dfs)
-                        # Add a new column for the folder name
                         combined_dataframes.append(df)
-                else:
-                        st.write(f"No CSV files found in subfolder: {subfolder}")
+                    except Exception as excel_exception:
+                        st.write(df)
+                        st.write(f"Error process {file} as Excel: {excel_exception}")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
