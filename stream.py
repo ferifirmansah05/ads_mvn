@@ -96,6 +96,54 @@ if uploaded_file is not None:
                 zip_ref.extractall(tmpdirname)
 
             st.markdown('### Cleaning')
+            st.write('CANCEL NOTA')
+            main_folder = f'{tmpdirname}/_bahan/CANCEL_NOTA'
+            
+            # Get the list of subfolders within the main folder
+            subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
+            
+            # List to store concatenated dataframes
+            combined_dataframes = []
+            
+            # Iterate over each subfolder
+            for subfolder in subfolders:
+                # Glob pattern to get all CSV files in the subfolder
+                files = glob(os.path.join(main_folder, subfolder, '*.xlsx'))
+                # Concatenate CSV files within each subfolder
+                dfs = []
+                for file in files:
+                    try:
+                        df = pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0)
+                        df = df.loc[:,df.columns[:9]].dropna().reset_index(drop=True)
+                        df.columns = df.loc[0,:].values
+                        df = df.loc[1:,]
+                        df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
+                        df.columns =  df.columns[:-1].to_list() + ['CAB']
+                        df['KET'] = ''
+                        df = df[df['TOTAL BILL']>0]
+                        dfs.append(df)
+                    except Exception as excel_exception:
+                        st.write(f"Error process {file} as Excel: {excel_exception}")
+                if dfs:
+                        df = pd.concat(dfs)
+                        # Add a new column for the folder name
+                        df['Folder'] = subfolder
+                        combined_dataframes.append(df)
+                else:
+                        st.write(f"No CSV files found in subfolder: {subfolder}")
+            
+            # Check if there are any dataframes to concatenate
+            if combined_dataframes:
+                # Concatenate dataframes from all subfolders
+                final_df = pd.concat(combined_dataframes)
+                
+                # Optionally, you can save the final dataframe to a CSV file
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv', index=False)
+            
+                st.write("File CANCEL NOTA Concatenated")
+            else:
+                st.write("No dataframes to concatenate.")
+                
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
@@ -645,53 +693,6 @@ if uploaded_file is not None:
     
             st.markdown('### Preparing')
 
-            st.write('CANCEL NOTA')
-            main_folder = f'{tmpdirname}/_bahan/CANCEL_NOTA'
-            
-            # Get the list of subfolders within the main folder
-            subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
-            
-            # List to store concatenated dataframes
-            combined_dataframes = []
-            
-            # Iterate over each subfolder
-            for subfolder in subfolders:
-                # Glob pattern to get all CSV files in the subfolder
-                files = glob(os.path.join(main_folder, subfolder, '*.xlsx'))
-                # Concatenate CSV files within each subfolder
-                dfs = []
-                for file in files:
-                    try:
-                        df = pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0)
-                        df = df.loc[:,df.columns[:9]].dropna().reset_index(drop=True)
-                        df.columns = df.loc[0,:].values
-                        df = df.loc[1:,]
-                        df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
-                        df.columns =  df.columns[:-1].to_list() + ['CAB']
-                        df['KET'] = ''
-                        df = df[df['TOTAL BILL']>0]
-                        dfs.append(df)
-                    except Exception as excel_exception:
-                        st.write(f"Error process {file} as Excel: {excel_exception}")
-                if dfs:
-                        df = pd.concat(dfs)
-                        # Add a new column for the folder name
-                        df['Folder'] = subfolder
-                        combined_dataframes.append(df)
-                else:
-                        st.write(f"No CSV files found in subfolder: {subfolder}")
-            
-            # Check if there are any dataframes to concatenate
-            if combined_dataframes:
-                # Concatenate dataframes from all subfolders
-                final_df = pd.concat(combined_dataframes)
-                
-                # Optionally, you can save the final dataframe to a CSV file
-                final_df.to_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv', index=False)
-            
-                st.write("File CANCEL NOTA Concatenated")
-            else:
-                st.write("No dataframes to concatenate.")
             gojek1_path       = f'{tmpdirname}/_merge/merge_Gojek 1.csv'
             outputgojek1_path = f'{tmpdirname}/_final/Final Gojek 1.csv'
             
