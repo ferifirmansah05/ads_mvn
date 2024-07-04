@@ -1466,7 +1466,7 @@ if uploaded_file is not None:
                         gfi.drop_duplicates(inplace=True)
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
-                        gfw['ID2'] = gfw['ID'].apply(lambda x: re.findall(r'\d+', x)[-1])
+                        gfw['ID2'] = gfw['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else x)
                         gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1])
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
