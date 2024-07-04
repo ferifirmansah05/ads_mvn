@@ -1792,7 +1792,7 @@ if uploaded_file is not None:
                  for date in all_date:
                     for ojol in all_kat:
                         if os.path.exists(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
-                            file = pd.read_csv(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date.replace('/','-')}.csv')
+                            file = pd.read_csv(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
                             if file['CAB'] in ['MKSAHM']:
                                 file['TIME'] = file['TIME'] - dt.timedelta (hours=1, minutes=1)
                             file['TIME'] = file['TIME'].dt.strftime('%H:%M:%S')
