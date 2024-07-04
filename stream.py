@@ -672,8 +672,7 @@ if uploaded_file is not None:
                         df = df[df['TOTAL BILL']>0]
                         dfs.append(df)
                     except Exception as excel_exception:
-                        st.write(f"{file}")
-                        st.write(f"Error reading {file_path} as Excel: {excel_exception}")
+                        st.write(f"Error process {file} as Excel: {excel_exception}")
                 if dfs:
                         df = pd.concat(dfs)
                         # Add a new column for the folder name
@@ -688,7 +687,7 @@ if uploaded_file is not None:
                 final_df = pd.concat(combined_dataframes)
                 
                 # Optionally, you can save the final dataframe to a CSV file
-                final_df.to_csv('_merge/merge_cancel_nota.csv', index=False)
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv', index=False)
             
                 st.write("File CANCEL NOTA Concatenated")
             else:
