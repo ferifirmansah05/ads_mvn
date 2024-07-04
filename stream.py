@@ -1318,7 +1318,8 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
                         st.write('GOJEK', ': File processed')
                         
-                    if 'QRIS SHOPEE' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "QRIS SHOPEE") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "QRIS SHOPEE") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty))t:
                         qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
                         qsw   =   dfweb[dfweb['KAT']  ==  "QRIS SHOPEE"]
                         qsi   =   qsi[qsi['CAB']  ==  cab]
