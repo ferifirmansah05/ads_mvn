@@ -1314,7 +1314,7 @@ if uploaded_file is not None:
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GOJEK/{cab}/GOJEK_{cab}_{date}.csv', index=False)
                         st.write('GOJEK', ': File processed')
                         
@@ -1447,7 +1447,7 @@ if uploaded_file is not None:
                         all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'HELP'] = all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'].apply(lambda x: label_1(x))
                         all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'] = all.loc[all[~all['HELP'].astype(str).str.contains('Bayar')].index,'KET'].apply(lambda x:x if (('Balance' in x)) else '')
                         #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/QRIS SHOPEE/{cab}/QRIS SHOPEE_{cab}_{date}.csv', index=False)
                         st.write('QRIS SHOPEE', ': File processed')
                         
@@ -1529,7 +1529,7 @@ if uploaded_file is not None:
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/GRAB/{cab}/GRAB_{cab}_{date}.csv', index=False)
                         st.write('GRAB FOOD', ': File processed')
                         
@@ -1634,7 +1634,7 @@ if uploaded_file is not None:
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all.to_csv(f'{tmpdirname}/_final/SHOPEEPAY/{cab}/SHOPEEPAY_{cab}_{date}.csv', index=False)
                         st.write('SHOPEEPAY', ': File processed')
                         
@@ -1712,7 +1712,7 @@ if uploaded_file is not None:
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS ESB'
                         all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
                         st.write('QRIS ESB', ': File processed')
@@ -1781,7 +1781,7 @@ if uploaded_file is not None:
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
                         all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
                         #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
                         all['KAT'] = 'QRIS TELKOM'
                         all.to_csv(f'{tmpdirname}/_final/QRIS TELKOM/{cab}/QRIS TELKOM_{cab}_{date}.csv', index=False)
                         st.write('QRIS TELKOM', ': File processed')
@@ -1792,7 +1792,11 @@ if uploaded_file is not None:
                  for date in all_date:
                     for ojol in all_kat:
                         if os.path.exists(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
-                            files.append(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
+                            file = pd.read_csv(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date.replace('/','-')}.csv')
+                            if file['CAB'] in ['MKSAHM']:
+                                file['TIME'] = file['TIME'] - dt.timedelta (hours=1, minutes=1)
+                            file['TIME'] = file['TIME'].dt.strftime('%H:%M:%S')
+                            files.append(file)
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat([pd.read_csv(file) for file in files])
