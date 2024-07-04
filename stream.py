@@ -1795,7 +1795,7 @@ if uploaded_file is not None:
                             file = pd.read_csv(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
                             if file['CAB'].unique()[0] in ['MKSAHM']:
                                 file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME'] = pd.to_datetime(file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
-                            file['TIME'] = file['TIME'].dt.strftime('%H:%M:%S')
+                            file['TIME'] = pd.to_datetime(file['TIME']).dt.strftime('%H:%M:%S')
                             files.append(file)
             
                     # Concatenate CSV files within each subfolder
