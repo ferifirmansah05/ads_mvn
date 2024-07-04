@@ -1319,7 +1319,7 @@ if uploaded_file is not None:
                         st.write('GOJEK', ': File processed')
                         
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS SHOPEE") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
-                         (dfweb[(dfweb['KAT']  ==  "QRIS SHOPEE") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty))t:
+                         (dfweb[(dfweb['KAT']  ==  "QRIS SHOPEE") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)):
                         qsi   =   dfinv[dfinv['KAT']  ==  "QRIS SHOPEE"]
                         qsw   =   dfweb[dfweb['KAT']  ==  "QRIS SHOPEE"]
                         qsi   =   qsi[qsi['CAB']  ==  cab]
