@@ -1141,7 +1141,7 @@ if uploaded_file is not None:
             cash = dfweb[dfweb['KAT']=='CASH']
             
             for wib in dfinv['CAB'].unique():
-                if wib in ['MKSAHM']:
+                if wib in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
                     dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
                     
             def difference(value1, value2):
@@ -1794,7 +1794,7 @@ if uploaded_file is not None:
                     for ojol in all_kat:
                         if os.path.exists(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
                             file = pd.read_csv(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
-                            if file['CAB'].unique()[0] in ['MKSAHM']:
+                            if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
                                 file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME'] = pd.to_datetime(file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
                             file['TIME'] = pd.to_datetime(file['TIME']).dt.strftime('%H:%M:%S')
                             files.append(file)
