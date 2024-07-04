@@ -1121,8 +1121,8 @@ if uploaded_file is not None:
                 except ValueError as e:
                     print(f"Error dalam mengonversi tanggal: {e}")
             
-            dfweb['TIME'] = pd.to_datetime(dfweb['TIME'] , format='%H:%M:%S')
-            dfinv['TIME'] = pd.to_datetime(dfinv['TIME'] , format='%H:%M:%S')
+            dfweb['TIME'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME'])
+            dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'] )
             
             dfinv = dfinv[~(dfinv['NOM']=='Cek')]
             
@@ -1140,6 +1140,10 @@ if uploaded_file is not None:
             dfweb['KAT'] = dfweb['KAT'].str.upper()
             cash = dfweb[dfweb['KAT']=='CASH']
             
+            for wib in dfinv['CAB'].unique():
+                if wib in ['MKSAHM']:
+                    dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
+                    
             def difference(value1, value2):
                 diff = value1 - value2
                 return f' (+{str(int(diff))})'
@@ -1247,8 +1251,8 @@ if uploaded_file is not None:
                             for i in all_2.index:  
                                 if all_2.loc[i,'SOURCE'] =='WEB':
                                                 source = 'INVOICE'
-                                                tab =  all_1[(all_1['TIME'] > (pd.Timestamp('1900-01-01 00:00:00') + (all_2.loc[i,'TIME'] - pd.to_datetime('00:15:00' , format='%H:%M:%S')
-                                        ))) & (all_1['SOURCE']==source) & (abs(all_1['NOM']-all_2.loc[i,'NOM'])<=200)]
+                                                tab =  all_1[(all_1['TIME'] > (all_2.loc[i,'TIME'] - dt.timedelta(minutes=15)
+                            )) & (all_1['SOURCE']==source) & (abs(all_1['NOM']-all_2.loc[i,'NOM'])<=200)]
                                 if all_2.loc[i,'SOURCE'] =='INVOICE':
                                                 source = 'WEB'
                                                 tab =  all_1[((all_2.loc[i,'TIME'] + pd.Timedelta(minutes=15)) > all_1['TIME']) 
