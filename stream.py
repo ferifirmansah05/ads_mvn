@@ -138,7 +138,7 @@ if uploaded_file is not None:
                 st.write("File CANCEL NOTA Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
-            st.write(final_df)
+                
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
@@ -1107,7 +1107,6 @@ if uploaded_file is not None:
             cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             cn['TANGGAL'] = cn['TANGGAL'].astype('int').astype('str')
-            st.write(cn.head())
             
             dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
             dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
@@ -1813,11 +1812,23 @@ if uploaded_file is not None:
                         df_all3.loc[:,'HELP'] = ''
                         for i in df_all3[(df_all3['HELP']=='')].index:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
-                                x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
+                                if kat in ['SHOPEEPAY','GRAB FOOD']:
+                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
                                         & (df_all3['ID2'] == df_all3.loc[i,'ID2'])
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
                                         & ( abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3['DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3['TIME'])) <= dt.timedelta(minutes=150))].index
+                                if kat in ['GO RESTO', 'QRIS SHOPEE', 'QRIS TELKOM']:
+                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
+                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
+                                        & ( abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3['DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
+                                if kat in ['QRIS ESB']:
+                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
+                                        & (df_all3['ID'] == df_all3.loc[i,'CODE'])
+                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
+                                        & ( abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3['DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3.loc[x,'DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3.loc[x,'TIME'])).sort_values().index[-1]
                                     if df_all3.loc[i,'NOM']==df_all3.loc[x,'NOM']:
