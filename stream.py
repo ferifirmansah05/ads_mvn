@@ -1106,8 +1106,8 @@ if uploaded_file is not None:
 
             cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
+            cn['TANGGAL'] = cn['TANGGAL'].astype('str')
             
-            st.write(cn)
             dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
             dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
             
@@ -1173,8 +1173,8 @@ if uploaded_file is not None:
                         gow = gow.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
             
                         goi.drop_duplicates(inplace=True)
-                        st.write(cn[(cn['TANGGAL']==int(re.findall(r'\d+', date)[-1])) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')])
-                        for i in cn[(cn['TANGGAL']==int(re.findall(r'\d+', date)[-1])) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
+                        st.write(cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')])
+                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
                                 x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
                                 gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
                                 cn.loc[i, 'KET'] = 'Done'
