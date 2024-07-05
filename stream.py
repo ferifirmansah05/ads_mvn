@@ -1814,6 +1814,7 @@ if uploaded_file is not None:
                         for i in df_all3[(df_all3['HELP']=='')].index:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
                                 x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
+                                        & (df_all3['ID2'] == df_all3.loc[i,'ID2'])
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
                                         & ( abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3['DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3['TIME'])) <= dt.timedelta(minutes=150))].index
@@ -1838,7 +1839,7 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
-            st.write(final_df[final_df['HELP']=='Cancel Nota'])
+
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
