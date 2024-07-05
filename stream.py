@@ -1105,7 +1105,9 @@ if uploaded_file is not None:
             time_qt = 150
 
             cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
+            cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             
+            st.write(cn)
             dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
             dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
             
@@ -1176,6 +1178,7 @@ if uploaded_file is not None:
                                 gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
                                 cn.loc[i, 'KET'] = 'Done'
                         goi['KET'] = goi['ID']
+                        st.write(gow[gow['KET']=='Cancel Nota'])
             
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
