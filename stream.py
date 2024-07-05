@@ -1175,8 +1175,8 @@ if uploaded_file is not None:
             
                         goi.drop_duplicates(inplace=True)
                         st.write(str(int(re.findall(r'\d+', date)[-1])))
-                        st.write(cn[cn['TANGGAL'][0])
-                        st.write(str(cn[cn['TANGGAL'][0]))
+                        st.write(cn['TANGGAL'][0])
+                        st.write(str(cn['TANGGAL'][0]))
                         st.write(cn[(str(cn['TANGGAL'])==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')])
                         st.write(cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')])
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
