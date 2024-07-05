@@ -138,7 +138,7 @@ if uploaded_file is not None:
                 st.write("File CANCEL NOTA Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
-                
+            st.write(final_df)
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
