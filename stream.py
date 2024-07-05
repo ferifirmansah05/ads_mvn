@@ -117,6 +117,7 @@ if uploaded_file is not None:
                         df = df.loc[:,df.columns[:9]].dropna().reset_index(drop=True)
                         df.columns = df.loc[0,:].values
                         df = df.loc[1:,]
+                        df = df[df['TANGGAL']!='TANGGAL']
                         df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
                         df['CAB'] = subfolder
                         df['KET'] = ''
