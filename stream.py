@@ -1800,7 +1800,7 @@ if uploaded_file is not None:
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat(files)
-                        
+            st.write(df_all[df_all['HELP']=='Cancel Nota'])
             df_concat = []
             for cab in all_cab:
                 for kat in ['GO RESTO', 'QRIS SHOPEE', 'GRAB FOOD','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']:
@@ -1835,6 +1835,7 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
+            st.write(final_df[final_df['HELP']=='Cancel Nota'])
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
