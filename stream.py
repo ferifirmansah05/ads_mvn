@@ -1796,10 +1796,11 @@ if uploaded_file is not None:
                     for ojol in all_kat:
                         if os.path.exists(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv'):
                             file = pd.read_csv(f'{tmpdirname}/_final/{ojol}/{cab}/{ojol}_{cab}_{date}.csv')
-                            if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
-                                file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME'] = pd.to_datetime(file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
-                            file['TIME'] = pd.to_datetime(file['TIME']).dt.strftime('%H:%M:%S')
-                            files.append(file)
+                            if not file.empty:
+                                if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
+                                    file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME'] = pd.to_datetime(file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
+                                file['TIME'] = pd.to_datetime(file['TIME']).dt.strftime('%H:%M:%S')
+                                files.append(file)
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat(files)
