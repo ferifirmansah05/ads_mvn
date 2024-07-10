@@ -891,7 +891,7 @@ if uploaded_file is not None:
             shopee_path2       = f'{tmpdirname}/_merge/merge_Shopee Food 2.csv'
             outputshopee_path2 = f'{tmpdirname}/_final/Final Shopee Food 2.csv'
             st.write('SHOPEE FOOD 2')
-            if os.path.exists(shopee_path):
+            if os.path.exists(shopee_path2):
                 #Read data merge Shopee Food
                 df_shopee2 = pd.read_csv(f'{tmpdirname}/_merge/merge_Shopee Food 2.csv').fillna('')
                 #Rename columns to match the database schema
