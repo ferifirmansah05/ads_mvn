@@ -114,7 +114,7 @@ if uploaded_file is not None:
                 for file in files:
                     try:
                         df = pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0)
-                        df = df.loc[:,df.columns[:9]].dropna().reset_index(drop=True)
+                        df = df.loc[:,df.columns[:9]].dropna(subset=['Unnamed: 2']).reset_index(drop=True)
                         df.columns = df.loc[0,:].values
                         df = df.loc[1:,]
                         df = df[df['TANGGAL']!='TANGGAL']
