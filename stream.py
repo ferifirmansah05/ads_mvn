@@ -266,7 +266,41 @@ if uploaded_file is not None:
                 st.write("File SHOPEE FOOD Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
-    
+            
+            st.write('SHOPEE FOOD 2')
+            main_folder = f'{tmpdirname}/_bahan/SHOPEE FOOD 2'
+            
+            # List to store concatenated dataframes
+            combined_dataframes = []
+            
+            # Iterate over each subfolder
+            for subfolder in os.listdir(main_folder):
+                folder_path = os.path.join(main_folder, subfolder)
+                if os.path.isdir(folder_path):
+                    # Glob pattern to get all CSV files in the subfolder
+                    files = glob(os.path.join(folder_path, '*.csv'))
+                    # Concatenate CSV files within each subfolder
+                    dfs = [pd.read_csv(file) for file in files]
+                    if dfs:
+                        df = pd.concat(dfs)
+                        # Add a new column for the folder name
+                        df['Folder'] = subfolder
+                        combined_dataframes.append(df)
+                    else:
+                        print(f"No CSV files found in subfolder: {subfolder}")
+            
+            # Check if there are any dataframes to concatenate
+            if combined_dataframes:
+                # Concatenate dataframes from all subfolders
+                final_df = pd.concat(combined_dataframes, ignore_index=True).fillna("TO")
+                final_df = final_df[final_df['Store Name'] !=  'TO']
+            
+                # Optionally, you can save the final dataframe to a CSV file
+                final_df.to_csv(f'{tmpdirname}/_merge/merge_Shopee Food 2.csv', index=False)
+            
+                st.write("File SHOPEE FOOD 2 Concatenated")
+            else:
+                st.write("There are no files to concatenate.")
             
             st.write('GRAB *csv')
             # Set the directory containing the files
@@ -851,6 +885,42 @@ if uploaded_file is not None:
                 # Save the final result to a new CSV file
                 loc_shopee.to_csv(outputshopee_path, index=False)
                 st.write(f"File SHOPEE FOOD processed and saved")
+            else:
+                st.write("File does not exist. Please double check")
+
+            shopee_path2       = f'{tmpdirname}/_merge/merge_Shopee Food 2.csv'
+            outputshopee_path2 = f'{tmpdirname}/_final/Final Shopee Food 2.csv'
+            st.write('SHOPEE FOOD 2')
+            if os.path.exists(shopee_path):
+                #Read data merge Shopee Food
+                df_shopee2 = pd.read_csv(f'{tmpdirname}/_merge/merge_Shopee Food 2.csv').fillna('')
+                #Rename columns to match the database schema
+                loc_shopee2   =   df_shopee2.loc[:,["Folder", "Order Complete Time", "Transaction ID (Order ID)", "Transaction Amount", "Status"]].rename(columns={"Folder" : "CAB",
+                                                                                                                                                    "Order Complete Time" : "DATETIME",
+                                                                                                                                                    "Transaction ID (Order ID)" : "ID",
+                                                                                                                                                    "Transaction Amount" : "NOM"}).fillna("")
+            
+                loc_shopee2['DATETIME']    =   pd.to_datetime(loc_shopee2['DATETIME'], format='%d %m %Y %H:%M')
+                loc_shopee2['DATE']        =   loc_shopee2['DATETIME'].dt.strftime('%d/%m/%Y')
+                loc_shopee2['TIME']        =   loc_shopee2['DATETIME'].dt.time
+                del loc_shopee2['DATETIME']
+            
+                loc_shopee2['NOM']         =   pd.to_numeric(loc_shopee2['NOM']).astype(int)
+                loc_shopee2                =   loc_shopee2.drop(loc_shopee2[loc_shopee2['Status'] == 'Cancelled'].index)
+            
+                loc_shopee2['CODE']        =   ""
+            
+                loc_shopee2['KAT']         =   "SHOPEEPAY"
+                loc_shopee2['SOURCE']      =   "INVOICE"
+            
+                loc_shopee2                =   loc_shopee2[loc_shopee2['Status'] == 'Completed']
+            
+                # re-order columns
+                loc_shopee2                =   loc_shopee2[["CAB", "DATE", "TIME", "CODE", "ID", "NOM", "KAT", "SOURCE"]]
+            
+                # Save the final result to a new CSV file
+                loc_shopee2.to_csv(outputshopee_path2, index=False)
+                st.write(f"File SHOPEE FOOD 2 processed and saved")
             else:
                 st.write("File does not exist. Please double check")
             
