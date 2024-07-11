@@ -1069,7 +1069,7 @@ if uploaded_file is not None:
                 del loc_qristelkom['DATETIME']
             
                 loc_qristelkom['CODE'] = ''
-                loc_qristelkom['KAT'] = 'QRIS Telkom'
+                loc_qristelkom['KAT'] = 'QRIS TELKOM'
                 loc_qristelkom['SOURCE'] = 'INVOICE'
             
                 # Re-order columns
@@ -1152,7 +1152,7 @@ if uploaded_file is not None:
             web_final['DATE'] = pd.to_datetime(web_final['DATE'])
             web_final['DATE'] = web_final['DATE'].dt.strftime('%d/%m/%Y')
             web_final = web_final[web_final['CAB'].isin(all_cab)]
-            web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD'})
+            web_final['KAT'] = web_final['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
             web_final.to_csv(f'{tmpdirname}/_final/ALL/WEB.csv', index=False)
 
             invoice_final = pd.concat([pd.read_csv(f, dtype=str) for f in glob(f'{tmpdirname}/_final/Final*')], ignore_index = True).fillna('')
@@ -1790,7 +1790,7 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_final/QRIS ESB/{cab}/QRIS ESB_{cab}_{date}.csv', index=False)
                         st.write('QRIS ESB', ': File processed')
                              
-                    if not ((dfinv[(dfinv['KAT']  ==  "QRIS Telkom") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                    if not ((dfinv[(dfinv['KAT']  ==  "QRIS TELKOM") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[(dfweb['KAT']  ==  "QRIS TELKOM") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         qti   =   dfinv[(dfinv['KAT']  ==  "QRIS Telkom")]
                         qtw   =   dfweb[(dfweb['KAT']  ==  "QRIS TELKOM")]
