@@ -324,7 +324,7 @@ if uploaded_file is not None:
                 # Lookup
                 storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.csv')
                 concatenated_df = pd.merge(concatenated_df, storename, how='left', on='Store Name').fillna('')
-            
+                concatenated_df = concatenated_df[concatenated_df['CAB'] != '']
                 # Export the concatenated dataframe to CSV in the specified path
                 output_path = f'{tmpdirname}/_merge/merge_Grab 1.csv'
                 concatenated_df.to_csv(output_path, index=False)
