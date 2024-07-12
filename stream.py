@@ -973,7 +973,7 @@ if uploaded_file is not None:
             
                     # Convert 'NOM' and 'Amount' columns to numeric, handling non-numeric issues
                     loc_grab['NOM1'] = pd.to_numeric(loc_grab['NOM1'], errors='coerce').astype(float)
-                    loc_grab['Amount'] = pd.to_numeric(loc_grab['Amount'].str.replace('.', ''), errors='coerce').astype(float)
+                    loc_grab['Amount'] = pd.to_numeric(loc_grab['Amount'].astype('str').str.replace('.', ''), errors='coerce').astype(float)
             
                     # Drop rows where 'Category' is 'Canceled'
                     loc_grab = loc_grab[loc_grab['Category'] != 'Canceled']
