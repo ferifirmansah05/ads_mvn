@@ -1792,7 +1792,7 @@ if uploaded_file is not None:
                              
                     if not ((dfinv[(dfinv['KAT']  ==  "QRIS TELKOM") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
                          (dfweb[(dfweb['KAT']  ==  "QRIS TELKOM") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
-                        qti   =   dfinv[(dfinv['KAT']  ==  "QRIS Telkom")]
+                        qti   =   dfinv[(dfinv['KAT']  ==  "QRIS TELKOM")]
                         qtw   =   dfweb[(dfweb['KAT']  ==  "QRIS TELKOM")]
                         qti   =   qti[qti['CAB']  ==  cab]
                         qtw   =   qtw[qtw['CAB']  ==  cab]
