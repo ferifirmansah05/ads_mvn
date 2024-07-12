@@ -1822,15 +1822,15 @@ if uploaded_file is not None:
                                         if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME']  >= dt.timedelta(minutes=0)):
                                             if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME'] < dt.timedelta(minutes=time)):
                                                 if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
-                                                    df_i.loc[i,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
-                                                    df_w.loc[x,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
+                                                    df_i.loc[i,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
+                                                    df_w.loc[x,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
                                                     df_w.loc[x,'HELP'] = df_i.loc[i,'CODE']
                                                     break                          
                                         if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                             if ((df_i.loc[i,'TIME']) - df_w.loc[x,'TIME'] < dt.timedelta(minutes=time)):
                                                 if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM']))==0:
-                                                    df_i.loc[i,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
-                                                    df_w.loc[x,'KET'] = 'Balance '+ df_w.loc[x,'CODE']
+                                                    df_i.loc[i,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
+                                                    df_w.loc[x,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
                                                     df_w.loc[x,'HELP'] = df_i.loc[i,'CODE']
                                                     break
                                                                         
