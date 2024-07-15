@@ -576,9 +576,9 @@ if uploaded_file is not None:
             
                 # Save the merged DataFrame to a CSV file
                 merged_df.to_csv(output_path, index=False)
-                st.write("File QRIS SHOPEE Concatenated")
+                print("File QRIS SHOPEE Concatenated")
             else:
-                st.write("No dataframes to concatenate.")
+                print("No dataframes to concatenate.")
             
             
             # Define the directory containing the CSV files
