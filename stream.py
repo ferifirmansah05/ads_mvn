@@ -124,7 +124,6 @@ if uploaded_file is not None:
                         df = df[df['TOTAL BILL']>0]
                         combined_dataframes.append(df)
                     except Exception as excel_exception:
-                        st.write(df)
                         st.write(f"Error process {file} as Excel: {excel_exception}")
             
             # Check if there are any dataframes to concatenate
@@ -156,7 +155,7 @@ if uploaded_file is not None:
                     df['Folder'] = subfolder
                     combined_dataframes.append(df)
                 else:
-                    st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
+                    print(f"File in subfolder: {subfolder} does not exist. Please double check")
         
             if combined_dataframes:
                 final_df = pd.concat(combined_dataframes)
@@ -187,7 +186,7 @@ if uploaded_file is not None:
                     df['Folder'] = subfolder
                     combined_dataframes.append(df)
                 else:
-                    st.write(f"No CSV files found in subfolder: {subfolder}")
+                    print(f"No CSV files found in subfolder: {subfolder}")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
@@ -256,7 +255,7 @@ if uploaded_file is not None:
                         df['Folder'] = subfolder
                         combined_dataframes.append(df)
                     else:
-                        st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
+                        print(f"File in subfolder: {subfolder} does not exist. Please double check")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
@@ -423,7 +422,7 @@ if uploaded_file is not None:
                     df_subfolder['Folder'] = subfolder
                     combined_dataframes.append(df_subfolder)
                 else:
-                    st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
+                    print(f"File in subfolder: {subfolder} does not exist. Please double check")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
@@ -474,7 +473,7 @@ if uploaded_file is not None:
             
                 # st.write a message if no CSV files are found in a subfolder
                 if not filenames:
-                    st.write(f"File in subfolder: {subfolder} does not exist. Please double check")
+                    print(f"File in subfolder: {subfolder} does not exist. Please double check")
     
             
             base_folder_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE/QRIS B (Separator ;)'
@@ -636,7 +635,7 @@ if uploaded_file is not None:
                                     df['Folder'] = subfolder_name
                                     dataframes.append(df)
                         except Exception as e:
-                            ptint.write(f"Error reading {file_path}: {e}")
+                            ptint(f"Error reading {file_path}: {e}")
             
             if dataframes:
                 # Concatenate all DataFrames into one DataFrame
