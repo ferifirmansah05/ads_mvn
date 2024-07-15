@@ -1175,7 +1175,7 @@ if uploaded_file is not None:
 
             cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
-            cn['TANGGAL'] = cn['TANGGAL'].fillna('').astype('int').astype('str')
+            cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
             
             dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
             dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
