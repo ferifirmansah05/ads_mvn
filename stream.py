@@ -1174,6 +1174,7 @@ if uploaded_file is not None:
             time_qt = 150
 
             cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
+            st.write(cn)
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             cn['TANGGAL'] = cn['TANGGAL'].astype('int').astype('str')
             
