@@ -1924,13 +1924,13 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
-
+            time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-                zip_file.writestr(f'INVOICE_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', invoice_final.to_csv(index=False))
-                zip_file.writestr(f'WEB_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', web_final.to_csv(index=False))
-                zip_file.writestr(f'BREAKDOWN_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv', final_df.to_csv(index=False))
+                zip_file.writestr(f'INVOICE_{time_now}.csv', invoice_final.to_csv(index=False))
+                zip_file.writestr(f'WEB_{time_now}.csv', web_final.to_csv(index=False))
+                zip_file.writestr(f'BREAKDOWN_{time_now}.csv', final_df.to_csv(index=False))
             
             # Pastikan buffer ZIP berada di awal
             zip_buffer.seek(0)
@@ -1939,7 +1939,7 @@ if uploaded_file is not None:
             st.download_button(
                 label="Download all Files",
                 data=zip_buffer,
-                file_name=f'ABO_{dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.zip',
+                file_name=f'ABO_{time_now}.zip',
                 mime='application/zip',
             )  
             
