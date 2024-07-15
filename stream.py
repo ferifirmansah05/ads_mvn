@@ -1902,7 +1902,7 @@ if uploaded_file is not None:
                                         & ( abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3['DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(str(pd.to_datetime(df_all3.loc[i,'DATE']).strftime('%Y-%m-%d')) + ' ' +df_all3.loc[i,'TIME']) - pd.to_datetime((pd.to_datetime(df_all3.loc[x,'DATE']).dt.strftime('%Y-%m-%d')) + ' ' + df_all3.loc[x,'TIME'])).sort_values().index[-1]
-                                    if kat in ['GRAB']:
+                                    if kat in ['GRAB FOOD']:
                                         df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                         df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'       
                                     else:
