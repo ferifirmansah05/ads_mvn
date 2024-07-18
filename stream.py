@@ -140,7 +140,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")
 
-            cn = final_df
+            cn = final_df.reset_index(drop=True)
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
             
@@ -1544,8 +1544,7 @@ if uploaded_file is not None:
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
-                            x = gfw[(gfw['ID2']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
-                                    & (gfw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                            x = gfw[(gfw['ID2']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) & (gfw['NOM']==cn.loc[i,'TOTAL BILL'])].index
                             if len(x) >= 1:
                                 gfw.loc[x[0], 'KET']='Cancel Nota'
                                 cn.loc[i, 'KET'] = 'Done'
