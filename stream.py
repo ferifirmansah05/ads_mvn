@@ -1201,8 +1201,8 @@ if uploaded_file is not None:
             dfinv['NOM'] = pd.to_numeric(dfinv['NOM'])
             dfweb['NOM'] = pd.to_numeric(dfweb['NOM'])
             
-            dfinv = dfinv[dfinv['NOM']>0]
-            dfweb = dfweb[dfweb['NOM']>0]
+            dfinv = dfinv[dfinv['NOM']!=0]
+            dfweb = dfweb[dfweb['NOM']!=0]
             
             dfinv['KET']   =   ""
             dfweb['KET']   =   ""
