@@ -122,6 +122,8 @@ if uploaded_file is not None:
                         df['CAB'] = subfolder
                         df['KET'] = ''
                         df = df[df['TOTAL BILL']>0]
+                        df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
+                        df['TANGGAL'] = df['TANGGAL'].fillna('0').astype('int').astype('str')
                         combined_dataframes.append(df)
                     except Exception as excel_exception:
                         st.write(f"Error process {file} as Excel: {excel_exception}")
@@ -137,7 +139,11 @@ if uploaded_file is not None:
                 st.write("File CANCEL NOTA Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
-            st.write(final_df)
+
+            cn = final_df
+            cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
+            cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
+            
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan/GOJEK 1'
             subfolders = [folder for folder in os.listdir(main_folder) if os.path.isdir(os.path.join(main_folder, folder))]
@@ -1172,10 +1178,6 @@ if uploaded_file is not None:
             time_sp = 150
             time_qe = 150
             time_qt = 150
-
-            cn = pd.read_csv(f'{tmpdirname}/_merge/merge_cancel_nota.csv')
-            cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
-            cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
             
             dfinv   =   pd.read_csv(f'{tmpdirname}/_final/ALL/INVOICE.csv')
             dfweb   =   pd.read_csv(f'{tmpdirname}/_final/ALL/WEB.csv')
