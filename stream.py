@@ -977,8 +977,8 @@ if uploaded_file is not None:
                     del loc_grab['DATETIME']
             
                     # Convert 'NOM' and 'Amount' columns to numeric, handling non-numeric issues
-                    loc_grab['NOM1'] = pd.to_numeric(loc_grab['NOM1'], errors='coerce').astype(float)
-                    loc_grab['Amount'] = pd.to_numeric(loc_grab['Amount'].astype('str').str.replace('.', ''), errors='coerce').astype(float)
+                    loc_grab['NOM1'] = pd.to_numeric(loc_grab['NOM1']).astype(float)
+                    #loc_grab['Amount'] = pd.to_numeric(loc_grab['Amount'].astype('str').str.replace('.', ''), errors='coerce').astype(float)
             
                     # Drop rows where 'Category' is 'Canceled'
                     loc_grab = loc_grab[loc_grab['Category'] != 'Canceled']
@@ -996,7 +996,7 @@ if uploaded_file is not None:
                         (loc_grab['Category'] == 'Adjustment'),
                         (loc_grab['Category'] == 'Payment'),
                     ]
-                    pilih2 = [loc_grab['ID'] + 'A', loc_grab['ID']]
+                    pilih2 = [loc_grab['ID'] + 'Adj', loc_grab['ID']]
                     loc_grab['ID'] = np.select(loc_grabcon2, pilih2, default='Cek')
             
                     # Additional processing
