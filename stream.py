@@ -1627,7 +1627,7 @@ if uploaded_file is not None:
             
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='SHOPEEPAY')].index:
-                            x = spw[(spw['ID2']=='#'+str(int(re.search(r'\d+$', cn.loc[i,'NAMA TAMU'][:re.search(r'\d(?!.*\d)', cn.loc[i,'NAMA TAMU']).end()] if re.search(r'\d(?!.*\d)', cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU']).group())) if re.search(r'\d+$',  cn.loc[i,'NAMA TAMU'][:re.search(r'\d(?!.*\d)', cn.loc[i,'NAMA TAMU']).end()] if re.search(r'\d(?!.*\d)', cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU'])
+                            x = spw[(spw['ID2']=='#'+(str(int(re.search(r'\d+$', cn.loc[i,'NAMA TAMU']).group())) if re.search(r'\d+$', cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU']))
                                     & (spw['NOM']==cn.loc[i,'TOTAL BILL'])].index
                             if len(x) >= 1:
                                 spw.loc[x[0], 'KET']='Cancel Nota'
