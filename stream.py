@@ -1876,7 +1876,7 @@ if uploaded_file is not None:
             df_all = pd.concat(files)
             df_concat = []
             for cab in all_cab:
-                for kat in ['GRAB FOOD']:
+                for kat in ['GO RESTO', 'QRIS SHOPEE', 'GRAB FOOD','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']:
                     if not df_all[(df_all['CAB'] == cab) & (df_all['KAT']==kat)].empty:
                         df_all2 = df_all[(df_all['CAB'] == cab) & (df_all['KAT']==kat)].reset_index(drop=True)
                         df_all3 = df_all2.loc[df_all2[(df_all2['KET'].isna()) & (df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari'])))].index,].copy()
