@@ -1914,10 +1914,10 @@ if uploaded_file is not None:
                                             df_all3.loc[i, 'KET'] = 'Invoice Beda Hari Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM'])
                                             df_all3.loc[x, 'HELP'] = 'Selisih IT' 
                                             df_all3.loc[x, 'KET'] = 'Transaksi Kemarin Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM'])   
-                            if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
-                                df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
-                            if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
-                                df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
+                            #if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
+                            #    df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
+                            #if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
+                            #    df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
                         all = pd.concat([df_all2.loc[df_all2[~((df_all2['KET'].isna()) & (df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari']))))].index,],df_all3]).sort_values(['CAB','DATE'])
                         all['DATE'] = pd.to_datetime(all['DATE']).dt.strftime('%d/%m/%Y')
                         df_concat.append(all)
