@@ -574,7 +574,7 @@ if uploaded_file is not None:
             
                 # Format Time
                 try:
-                    merged_df['Update Time'] = pd.to_datetime(merged_df['Update Time'], format='%Y-%m-%d %H:%M:%S')
+                    merged_df['Update Time'] = pd.to_datetime(merged_df['Update Time'], format='%d/%m/%Y %H:%M', errors='coerce').fillna(pd.to_datetime(merged_df['Update Time'],format='%Y-%m-%d %H:%M:%S', errors='ignore'))
                     merged_df['DATE'] = merged_df['Update Time'].dt.strftime('%d/%m/%Y')
                     merged_df['TIME'] = merged_df['Update Time'].dt.time
                 except Exception as e:
