@@ -1929,8 +1929,7 @@ if uploaded_file is not None:
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-                zip_file.writestr(f'INVOICE_{time_now}.csv', invoice_final.to_csv(index=False))
-                zip_file.writestr(f'WEB_{time_now}.csv', web_final.to_csv(index=False))
+                zip_file.writestr(f'MERGE_{time_now}.csv', pd.concat([invoice_final,web_final]).sort_values(['CAB','DATE','TIME']).to_csv(index=False))
                 zip_file.writestr(f'BREAKDOWN_{time_now}.csv', final_df.to_csv(index=False))
             
             # Pastikan buffer ZIP berada di awal
