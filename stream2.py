@@ -2,7 +2,7 @@ import requests
 import os
 
 # URL file yang ingin diunduh
-url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/stream.py'
+url = 'https://raw.githubusercontent.com/Analyst-FPnA/ABO-DA/main/stream.py'
 
 # Nama file lokal
 local_filename = 'stream.py'
