@@ -1359,8 +1359,48 @@ if uploaded_file is not None:
                         
                                 all_3 = pd.concat([all_1,all_2]).sort_values(['CAB','DATE','KET','SOURCE','NOM'],ascending=[True,True,True,False,True])
                                 all_1 = all_3[(all_3['KET'].str.contains('F'))].reset_index(drop=True)
-                                all_2 = all_3[~(all_3['KET'].str.contains('F'))].reset_index(drop=True)                    
-                                        
+                                all_2 = all_3[~(all_3['KET'].str.contains('F'))].reset_index(drop=True)    
+                                
+                            indeks = all_2.index
+                            for i in indeks:  
+                                if all_2.loc[i,'SOURCE'] =='WEB':
+                                                source = 'INVOICE'
+                                                tab =  all_1[(all_1['TIME'] > (all_2.loc[i,'TIME'] - dt.timedelta(minutes=15)
+                            )) & (all_1['SOURCE']==source) & (abs(all_1['NOM']-all_2.loc[i,'NOM'])<=200)]
+                                if all_2.loc[i,'SOURCE'] =='INVOICE':
+                                                source = 'WEB'
+                                                tab =  all_1[((all_2.loc[i,'TIME'] + pd.Timedelta(minutes=15)) > all_1['TIME']) 
+                                                & (all_1['SOURCE']==source) & (abs(all_2.loc[i,'NOM']-all_1['NOM'])<=200)]
+                                if tab.shape[0]>0:
+                                                x = abs(tab['TIME'] - all_2.loc[i,'TIME']).sort_values().index[0]
+                                                if all_2.loc[i,'SOURCE'] =='WEB':
+                                                    y = x-1
+                                                if all_2.loc[i,'SOURCE'] =='INVOICE':
+                                                    y = x+1
+                                                if abs(all_2.loc[i,'TIME'] - all_1.loc[x,'TIME']) < abs(all_1.loc[y,'TIME'] - all_1.loc[x,'TIME']):
+                                                    step = step + 1
+                                                    note = all_2.loc[i,'KET']
+                                                    if all_2.loc[i,'NOM'] == all_1.loc[x,'NOM']:
+                                                        all_1.loc[y,'KET'] = note
+                                                        if all_2.loc[i,'SOURCE'] =='WEB':
+                                                            all_2.loc[i,'KET'] = 'Balance '+ all_1.loc[x,'ID']
+                                                            all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[x,'ID']
+                                                        if all_2.loc[i,'SOURCE'] =='INVOICE':
+                                                            all_2.loc[i,'KET'] = 'Balance '+ all_2.loc[i,'ID']
+                                                            all_1.loc[x,'KET'] = 'Balance '+ all_2.loc[i,'ID']                                            
+                                                    else:
+                                                        all_1.loc[y,'KET'] = note
+                                                        if all_2.loc[i,'SOURCE'] =='WEB':
+                                                            all_2.loc[i,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                                        else:
+                                                            all_2.loc[i,'KET'] =  'Selisih '+ str(all_2.loc[i,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_2.loc[i,'ID']) + difference(all_2.loc[i,'NOM'],all_1.loc[x,'NOM'])
+                        
+                                all_3 = pd.concat([all_1,all_2]).sort_values(['CAB','DATE','KET','SOURCE','NOM'],ascending=[True,True,True,False,True])
+                                all_1 = all_3[(all_3['KET'].str.contains('F'))].reset_index(drop=True)
+                                all_2 = all_3[~(all_3['KET'].str.contains('F'))].reset_index(drop=True)            
+                                
                             if step == 0:
                                 break
                         print(step)
