@@ -1321,7 +1321,8 @@ if uploaded_file is not None:
             
                         for c in range(0,1000):
                             step=0
-                            for i in all_2.index:  
+                            indeks = all_2.index
+                            for i in indeks:  
                                 if all_2.loc[i,'SOURCE'] =='WEB':
                                                 source = 'INVOICE'
                                                 tab =  all_1[(all_1['TIME'] > (all_2.loc[i,'TIME'] - dt.timedelta(minutes=15)
