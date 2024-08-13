@@ -184,9 +184,12 @@ if uploaded_file is not None:
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
                 files = glob(os.path.join(main_folder, subfolder, '*.csv'))
+                dfs = []
                 # Concatenate CSV files within each subfolder
-                dfs = [pd.read_csv(file) for file in files]
-                dfs.rename(columns={'Gross Sales':'Gross Amount'})
+                for file in files:
+                    df = pd.read_csv(file)
+                    df = df.rename(columns={'Gross Sales':'Gross Amount'})
+                    dfs = df.append(df)   
                 if dfs:
                     df = pd.concat(dfs)
                     # Add a new column for the folder name
