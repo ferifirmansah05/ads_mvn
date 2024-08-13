@@ -186,6 +186,7 @@ if uploaded_file is not None:
                 files = glob(os.path.join(main_folder, subfolder, '*.csv'))
                 # Concatenate CSV files within each subfolder
                 dfs = [pd.read_csv(file) for file in files]
+                dfs.rename(columns={'Gross Sales':'Gross Amount'})
                 if dfs:
                     df = pd.concat(dfs)
                     # Add a new column for the folder name
@@ -779,10 +780,10 @@ if uploaded_file is not None:
                 loc_go2     =       df_go2.loc[:,['Waktu Transaksi',
                                                   'Folder',
                                                   'Nomor Pesanan',
-                                                  'Gross Sales']].rename(columns={'Waktu Transaksi' : 'DATETIME',
+                                                  'Gross Amount']].rename(columns={'Waktu Transaksi' : 'DATETIME',
                                                                             'Folder' : 'CAB',
                                                                             'Nomor Pesanan' : 'ID',
-                                                                            'Gross Sales' : 'NOM'}).fillna('')
+                                                                            'Gross Amount' : 'NOM'}).fillna('')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Apr', 'April')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Jun', 'June')
