@@ -189,7 +189,7 @@ if uploaded_file is not None:
                 for file in files:
                     df = pd.read_csv(file)
                     df = df.rename(columns={'Gross Sales':'Gross Amount'})
-                    dfs = df.append(df)   
+                    dfs.append(df)   
                 if dfs:
                     df = pd.concat(dfs)
                     # Add a new column for the folder name
