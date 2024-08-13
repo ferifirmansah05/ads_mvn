@@ -779,10 +779,10 @@ if uploaded_file is not None:
                 loc_go2     =       df_go2.loc[:,['Waktu Transaksi',
                                                   'Folder',
                                                   'Nomor Pesanan',
-                                                  'Gross Amount']].rename(columns={'Waktu Transaksi' : 'DATETIME',
+                                                  'Gross Sales']].rename(columns={'Waktu Transaksi' : 'DATETIME',
                                                                             'Folder' : 'CAB',
                                                                             'Nomor Pesanan' : 'ID',
-                                                                            'Gross Amount' : 'NOM'}).fillna('')
+                                                                            'Gross Sales' : 'NOM'}).fillna('')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Apr', 'April')
                 loc_go2['DATETIME'] = loc_go2['DATETIME'].str.replace('Jun', 'June')
