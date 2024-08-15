@@ -156,7 +156,9 @@ if uploaded_file is not None:
                 # Check if there are CSV files in the subfolder
                 if files:
                     # Concatenate CSV files within each subfolder
-                    df = pd.concat([pd.read_csv(file) for file in files])
+                    for file in files:
+                    df = pd.read_csv(file)
+                    df = df.rename(columns={'Gross Sales':'Gross Amount'})
                     # Add a new column for the folder name
                     df['Folder'] = subfolder
                     combined_dataframes.append(df)
