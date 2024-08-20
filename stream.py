@@ -236,7 +236,7 @@ if uploaded_file is not None:
                 storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.csv')
             
                 for subfolder in subfolders:
-                    df = concatenated_df[concatenated_df['Outlet name'].str.contains(storename[storename['CAB']==subfolder]['Outlet name'].str.split().values[0][-1])]
+                    df = concatenated_df[concatenated_df['Outlet name']==(storename[storename['CAB']==subfolder]['Outlet name'].str.split().values[0][-1])]
                     df['CAB'] = subfolder
                     combined_dataframes.append(df)
             
