@@ -906,10 +906,10 @@ if uploaded_file is not None:
                 #Read data merge Shopee Food
                 df_shopee2 = pd.read_csv(f'{tmpdirname}/_merge/merge_Shopee Food 2.csv').fillna('')
                 #Rename columns to match the database schema
-                loc_shopee2   =   df_shopee2.loc[:,["Folder", "Order Complete Time", "Transaction ID (Order ID)", "Transaction Amount", "Status"]].rename(columns={"Folder" : "CAB",
+                loc_shopee2   =   df_shopee2.loc[:,["Folder", "Order Complete Time", "Transaction ID (Order ID)", "Food Original Price", "Status"]].rename(columns={"Folder" : "CAB",
                                                                                                                                                     "Order Complete Time" : "DATETIME",
                                                                                                                                                     "Transaction ID (Order ID)" : "ID",
-                                                                                                                                                    "Transaction Amount" : "NOM"}).fillna("")
+                                                                                                                                                    "Food Original Price" : "NOM"}).fillna("")
             
                 loc_shopee2['DATETIME']    =   pd.to_datetime(loc_shopee2['DATETIME'], format='%d %m %Y %H:%M')
                 loc_shopee2['DATE']        =   loc_shopee2['DATETIME'].dt.strftime('%d/%m/%Y')
