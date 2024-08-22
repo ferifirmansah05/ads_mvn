@@ -1545,7 +1545,7 @@ if uploaded_file is not None:
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
                         gfw['ID2'] = gfw['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
-                        gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1])
+                        gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
