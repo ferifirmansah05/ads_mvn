@@ -1326,7 +1326,7 @@ if uploaded_file is not None:
                         all_1 = all[(all['KET'].str.contains('F'))].reset_index(drop=True)
                         all_2 = all[~(all['KET'].str.contains('F')) & ~(all['KET'].isin(['Cancel Nota']))].reset_index(drop=True)
             
-                        for c in range(0,500):
+                        for c in range(0,2000):
                             step=0
                             for i in all_2.index:  
                                 if all_2.loc[i,'SOURCE'] =='WEB':
