@@ -1114,7 +1114,7 @@ if uploaded_file is not None:
             
                 # Filter rows where 'Payment Transaction Status' is 'settlement'
                 df_esb = df_esb[df_esb['Payment Transaction Status'] == 'settlement']
-                df_esb = df_esb[(df_esb['Source'].str.contains('Dine In')) | (df_esb['Source'].str.contains('Take Away'))]
+                #df_esb = df_esb[(df_esb['Source'].str.contains('Dine In')) | (df_esb['Source'].str.contains('Take Away'))]
             
                 # Extract text after the dot in the 'CAB' column
                 df_esb['CAB'] = df_esb['Branch Name'].str.split('.').str[1]
