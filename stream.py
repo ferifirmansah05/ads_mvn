@@ -1812,7 +1812,7 @@ if uploaded_file is not None:
             
                         qtw.loc[qtw[qtw['ID'].isna()].index,'ID'] = ''
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS TELKOM')].index:
-                                    x = qtw[(qtw['ID']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
+                                    x = qtw[(qtw['ID']==cn.loc[i,'NAMA TAMU']) 
                                             & (qtw['NOM']==cn.loc[i,'TOTAL BILL'])].index
                                     if len(x) >= 1:
                                         qtw.loc[x[0], 'KET']='Cancel Nota'
