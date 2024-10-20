@@ -673,11 +673,8 @@ if uploaded_file is not None:
             for file_name in os.listdir(folder_path):
                 if file_name.endswith('.xlsx'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
-                    df = pd.read_excel(file_path)
-                    df = df[~df.loc[:,'Unnamed: 2'].isna()].reset_index(drop=True)
-                    # Remove the first row
-                    df.columns = df.loc[0,:].values
-                    df = df.loc[1:,]
+                    df = pd.read_excel(file_path, header=12)
+                    df = df[~(df['Tanggal Transaksi'].isna()) & (df['Payment Method Name']!='CASH')].loc[:,['Branch name','Tanggal Transaksi','POS Sales Number','Grand Total']]
                     dataframes.append(df)
             if dataframes:
                 merged_web = pd.concat(dataframes, ignore_index=True)
@@ -1107,20 +1104,15 @@ if uploaded_file is not None:
                 df_esb['KAT'] = 'QRIS ESB'
             
                 # Convert 'Transaction Date' to datetime and extract date and time components
-                #df_esb['DATE'] = df_esb['DATE'].str.replace('Jun', 'June')
-                df_esb['Transaction Date'] = pd.to_datetime(df_esb['Transaction Date'], format='%Y-%m-%d %H:%M:%S')
-                df_esb['DATE'] = df_esb['Transaction Date'].dt.strftime('%d/%m/%Y')
-                df_esb['TIME'] = df_esb['Transaction Date'].dt.time
-            
-                # Filter rows where 'Payment Transaction Status' is 'settlement'
-                df_esb = df_esb[df_esb['Payment Transaction Status'] == 'settlement']
-                #df_esb = df_esb[(df_esb['Source'].str.contains('Dine In')) | (df_esb['Source'].str.contains('Take Away'))]
-            
+                df_esb['Tanggal Transaksi'] = pd.to_datetime(df_esb['Tanggal Transaksi'], format='%Y-%m-%d %H:%M:%S')
+                df_esb['DATE'] = df_esb['Tanggal Transaksi'].dt.strftime('%d/%m/%Y')
+                df_esb['TIME'] = df_esb['Tanggal Transaksi'].dt.time
+                        
                 # Extract text after the dot in the 'CAB' column
                 df_esb['CAB'] = df_esb['Branch Name'].str.split('.').str[1]
             
                 # Rename columns to match the database schema
-                df_esb = df_esb.rename(columns={'POS Sales Number': 'ID', 'Amount': 'NOM'}).fillna('')
+                df_esb = df_esb.rename(columns={'POS Sales Number': 'ID', 'Grand Total': 'NOM'}).fillna('')
             
                 # Select and sort the relevant columns
                 df_esb = df_esb.loc[:, ['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']].sort_values('DATE', ascending=False)
