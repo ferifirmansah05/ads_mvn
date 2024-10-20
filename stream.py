@@ -1109,7 +1109,7 @@ if uploaded_file is not None:
                 df_esb['TIME'] = df_esb['Tanggal Transaksi'].dt.time
                         
                 # Extract text after the dot in the 'CAB' column
-                df_esb['CAB'] = df_esb['Branch Name'].str.split('.').str[1]
+                df_esb['CAB'] = df_esb['Branch name'].str.split('.').str[1]
             
                 # Rename columns to match the database schema
                 df_esb = df_esb.rename(columns={'POS Sales Number': 'ID', 'Grand Total': 'NOM'}).fillna('')
