@@ -416,6 +416,7 @@ if uploaded_file is not None:
             
                 # Lookup
                 storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.xlsx')
+                st.dataframe(storename)
                 df_grab = pd.merge(df_grab, storename, how='left', on='Store Name').fillna('')
                 df_grab = df_grab[df_grab['CAB'] != '']
            
