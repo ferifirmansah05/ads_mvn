@@ -466,9 +466,9 @@ if uploaded_file is not None:
                 dfs = []
             
                 # Read the existing files
-                if df_grab is not None:
+                if 'df_grab' in locals():
                     dfs.append(df_grab)
-                if df_grab2 is not None:
+                if 'df_grab2' in locals():
                     dfs.append(df_grab2)
             
                 # Concatenate all dataframes in the list
