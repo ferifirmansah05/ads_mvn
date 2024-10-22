@@ -123,7 +123,7 @@ if uploaded_file is not None:
                             print(f"Error process {file} as Excel: {excel_exception}")
             
             # Check if there are any dataframes to concatenate
-            if combined_dataframes:
+            if dfs:
                 # Concatenate dataframes from all subfolders
                 cn = pd.concat(dfs,ignore_index=True)
             
