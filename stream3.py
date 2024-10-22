@@ -99,33 +99,33 @@ if uploaded_file is not None:
             st.markdown('### Cleaning & Preparing')
             st.write('CANCEL NOTA')
             main_folder = f'{tmpdirname}/_bahan/CANCEL_NOTA'
+                        
             
-            # List to store concatenated dataframes
-            combined_dataframes = []
-        
-            # Glob pattern to get all CSV files in the subfolder
+            # Iterate over each subfolder
             files = glob(os.path.join(main_folder, '*.xlsx'))
+            
+            dfs = []
             for file in files:
-                try:
-                    df = pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0)
-                    df = df.loc[:,df.columns[:9]].dropna(subset=['Unnamed: 2']).reset_index(drop=True)
-                    df.columns = df.loc[0,:].values
-                    df = df.loc[1:,]
-                    df = df[df['TANGGAL']!='TANGGAL']
-                    df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
-                    df['CAB'] = subfolder
-                    df['KET'] = ''
-                    df = df[df['TOTAL BILL']>0]
-                    df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
-                    df['TANGGAL'] = df['TANGGAL'].fillna('0').astype('int').astype('str')
-                    combined_dataframes.append(df)
-                except Exception as excel_exception:
-                    st.write(f"Error process {file} as Excel: {excel_exception}")
+                    try:
+                            df = pd.read_excel(file,sheet_name='Rekap nota cancel & salah input', header=0)
+                            df = df.loc[:,df.columns[:9]].dropna(subset=['Unnamed: 2']).reset_index(drop=True)
+                            df.columns = df.loc[0,:].values
+                            df = df.loc[1:,]
+                            df = df[df['TANGGAL']!='TANGGAL']
+                            df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
+                            df['CAB'] = file.split('\\')[-1].split(' ')[0]
+                            df['KET'] = ''
+                            df = df[df['TOTAL BILL']>0]
+                            df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
+                            df['TANGGAL'] = df['TANGGAL'].fillna('0').astype('int').astype('str')
+                            dfs.append(df)
+                    except Exception as excel_exception:
+                            print(f"Error process {file} as Excel: {excel_exception}")
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
                 # Concatenate dataframes from all subfolders
-                cn = pd.concat(combined_dataframes,ignore_index=True)
+                cn = pd.concat(dfs,ignore_index=True)
             
                 st.write("File CANCEL NOTA Concatenated")
             else:
