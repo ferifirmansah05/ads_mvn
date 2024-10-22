@@ -802,7 +802,7 @@ if uploaded_file is not None:
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
-            final_web = pd.concat([df_inv,df_web]).sort_values(['CAB','DATE','TIME'])
+            final_web = pd.concat([dfinv,df_web]).sort_values(['CAB','DATE','TIME'])
             
             st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
