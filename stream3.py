@@ -802,7 +802,7 @@ if uploaded_file is not None:
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
-            final_web = pd.concat([dfinv,dfweb]).sort_values(['CAB','DATE','TIME'])
+            final_merge = pd.concat([dfinv,dfweb]).sort_values(['CAB','DATE','TIME'])
             
             st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
@@ -825,8 +825,7 @@ if uploaded_file is not None:
                     dfweb['DATE'] = pd.to_datetime(dfweb['DATE'], format='%Y-%m-%d')
                 except ValueError as e:
                     print(f"Error dalam mengonversi tanggal: {e}")
-            st.dataframe(dfweb)
-            st.dataframe(dfinv)
+
             dfweb['TIME'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME'])
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             
