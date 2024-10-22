@@ -134,6 +134,7 @@ if uploaded_file is not None:
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
 
+            subfolders = all_cab
             dfinv = []
             st.write('GOJEK 1')
             main_folder = f'{tmpdirname}/_bahan'
