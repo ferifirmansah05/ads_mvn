@@ -416,7 +416,7 @@ if uploaded_file is not None:
             
                 # Lookup
                 storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.xlsx')
-                st.dataframe(storename)
+
                 df_grab = pd.merge(df_grab, storename, how='left', on='Store Name').fillna('')
                 df_grab = df_grab[df_grab['CAB'] != '']
            
@@ -491,7 +491,7 @@ if uploaded_file is not None:
             
                     # Apply the custom parsing function to the DATETIME column
                     df_grab['DATETIME'] = df_grab['DATETIME'].apply(parse_datetime)
-                    st.dataframe(df_grab)
+
                     # Extract DATE and TIME from DATETIME, then delete the DATETIME column
                     df_grab['DATE'] = df_grab['DATETIME'].dt.strftime('%d/%m/%Y')
                     df_grab['TIME'] = df_grab['DATETIME'].dt.time
@@ -795,7 +795,7 @@ if uploaded_file is not None:
                 dfweb = dfweb[dfweb['CAB'].isin(all_cab)]
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
 
-            dfinv = pd.concat([dfinv], ignore_index = True).fillna('')
+            dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             dfinv = dfinv[(dfinv['CAB'].isin(all_cab))]
             dfinv = dfinv[dfinv['DATE']     !=      '']
