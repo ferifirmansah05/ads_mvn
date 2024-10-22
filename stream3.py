@@ -282,7 +282,7 @@ if uploaded_file is not None:
                 concatenated_df = pd.concat(dfs, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.csv')
+                storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name GOJEK.xlsx')
             
                 for subfolder in storename['CAB'].unique():
                     df = concatenated_df[concatenated_df['Outlet name']==storename[storename['CAB']==subfolder]['Outlet name'].values[0]]
@@ -415,7 +415,7 @@ if uploaded_file is not None:
                 df_grab = pd.concat(dfs, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.csv')
+                storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.xlsx')
                 df_grab = pd.merge(df_grab, storename, how='left', on='Store Name').fillna('')
                 df_grab = df_grab[df_grab['CAB'] != '']
            
@@ -452,7 +452,7 @@ if uploaded_file is not None:
                 df_grab2 = pd.concat(dataframes, ignore_index=True)
             
                 # Lookup
-                storename = pd.read_csv(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.csv')
+                storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.xlsx')
                 df_grab2 = pd.merge(df_grab2, storename, how='left', on='Store Name').fillna('')
                 df_grab2 = df_grab2[df_grab2['CAB'] != '']
             
