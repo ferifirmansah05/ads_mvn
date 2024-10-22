@@ -192,7 +192,7 @@ if uploaded_file is not None:
                 df_gojek1        =   df_gojek1[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
                 dfinv.append(df_gojek1)
                 df_gojek1 = None
-                st.write(f"File GOJEK 1 processed")
+                st.write(f"File GOJEK 1 processed and saved")
             
             st.write('GOJEK 2')            
             # List to store concatenated dataframes
@@ -221,7 +221,7 @@ if uploaded_file is not None:
                 # Concatenate dataframes from all subfolders
                 df_gojek2 = pd.concat(combined_dataframes)
                 
-                st.write("File Gojek 2 Concatenated")
+                st.write("File GOJEK 2 Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
                             
@@ -582,7 +582,7 @@ if uploaded_file is not None:
                     df_qris['TIME'] = df_qris['Update Time'].dt.time
                 except Exception as e:
                     print(f"Error formatting time: {e}")
-                st.write("File QRIS SHOPEE, Concatenated")
+                st.write("File QRIS SHOPEE Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
             if 'df_qris' in locals():
