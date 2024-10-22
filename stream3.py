@@ -163,7 +163,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")  
                 
-            if df_gojek1 in locals():
+            if 'df_gojek1' in locals():
                 df_gojek1     =       df_gojek1.loc[:,['Waktu Transaksi',
                                                     'Folder',
                                                     'Nomor Pesanan',
@@ -225,7 +225,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")
                             
-            if df_gojek2 in locals():
+            if 'df_gojek2' in locals():
                 #Read data merge GOJEK 2
                 df_gojek2      =       df_gojek2.fillna('')
             
@@ -296,7 +296,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")
                 
-            if df_gojek3 in locals():
+            if 'df_gojek3' in locals():
                 # Read data merge GOJEK 3
                 df_gojek3 = df_gojek3.fillna('')
             
@@ -358,7 +358,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")
                 
-            if df_shopee in locals():
+            if 'df_shopee' in locals():
                 # Read data merge Shopee Food
                 df_shopee = df_shopee.fillna('')
             
@@ -461,7 +461,7 @@ if uploaded_file is not None:
                 st.write("No dataframes GRAB *xls to concatenate.")
                 
             # Process based on the existence of files
-            if (df_grab in locals()) or (df_grab2 in locals()):
+            if ('df_grab' in locals()) or ('df_grab2' in locals()):
                 # Initialize an empty list to hold dataframes
                 dfs = []
             
@@ -584,7 +584,7 @@ if uploaded_file is not None:
                 except Exception as e:
                     print(f"Error formatting time: {e}")
 
-            if df_qris in locals():
+            if 'df_qris' in locals():
                 # Read data merge QRIS Shopee
                 df_qris = df_qris[~df_qris['Transaction ID'].isna()]
                 df_qris = df_qris.fillna('')
@@ -652,7 +652,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dafaframes to concatenate.")
 
-            if df_qrisia in locals():
+            if 'df_qrisia' in locals():
                 # Read data merge QRIS Telkom
                 df_qrisia = df_qrisia.fillna('')
             
@@ -704,7 +704,7 @@ if uploaded_file is not None:
                 st.write("No dataframes to concatenate.")     
 
             # Check if the file exists
-            if df_esb in locals():
+            if 'df_esb' in locals():
                 # Read the CSV file
                 df_esb = df_esb.fillna('')
             
@@ -762,7 +762,7 @@ if uploaded_file is not None:
             else:
                 st.write("No dataframes to concatenate.")           
 
-            if dfweb in locals(): 
+            if 'dfweb' in locals(): 
                 dfweb['DATE'] = dfweb['DATE'].str.replace('Apr', 'April')            
                 dfweb['DATE'] = dfweb['DATE'].str.replace('Jun', 'June')
                 
