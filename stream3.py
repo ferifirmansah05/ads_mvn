@@ -570,9 +570,7 @@ if uploaded_file is not None:
                     #df['Folder'] = subfolder
                     combined_dataframes.append(df)
                     
-                    st.write("File QRIS SHOPEE *, Concatenated")
-                else:
-                    st.write("No dataframes to concatenate.")
+
             
             # Check if there are any dataframes to concatenate
             if combined_dataframes:
@@ -584,7 +582,9 @@ if uploaded_file is not None:
                     df_qris['TIME'] = df_qris['Update Time'].dt.time
                 except Exception as e:
                     print(f"Error formatting time: {e}")
-
+                st.write("File QRIS SHOPEE, Concatenated")
+            else:
+                st.write("No dataframes to concatenate.")
             if 'df_qris' in locals():
                 # Read data merge QRIS Shopee
                 df_qris = df_qris[~df_qris['Transaction ID'].isna()]
@@ -802,7 +802,7 @@ if uploaded_file is not None:
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
-            final_web = pd.concat([dfinv,df_web]).sort_values(['CAB','DATE','TIME'])
+            final_web = pd.concat([dfinv,dfweb]).sort_values(['CAB','DATE','TIME'])
             
             st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
