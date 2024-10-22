@@ -490,7 +490,7 @@ if uploaded_file is not None:
             
                     # Apply the custom parsing function to the DATETIME column
                     df_grab['DATETIME'] = df_grab['DATETIME'].apply(parse_datetime)
-            
+                    st.dataframe(df_grab)
                     # Extract DATE and TIME from DATETIME, then delete the DATETIME column
                     df_grab['DATE'] = df_grab['DATETIME'].dt.strftime('%d/%m/%Y')
                     df_grab['TIME'] = df_grab['DATETIME'].dt.time
