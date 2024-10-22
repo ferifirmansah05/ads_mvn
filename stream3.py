@@ -828,7 +828,7 @@ if uploaded_file is not None:
             st.dataframe(dfweb)
             st.dataframe(dfinv)
             dfweb['TIME'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME'])
-            dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'] )
+            dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             
             dfinv = dfinv[~(dfinv['NOM']=='Cek')]
             
