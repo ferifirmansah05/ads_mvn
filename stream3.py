@@ -1245,7 +1245,7 @@ if uploaded_file is not None:
                         spw   =   spw[spw['CAB']  ==  cab]
                         spi = spi[spi['DATE']==date]
                         spw = spw[spw['DATE']==date]
-                        spw['ID'] = spw['ID'].apply(lambda x: x.split('-')[0] if '-' in x else x)
+                        
                         spi = spi.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
                         spw = spw.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
                         
@@ -1253,7 +1253,7 @@ if uploaded_file is not None:
                         spi.drop_duplicates(inplace=True)
                         spw['ID'] = spw['ID'].str.upper()
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
-                        spw['ID2'] = spw['ID'].apply(lambda x: '#'+str(int(re.search(r'\d+$', x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x).group())) if re.search(r'\d+$',  x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x) else x)
+                        spw['ID2'] = spw['ID'].apply(lambda x: x.split('-')[0] if '-' in x else x).apply(lambda x: '#'+str(int(re.search(r'\d+$', x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x).group())) if re.search(r'\d+$',  x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x) else x)
                         spi['ID2'] = spi['ID']
             
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
