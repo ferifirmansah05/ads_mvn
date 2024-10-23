@@ -1245,10 +1245,10 @@ if uploaded_file is not None:
                         spw   =   spw[spw['CAB']  ==  cab]
                         spi = spi[spi['DATE']==date]
                         spw = spw[spw['DATE']==date]
-            
+                        spw['ID'] = spw['ID'].apply(lambda x: x.split('-')[0] if '-' in x else x)
                         spi = spi.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
                         spw = spw.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
-            
+                        
             
                         spi.drop_duplicates(inplace=True)
                         spw['ID'] = spw['ID'].str.upper()
