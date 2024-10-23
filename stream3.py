@@ -793,7 +793,7 @@ if uploaded_file is not None:
                 dfweb['DATE'] = pd.to_datetime(dfweb['DATE'])
                 dfweb['DATE'] = dfweb['DATE'].dt.strftime('%d/%m/%Y')
                 dfweb = dfweb[dfweb['CAB'].isin(all_cab)]
-                dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO', 'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
+                dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
 
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
