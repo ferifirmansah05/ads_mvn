@@ -870,16 +870,39 @@ if uploaded_file is not None:
             
                         goi = goi.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
                         gow = gow.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
-            
-                        goi.drop_duplicates(inplace=True)
                         
+                        goi.drop_duplicates(inplace=True)
+                        gow['ID2'] = gow['ID'].apply(lambda x: x.split(' - ')[-1] if ' - ' in x else '')
+                        goi['ID2'] = goi['ID']
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
                                 x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
                                 if len(x)>=1:
                                     gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
                                     cn.loc[i, 'KET'] = 'Done'
                         goi['KET'] = goi['ID']
-            
+                        gow2 = gow[gow['ID2']!=''].reset_index(drop=True)
+                        gow = gow[gow['ID2']==''].reset_index(drop=True)
+                        def compare_time(df_i, df_w, time):
+                            for i in range(0,df_w.shape[0]):
+                                    if df_w.loc[i,'KET']=='':
+                                        list_ind = df_i[(df_i['ID2']==df_w.loc[i,'ID2'])
+                                                    & (df_i['HELP']=='')].index
+                                        for x in list_ind:
+                                            if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                                df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
+                                                df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                                break
+                                            else:
+                                                df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
+                                                break                               
+
+                        compare_time(goi, gow2, time_go)
+                        goi2 = goi[goi['KET']!=''].reset_index(drop=True)
+                        goi = goi[goi['KET']==''].reset_index(drop=True)
+                        
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='' :
@@ -1009,7 +1032,7 @@ if uploaded_file is not None:
                                                                         all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
                                                                         all_2.loc[x,'HELP'] = '' 
                             
-                        all = pd.concat([all[all['KET'].isin(['Cancel Nota'])],all_1,all_2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
+                        all = pd.concat([all[all['KET'].isin(['Cancel Nota'])],all_1,all_2,gow2,goi2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
                         if ket == 'selisih':
                             all = all[~(all['KET'].str.contains('Balance'))]
                         all['HELP'] = all['KET'].apply(lambda x: label_1(x))
@@ -1452,14 +1475,14 @@ if uploaded_file is not None:
                                                 if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
                                                     df_i.loc[i,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
                                                     df_w.loc[x,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
-                                                    df_w.loc[x,'HELP'] = df_i.loc[i,'CODE']
+                                                    df_w.loc[x,'HELP'] = df_w.loc[x,'CODE']
                                                     break                          
                                         if ((df_w.loc[x,'TIME']) - df_i.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                             if ((df_i.loc[i,'TIME']) - df_w.loc[x,'TIME'] < dt.timedelta(minutes=time)):
                                                 if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM']))==0:
                                                     df_i.loc[i,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
                                                     df_w.loc[x,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
-                                                    df_w.loc[x,'HELP'] = df_i.loc[i,'CODE']
+                                                    df_w.loc[x,'HELP'] = df_w.loc[x,'CODE']
                                                     break
                                                                         
             
