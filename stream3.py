@@ -619,16 +619,14 @@ if uploaded_file is not None:
             
             st.write('QRIS IA')
             #Specify the directory where the HTML files are located
-            folder_path = f'{tmpdirname}/_bahan/QRIS_IA/'
-            
-            #Initialize a list to store DataFrames from each file
             dataframes = []
             
-            #Walk through all directories and subdirectories
-            for root, dirs, files in os.walk(folder_path):
-                for file_name in files:
-                    if file_name.endswith('.xls'):  # Make sure only Excel files are processed
-                        file_path = os.path.join(root, file_name)
+            # Iterate over each subfolder
+            for subfolder in subfolders:
+                # Glob pattern to get all CSV files in the subfolder
+                files = glob(os.path.join(main_folder, subfolder, 'QRIS-id*'))
+                # Concatenate CSV files within each subfolder
+                for file in files:
                         try:
                             # Read the HTML tables into a list of DataFrames
                             html_tables = pd.read_html(file_path, header=0, encoding='ISO-8859-1')  # Specify header as 0
@@ -639,7 +637,7 @@ if uploaded_file is not None:
                                     # Extract the subfolder name
                                     subfolder_name = os.path.basename(os.path.dirname(file_path))
                                     # Add a new column with the subfolder name
-                                    df['Folder'] = subfolder_name
+                                    df['Folder'] = subfolder
                                     dataframes.append(df)
                         except Exception as e:
                             ptint(f"Error reading {file_path}: {e}")
@@ -650,9 +648,7 @@ if uploaded_file is not None:
             
                 df_qrisia = df_qrisia[df_qrisia['ID Transaksi']      !=      "Summary"]
               
-                st.write("File QRIS TELKOM Concatenated")
-            else:
-                st.write("No dafaframes to concatenate.")
+                st.write("File QRIS TELKOM processed and saved")
 
             if 'df_qrisia' in locals():
                 # Read data merge QRIS Telkom
