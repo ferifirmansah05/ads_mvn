@@ -133,7 +133,8 @@ if uploaded_file is not None:
 
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
-
+            st.dataframe(cn)
+            
             subfolders = all_cab
             dfinv = []
             st.write('GOJEK 1')
@@ -877,6 +878,8 @@ if uploaded_file is not None:
                         gow = gow.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
             
                         goi.drop_duplicates(inplace=True)
+                        cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1])))]
+                        
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
                                 x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
                                 if len(x)>=1:
