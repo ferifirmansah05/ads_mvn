@@ -900,8 +900,8 @@ if uploaded_file is not None:
                                                 break                               
 
                         compare_time(goi, gow2, time_go)
-                        goi2 = goi[goi['KET']!=''].reset_index(drop=True)
-                        goi = goi[goi['KET']==''].reset_index(drop=True)
+                        goi2 = goi[goi['HELP']!=''].reset_index(drop=True)
+                        goi = goi[goi['HELP']==''].reset_index(drop=True)
                         
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
