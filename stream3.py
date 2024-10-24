@@ -629,13 +629,11 @@ if uploaded_file is not None:
                 for file in files:
                         try:
                             # Read the HTML tables into a list of DataFrames
-                            html_tables = pd.read_html(file_path, header=0, encoding='ISO-8859-1')  # Specify header as 0
+                            html_tables = pd.read_html(file, header=0, encoding='ISO-8859-1')  # Specify header as 0
                             # If there are tables in the HTML content
                             if html_tables:
                                 # Iterate through each DataFrame in the list
                                 for df in html_tables:
-                                    # Extract the subfolder name
-                                    subfolder_name = os.path.basename(os.path.dirname(file_path))
                                     # Add a new column with the subfolder name
                                     df['Folder'] = subfolder
                                     dataframes.append(df)
