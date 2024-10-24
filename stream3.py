@@ -1266,7 +1266,7 @@ if uploaded_file is not None:
                         spw = spw[spw['DATE']==date]
                         
                         spi = spi.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
-                        spw = spw.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, True]).reset_index(drop=True)
+                        spw = spw.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, False]).reset_index(drop=True)
                         
             
                         spi.drop_duplicates(inplace=True)
