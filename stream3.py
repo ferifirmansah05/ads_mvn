@@ -114,7 +114,7 @@ if uploaded_file is not None:
                             df = df[df['TANGGAL']!='TANGGAL']
                             df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
                             st.write(file)
-                            df['CAB'] = file.split('\\')[-1].split(' ')[0]
+                            df['CAB'] = file.split('/')[-1].split(' ')[0]
                             df['KET'] = ''
                             df = df[df['TOTAL BILL']>0]
                             df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
