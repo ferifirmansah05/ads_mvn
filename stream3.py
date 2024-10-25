@@ -624,7 +624,7 @@ if uploaded_file is not None:
             # Iterate over each subfolder
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
-                files = glob(os.path.join(main_folder, subfolder, '*QRIS-id transaksi*'))
+                files = glob(os.path.join(main_folder, subfolder, 'QRIS-id*'))
                 # Concatenate CSV files within each subfolder
                 for file in files:
                         try:
