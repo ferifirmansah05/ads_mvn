@@ -790,7 +790,7 @@ if uploaded_file is not None:
                             return pd.NaT
                             
                 dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
-                dfweb['NOM'] = dfweb.apply(lambda row: row['NOM2']+row['DISC'] if (row['NOM2'].isnumeric()) else '')
+                dfweb['NOM'] = dfweb.apply(lambda row: row['NOM2']+row['DISC'] if (row['NOM2'].isnumeric()) else '',axis=1)
                 dfweb = dfweb.drop(columns='DISC')
 
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
