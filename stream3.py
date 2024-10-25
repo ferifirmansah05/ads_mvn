@@ -766,10 +766,15 @@ if uploaded_file is not None:
                 
                 dfweb['SOURCE']     =   'WEB'
                 
-
                 #Rename columns to match the database schema
                 dfweb       =       dfweb.rename(columns={'CO':'TIME','TOTAL':'NOM2','KATEGORI':'KAT','CUSTOMER':'ID'}).fillna('')
-                dfweb       =       dfweb.loc[:,['CAB','DATE','TIME','CODE','ID','NOM2','DISC','KAT','SOURCE']].sort_values('DATE', ascending=[False])
+                
+                dfweb         =   dfweb[dfweb['DATE'].isin(all_date)]
+                dfweb['DATE'] = pd.to_datetime(dfweb['DATE'])
+                dfweb['DATE'] = dfweb['DATE'].dt.strftime('%d/%m/%Y')
+                dfweb = dfweb[dfweb['CAB'].isin(all_cab)]
+
+                dfweb       =       dfweb.loc[:,['CAB','DATE','TIME','CODE','ID','NOM2','DISC','KAT','SOURCE']]#.sort_values('DATE', ascending=[False])
                 
                 dfweb       =       dfweb[dfweb['TIME']     !=      'TOTAL']
                 dfweb       =       dfweb[dfweb['TIME']     !=      'CO']
@@ -787,10 +792,7 @@ if uploaded_file is not None:
                 dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
                 dfweb['NOM'] = dfweb.apply(lambda row: row['NOM2']+row['DISC'] if (row['NOM2'].isnumeric()) else '')
                 dfweb = dfweb.drop(columns='DISC')
-                dfweb         =   dfweb[dfweb['DATE'].isin(all_date)]
-                dfweb['DATE'] = pd.to_datetime(dfweb['DATE'])
-                dfweb['DATE'] = dfweb['DATE'].dt.strftime('%d/%m/%Y')
-                dfweb = dfweb[dfweb['CAB'].isin(all_cab)]
+
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
 
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
