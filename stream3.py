@@ -624,7 +624,7 @@ if uploaded_file is not None:
             # Iterate over each subfolder
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
-                files = glob(os.path.join(main_folder, subfolder, 'QRIS-id*'))
+                files = glob(os.path.join(main_folder, subfolder, '*QRIS-id transaksi*'))
                 # Concatenate CSV files within each subfolder
                 for file in files:
                         try:
@@ -646,7 +646,9 @@ if uploaded_file is not None:
             
                 df_qrisia = df_qrisia[df_qrisia['ID Transaksi']      !=      "Summary"]
               
-                st.write("File QRIS TELKOM processed and saved")
+                st.write("File QRIS TELKOM Concatenated")
+            else:
+                st.write("No dataframes to concatenate.")
 
             if 'df_qrisia' in locals():
                 # Read data merge QRIS Telkom
