@@ -850,7 +850,7 @@ if uploaded_file is not None:
                     dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
                     
             def difference(value1, value2):
-                diff = value1 - value2
+                diff = float(value1) - float(value2)
                 return f' (+{str(int(diff))})'
             def label_1(x):
                 if 'Selisih' in x:
