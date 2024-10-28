@@ -1581,7 +1581,7 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
-            final_df['NOM'] = final_df.apply(lambda row: row['NOM'] if row['NOM2']==np.nan() else row['NOM2'],axis=1)
+            final_df['NOM'] = final_df.apply(lambda row: row['NOM'] if row['SOURCE']=='INVOICE' else row['NOM2'],axis=1)
             final_df =  final_df.drop(columns='NOM2')
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
