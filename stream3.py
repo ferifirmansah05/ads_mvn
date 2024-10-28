@@ -802,7 +802,7 @@ if uploaded_file is not None:
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
-            final_merge = pd.concat([dfinv,dfweb]).sort_values(['CAB','DATE','TIME'])
+            final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})]).sort_values(['CAB','DATE','TIME'])
             
             st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
@@ -1581,6 +1581,8 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
+            final_df['NOM'] = final_df.apply(lambda row: row['NOM2'] if row['NOM2']=='' else row['NOM'])
+            final_df =  final_df.drop(columns='NOM2')
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
