@@ -802,7 +802,7 @@ if uploaded_file is not None:
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
-            final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})]).sort_values(['CAB','DATE','TIME'])
+            final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})])
             
             st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM']
@@ -1587,7 +1587,7 @@ if uploaded_file is not None:
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-                zip_file.writestr(f'MERGE_{time_now}.csv', final_merge.to_csv(index=False))
+                zip_file.writestr(f'MERGE_{time_now}.csv', final_merge.sort_values(['CAB','DATE','TIME']).to_csv(index=False))
                 zip_file.writestr(f'BREAKDOWN_{time_now}.csv', final_df.to_csv(index=False))
             
             # Pastikan buffer ZIP berada di awal
