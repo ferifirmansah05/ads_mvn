@@ -1210,13 +1210,13 @@ if uploaded_file is not None:
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='':
-                                    list_ind = df_i[(abs(df_w.loc[i,'NOM']-df_i['NOM'])<=50) 
+                                    list_ind = df_i[(abs(df_w.loc[i,'NOM']-float(df_i['NOM2']))<=50) 
                                                 & (df_i['ID2']==df_w.loc[i,'ID2'])
                                                 & (df_i['HELP']=='')].index
                                     for x in list_ind:
                                             if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
                                                 if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=time)):
-                                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0):
                                                         df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
@@ -1228,7 +1228,7 @@ if uploaded_file is not None:
                                                         break                              
                                             if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                                 if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
-                                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0):
                                                         df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
