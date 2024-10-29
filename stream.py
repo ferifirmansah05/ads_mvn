@@ -1216,7 +1216,7 @@ if uploaded_file is not None:
                                     for x in list_ind:
                                             if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
                                                 if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=time)):
-                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0):
+                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                         df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
@@ -1228,7 +1228,7 @@ if uploaded_file is not None:
                                                         break                              
                                             if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                                 if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
-                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0):
+                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                         df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
