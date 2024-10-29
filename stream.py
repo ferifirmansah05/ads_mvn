@@ -1210,7 +1210,7 @@ if uploaded_file is not None:
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='':
-                                    list_ind = df_i[(abs(float(df_w.loc[i,'NOM2'])-float(df_i['NOM']))<=50) 
+                                    list_ind = df_i[(abs(float(df_w.loc[i,'NOM2'])-df_i['NOM'])<=50) 
                                                 & (df_i['ID2']==df_w.loc[i,'ID2'])
                                                 & (df_i['HELP']=='')].index
                                     for x in list_ind:
