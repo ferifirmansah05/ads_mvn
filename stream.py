@@ -1137,9 +1137,9 @@ if uploaded_file is not None:
                                                         & ((df_w.loc[i,'TIME'] - df_i.loc[id[x],'TIME'])  <= dt.timedelta(minutes=3))
                                                         & ((df_w.loc[i,'TIME'] - df_i.loc[id[y],'TIME'])  <= dt.timedelta(minutes=3))
                                                         & (df_i.loc[id[x],'ID']!=df_i.loc[id[y],'ID'])):
-                                                        df_w.loc[i,'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
-                                                        df_i.loc[id[x],'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
-                                                        df_i.loc[id[y],'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
+                                                        df_w.loc[i,'KET'] = str(df_i.loc[id[x],'ID']) + '& ' + str(df_i.loc[id[y],'ID'])
+                                                        df_i.loc[id[x],'KET'] = str(df_i.loc[id[x],'ID']) + '& ' + str(df_i.loc[id[y],'ID'])
+                                                        df_i.loc[id[y],'KET'] = str(df_i.loc[id[x],'ID']) + '& ' + str(df_i.loc[id[y],'ID'])
                                                         df_w.loc[i,'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
                                                         df_i.loc[id[x],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
                                                         df_i.loc[id[y],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
