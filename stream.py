@@ -1037,8 +1037,8 @@ if uploaded_file is not None:
                                                                         all_2.loc[x,'HELP'] = ''
                                                                         
                                                 else:
-                                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM']))
-                                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM']))
+                                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM2']))
+                                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM2']))
                                                                         all_2.loc[x,'HELP'] = '' 
                             
                         all = pd.concat([all[all['KET'].isin(['Cancel Nota'])],all_1,all_2,gow2,goi2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
