@@ -1005,14 +1005,14 @@ if uploaded_file is not None:
                                                     all_2.loc[i,['TIME','CODE','ID','NOM']] = temp_row_b
                                                     all_1.loc[y,['TIME','CODE','ID','NOM']] = temp_row_a
                         
-                                                    if all_1.loc[y,'NOM'] == all_1.loc[x,'NOM']:
+                                                    if float(all_1.loc[y,'NOM2'] if all_1.loc[y,'SOURCE']=='WEB' else all_1.loc[y,'NOM']) == float(all_1.loc[x,'NOM2'] if all_1.loc[x,'SOURCE']=='WEB' else all_1.loc[x,'NOM']):
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
                                                             all_1.loc[y,'KET'] = 'Balance '+ all_1.loc[x,'ID']
                                                             all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[x,'ID']
                                                         if all_2.loc[i,'SOURCE'] =='INVOICE':
                                                             all_1.loc[y,'KET'] = 'Balance '+ all_1.loc[y,'ID']
                                                             all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[y,'ID']                                            
-                                                    if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
+                                                    else#if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
                                                             all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
                                                             all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
