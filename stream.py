@@ -1012,7 +1012,7 @@ if uploaded_file is not None:
                                                         if all_2.loc[i,'SOURCE'] =='INVOICE':
                                                             all_1.loc[y,'KET'] = 'Balance '+ all_1.loc[y,'ID']
                                                             all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[y,'ID']                                            
-                                                    else#if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
+                                                    else: #if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
                                                             all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
                                                             all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
