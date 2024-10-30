@@ -903,8 +903,11 @@ if uploaded_file is not None:
                                                 df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
                                                 df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
                                                 df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
-                                                break                               
-
+                                                break 
+                                                
+                            for i in df_w[df_w['KET']==''].index :
+                                    df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+                                
                         compare_time(goi, gow2, time_go)
                         goi2 = goi[goi['HELP']!=''].reset_index(drop=True)
                         goi = goi[goi['HELP']==''].reset_index(drop=True)
