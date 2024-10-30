@@ -925,8 +925,8 @@ if uploaded_file is not None:
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break
                                                 else:
-                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
-                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
+                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
+                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break                              
                                         if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
@@ -937,8 +937,8 @@ if uploaded_file is not None:
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break
                                                 else:
-                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
-                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
+                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
+                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break   
                                                                         
