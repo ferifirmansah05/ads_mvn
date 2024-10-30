@@ -1014,11 +1014,11 @@ if uploaded_file is not None:
                                                             all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[y,'ID']                                            
                                                     else: #if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
-                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
-                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
+                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],float(all_1.loc[y,'NOM2']))
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],float(all_1.loc[y,'NOM2']))
                                                         else:
-                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],all_1.loc[x,'NOM'])
-                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],all_1.loc[x,'NOM'])
+                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],float(all_1.loc[x,'NOM2']))
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],float(all_1.loc[x,'NOM2']))
               
                             if step == 0:
                                 break
@@ -1031,14 +1031,14 @@ if uploaded_file is not None:
                         
                                             if len(list_ind)>0:
                                                 x = (abs(all_2.loc[i,'TIME'] - all_2.loc[list_ind, 'TIME'])).sort_values().index[0]
-                                                if ((all_2.loc[x,'NOM']-all_2.loc[i,'NOM'])==0):
+                                                if ((all_2.loc[x,'NOM']-float(all_2.loc[i,'NOM2']))==0):
                                                                         all_2.loc[i,'KET'] = 'Balance '+ all_2.loc[x,'ID']
                                                                         all_2.loc[x,'KET'] = 'Balance '+ all_2.loc[x,'ID']
                                                                         all_2.loc[x,'HELP'] = ''
                                                                         
                                                 else:
-                                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
-                                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM']))
+                                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM']))
                                                                         all_2.loc[x,'HELP'] = '' 
                             
                         all = pd.concat([all[all['KET'].isin(['Cancel Nota'])],all_1,all_2,gow2,goi2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
