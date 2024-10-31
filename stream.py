@@ -746,6 +746,9 @@ if uploaded_file is not None:
                         # Get the DataFrame corresponding to each file
                         if html_file:
                             df = html_file[0].iloc[1:]  # Remove the first row
+                            df.columns = df.iloc[0,:]
+                            if 'BILL' in df.columns:
+                                df = df.drop(columns='TOTAL').rename(columns={'BILL':'TOTAL'})
                             dataframes.append(df)
                     except Exception as e:
                         st.write(f"Error reading {file_path}: {e}")
@@ -754,7 +757,7 @@ if uploaded_file is not None:
             if dataframes:
                 # Concatenate all DataFrames into one DataFrame
                 dfweb = pd.concat(dataframes, ignore_index=True)
-                dfweb.columns= dfweb.iloc[0,:]
+                #dfweb.columns= dfweb.iloc[0,:]
             
                 st.write("FIle WEB Concatenated")
             else:
