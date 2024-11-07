@@ -869,7 +869,8 @@ if uploaded_file is not None:
                 for date in all_date:
                     st.write(date)
 
-                    if 'GOJEK' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "GO RESTO") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "GO RESTO") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         goi   =   dfinv[dfinv['KAT']  ==  "GO RESTO"]
                         gow   =   dfweb[dfweb['KAT']  ==  "GO RESTO"]
                         goi   =   goi[goi['CAB']  ==  cab]
@@ -1188,7 +1189,9 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_bahan/QRIS SHOPEE_{cab}_{date}.csv', index=False)
                         st.write('QRIS SHOPEE', ': File processed')
                         
-                    if 'GRAB' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "GRAB FOOD") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "GRAB FOOD") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :  
+                             
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
                         gfw   =   dfweb[dfweb['KAT']  ==  "GRAB FOOD"]
                         gfi   =   gfi[gfi['CAB']  ==  cab]
@@ -1269,7 +1272,8 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_bahan/GRAB_{cab}_{date}.csv', index=False)
                         st.write('GRAB FOOD', ': File processed')
                         
-                    if 'SHOPEEPAY' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "SHOPEEPAY") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "SHOPEEPAY") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
                         spw   =   dfweb[dfweb['KAT']  ==  "SHOPEEPAY"]
                         spi   =   spi[spi['CAB']  ==  cab]
