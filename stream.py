@@ -850,7 +850,7 @@ if uploaded_file is not None:
             cash = dfweb[dfweb['KAT']=='CASH']
             
             for wib in dfinv['CAB'].unique():
-                if wib in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
+                if wib in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM']:
                     dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
                     
             def difference(value1, value2):
@@ -1593,7 +1593,10 @@ if uploaded_file is not None:
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
             final_df['NOM'] = final_df.apply(lambda row: row['NOM'] if row['SOURCE']=='INVOICE' else row['NOM2'],axis=1)
-            final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2']]
+            if 'ID2' not in final_df.columns:
+                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP']]
+            else:
+                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2']]
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
