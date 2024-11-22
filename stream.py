@@ -1534,7 +1534,7 @@ if uploaded_file is not None:
                         if os.path.exists(f'{tmpdirname}/_bahan/{ojol}_{cab}_{date}.csv'):
                             file = pd.read_csv(f'{tmpdirname}/_bahan/{ojol}_{cab}_{date}.csv')
                             if not file.empty:
-                                if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
+                                if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM']:
                                     file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME'] = pd.to_datetime(file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
                                 file['TIME'] = pd.to_datetime(file['TIME']).dt.strftime('%H:%M:%S')
                                 files.append(file)
