@@ -502,7 +502,7 @@ if uploaded_file is not None:
                     df_grab['NOM1'] = pd.to_numeric(df_grab['NOM1']).astype(float)
                     #df_grab['Amount'] = pd.to_numeric(df_grab['Amount'].astype('str').str.replace('.', ''), errors='coerce').astype(float)
             
-                    # Drop rows where 'Category' is 'Canceled'
+                    # Drop rows where 'Category' is 'Cancelled'
                     df_grab = df_grab[df_grab['Category'] != 'Cancelled']
             
                     # Define conditions and choices for 'NOM'
