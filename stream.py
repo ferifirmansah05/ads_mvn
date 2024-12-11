@@ -1206,8 +1206,8 @@ if uploaded_file is not None:
                         gfi.drop_duplicates(inplace=True)
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
-                        gfw['ID2'] = gfw['ID'].apply(lambda x: str(re.findall(r'\d+', x)[-1]) if re.findall(r'\d+', x) else '0')
-                        gfi['ID2'] = gfi['ID'].apply(lambda x: str(re.findall(r'\d+', x)[-1]) if re.findall(r'\d+', x) else '0')
+                        gfw['ID2'] = gfw['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
+                        gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
@@ -1217,6 +1217,7 @@ if uploaded_file is not None:
                                 cn.loc[i, 'KET'] = 'Done'
             
                         gfi['KET'] = gfi['ID']
+
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='':
@@ -1250,15 +1251,15 @@ if uploaded_file is not None:
                                                         break 
                                                         
                             for x in df_i[(df_i['ID'].apply(lambda x: len(re.findall(r'\bGF-\d{3}\b', x)))>=2) & (df_i['HELP']=='')].index:
-                                if len(df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index) >=2:
-                                    i = df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index
-                                    if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM2'].astype(float).sum())< 5:
-                                        df_w.loc[i[0],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM'].astype(float).sum())
-                                        df_w.loc[i[1],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM'].astype(float).sum())
-                                        df_w.loc[i[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
-                                        df_w.loc[i[1],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                if len(df_w[df_w['ID2'].astype(str).isin([str(int(x)) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index) >=2:
+                                    i = df_w[df_w['ID2'].astype(str).isin([str(int(x)) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index
+                                    if abs(df_i.loc[x,'NOM'] - df_w.loc[i,'NOM2'].astype(float).sum())< 5:
+                                        df_w.loc[i[0],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
+                                        df_w.loc[i[1],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
+                                        df_w.loc[i[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','').split(', ')[0]
+                                        df_w.loc[i[1],'ID2'] = df_i.loc[x,'KET'].replace('GF-','').split(', ')[0]
                                         df_i.loc[x,'HELP'] = df_i.loc[x,'KET'].replace('GF-','')
-                                        df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                        df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','').split(', ')[0]
                                         df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
                                         
                             for i in df_w[df_w['KET']==''].index :
