@@ -1254,7 +1254,7 @@ if uploaded_file is not None:
                             for x in df_i[(df_i['ID'].apply(lambda x: len(re.findall(r'\bGF-\d{3}\b', x)))>=2) & (df_i['HELP']=='')].index:
                                 print([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])
                                 if len(df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])]) >=2:
-                                    if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM2'].sum())< 5:
+                                    if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM2'].astype(float).sum())< 5:
                                         df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index[0],'KET'] = 'Selisih IT'
                                         df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index[1],'KET'] = 'Selisih IT'
                                         df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
