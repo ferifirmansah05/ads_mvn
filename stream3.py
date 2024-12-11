@@ -1217,8 +1217,7 @@ if uploaded_file is not None:
                                 cn.loc[i, 'KET'] = 'Done'
             
                         gfi['KET'] = gfi['ID']
-                        st.dataframe(gfw)
-                        st.dataframe(gfi)
+                             
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='':
