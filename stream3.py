@@ -1258,10 +1258,10 @@ if uploaded_file is not None:
                                     if abs(df_i.loc[x,'NOM'] - df_w.loc[i,'NOM2'].astype(float).sum())< 5:
                                         df_w.loc[i[0],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
                                         df_w.loc[i[1],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
-                                        df_w.loc[i[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
-                                        df_w.loc[i[1],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                        df_w.loc[i[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','').split(', ')[0]
+                                        df_w.loc[i[1],'ID2'] = df_i.loc[x,'KET'].replace('GF-','').split(', ')[0]
                                         df_i.loc[x,'HELP'] = df_i.loc[x,'KET'].replace('GF-','')
-                                        df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                        df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','').split(', ')[0]
                                         df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
                                         
                             for i in df_w[df_w['KET']==''].index :
