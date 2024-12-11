@@ -503,7 +503,7 @@ if uploaded_file is not None:
                     #df_grab['Amount'] = pd.to_numeric(df_grab['Amount'].astype('str').str.replace('.', ''), errors='coerce').astype(float)
             
                     # Drop rows where 'Category' is 'Canceled'
-                    df_grab = df_grab[df_grab['Category'] != 'Canceled']
+                    df_grab = df_grab[df_grab['Category'] != 'Cancelled']
             
                     # Define conditions and choices for 'NOM'
                     df_grabcon = [
@@ -746,6 +746,9 @@ if uploaded_file is not None:
                         # Get the DataFrame corresponding to each file
                         if html_file:
                             df = html_file[0].iloc[1:]  # Remove the first row
+                            df.columns = df.iloc[0,:]
+                            if 'BILL' in df.columns:
+                                df = df.drop(columns='TOTAL').rename(columns={'BILL':'TOTAL'})
                             dataframes.append(df)
                     except Exception as e:
                         st.write(f"Error reading {file_path}: {e}")
@@ -754,7 +757,7 @@ if uploaded_file is not None:
             if dataframes:
                 # Concatenate all DataFrames into one DataFrame
                 dfweb = pd.concat(dataframes, ignore_index=True)
-                dfweb.columns= dfweb.iloc[0,:]
+                #dfweb.columns= dfweb.iloc[0,:]
             
                 st.write("FIle WEB Concatenated")
             else:
@@ -790,6 +793,8 @@ if uploaded_file is not None:
                             return pd.NaT
                             
                 dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
+                dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
+                #st.write(dfweb)
                 dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (row['NOM2'].isnumeric()) else '',axis=1)
                 dfweb = dfweb.drop(columns='DISC')
 
@@ -846,7 +851,7 @@ if uploaded_file is not None:
             cash = dfweb[dfweb['KAT']=='CASH']
             
             for wib in dfinv['CAB'].unique():
-                if wib in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
+                if wib in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM']:
                     dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
                     
             def difference(value1, value2):
@@ -865,7 +870,8 @@ if uploaded_file is not None:
                 for date in all_date:
                     st.write(date)
 
-                    if 'GOJEK' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "GO RESTO") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "GO RESTO") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         goi   =   dfinv[dfinv['KAT']  ==  "GO RESTO"]
                         gow   =   dfweb[dfweb['KAT']  ==  "GO RESTO"]
                         goi   =   goi[goi['CAB']  ==  cab]
@@ -893,7 +899,7 @@ if uploaded_file is not None:
                                         list_ind = df_i[(df_i['ID2']==df_w.loc[i,'ID2'])
                                                     & (df_i['HELP']=='')].index
                                         for x in list_ind:
-                                            if (df_i.loc[x,'NOM']==float(df_w.loc[i,'NOM2'])):
+                                            if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                 df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                 df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                 df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
@@ -902,8 +908,11 @@ if uploaded_file is not None:
                                                 df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
                                                 df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'])
                                                 df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
-                                                break                               
-
+                                                break 
+                                                
+                            for i in df_w[df_w['KET']==''].index :
+                                    df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol'
+                                
                         compare_time(goi, gow2, time_go)
                         goi2 = goi[goi['HELP']!=''].reset_index(drop=True)
                         goi = goi[goi['HELP']==''].reset_index(drop=True)
@@ -915,26 +924,26 @@ if uploaded_file is not None:
                                     for x in list(list_ind):
                                         if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  >= dt.timedelta(minutes=0)):
                                             if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME'] < dt.timedelta(minutes=time)):
-                                                if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                if ((df_i.loc[x,'NOM']-float(df_w.loc[i,'NOM2']))==0):
                                                     df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                     df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break
                                                 else:
-                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
-                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
+                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break                              
                                         if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                             if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=3)):
-                                                if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                if (df_i.loc[x,'NOM']-float(df_w.loc[i,'NOM2']))==0:
                                                     df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                     df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break
                                                 else:
-                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
-                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'])
+                                                    df_w.loc[i,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
+                                                    df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],float(df_w.loc[i,'NOM2']))
                                                     df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                     break   
                                                                         
@@ -1001,20 +1010,20 @@ if uploaded_file is not None:
                                                     all_2.loc[i,['TIME','CODE','ID','NOM']] = temp_row_b
                                                     all_1.loc[y,['TIME','CODE','ID','NOM']] = temp_row_a
                         
-                                                    if all_1.loc[y,'NOM'] == all_1.loc[x,'NOM']:
+                                                    if float(all_1.loc[y,'NOM2'] if all_1.loc[y,'SOURCE']=='WEB' else all_1.loc[y,'NOM']) == float(all_1.loc[x,'NOM2'] if all_1.loc[x,'SOURCE']=='WEB' else all_1.loc[x,'NOM']):
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
                                                             all_1.loc[y,'KET'] = 'Balance '+ all_1.loc[x,'ID']
                                                             all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[x,'ID']
                                                         if all_2.loc[i,'SOURCE'] =='INVOICE':
                                                             all_1.loc[y,'KET'] = 'Balance '+ all_1.loc[y,'ID']
                                                             all_1.loc[x,'KET'] = 'Balance '+ all_1.loc[y,'ID']                                            
-                                                    if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
+                                                    else: #if all_1.loc[y,'NOM'] != all_1.loc[x,'NOM']:
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
-                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
-                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],all_1.loc[y,'NOM'])
+                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],float(all_1.loc[y,'NOM2']))
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[x,'ID']) + difference(all_1.loc[x,'NOM'],float(all_1.loc[y,'NOM2']))
                                                         else:
-                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],all_1.loc[x,'NOM'])
-                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],all_1.loc[x,'NOM'])
+                                                            all_1.loc[y,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],float(all_1.loc[x,'NOM2']))
+                                                            all_1.loc[x,'KET'] =  'Selisih '+ str(all_1.loc[y,'ID']) + difference(all_1.loc[y,'NOM'],float(all_1.loc[x,'NOM2']))
               
                             if step == 0:
                                 break
@@ -1027,14 +1036,14 @@ if uploaded_file is not None:
                         
                                             if len(list_ind)>0:
                                                 x = (abs(all_2.loc[i,'TIME'] - all_2.loc[list_ind, 'TIME'])).sort_values().index[0]
-                                                if ((all_2.loc[x,'NOM']-all_2.loc[i,'NOM'])==0):
+                                                if ((all_2.loc[x,'NOM']-float(all_2.loc[i,'NOM2']))==0):
                                                                         all_2.loc[i,'KET'] = 'Balance '+ all_2.loc[x,'ID']
                                                                         all_2.loc[x,'KET'] = 'Balance '+ all_2.loc[x,'ID']
                                                                         all_2.loc[x,'HELP'] = ''
                                                                         
                                                 else:
-                                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
-                                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],all_2.loc[i,'NOM'])
+                                                                        all_2.loc[i,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM2']))
+                                                                        all_2.loc[x,'KET'] = 'Selisih '+ str(all_2.loc[x,'ID']) + difference(all_2.loc[x,'NOM'],float(all_2.loc[i,'NOM2']))
                                                                         all_2.loc[x,'HELP'] = '' 
                             
                         all = pd.concat([all[all['KET'].isin(['Cancel Nota'])],all_1,all_2,gow2,goi2]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM'],ascending=[True,True,True,False,True])
@@ -1136,9 +1145,9 @@ if uploaded_file is not None:
                                                         & ((df_w.loc[i,'TIME'] - df_i.loc[id[x],'TIME'])  <= dt.timedelta(minutes=3))
                                                         & ((df_w.loc[i,'TIME'] - df_i.loc[id[y],'TIME'])  <= dt.timedelta(minutes=3))
                                                         & (df_i.loc[id[x],'ID']!=df_i.loc[id[y],'ID'])):
-                                                        df_w.loc[i,'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
-                                                        df_i.loc[id[x],'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
-                                                        df_i.loc[id[y],'KET'] = df_i.loc[id[x],'ID'] + '& ' + df_i.loc[id[y],'ID']
+                                                        df_w.loc[i,'KET'] = str(df_i.loc[id[x],'ID']) + ' & ' + str(df_i.loc[id[y],'ID'])
+                                                        df_i.loc[id[x],'KET'] = str(df_i.loc[id[x],'ID']) + ' & ' + str(df_i.loc[id[y],'ID'])
+                                                        df_i.loc[id[y],'KET'] = str(df_i.loc[id[x],'ID']) + ' & ' + str(df_i.loc[id[y],'ID'])
                                                         df_w.loc[i,'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
                                                         df_i.loc[id[x],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
                                                         df_i.loc[id[y],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
@@ -1181,7 +1190,9 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_bahan/QRIS SHOPEE_{cab}_{date}.csv', index=False)
                         st.write('QRIS SHOPEE', ': File processed')
                         
-                    if 'GRAB' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "GRAB FOOD") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "GRAB FOOD") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :  
+                             
                         gfi   =   dfinv[dfinv['KAT']  ==  "GRAB FOOD"]
                         gfw   =   dfweb[dfweb['KAT']  ==  "GRAB FOOD"]
                         gfi   =   gfi[gfi['CAB']  ==  cab]
@@ -1209,13 +1220,13 @@ if uploaded_file is not None:
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='':
-                                    list_ind = df_i[(abs(df_w.loc[i,'NOM']-df_i['NOM'])<=50) 
+                                    list_ind = df_i[(abs(float(df_w.loc[i,'NOM2'])-df_i['NOM'])<=50) 
                                                 & (df_i['ID2']==df_w.loc[i,'ID2'])
                                                 & (df_i['HELP']=='')].index
                                     for x in list_ind:
                                             if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
                                                 if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=time)):
-                                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM'])==0):
+                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                         df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
@@ -1227,7 +1238,7 @@ if uploaded_file is not None:
                                                         break                              
                                             if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                                 if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=time)):
-                                                    if ((df_i.loc[x,'NOM']-df_w.loc[i,'NOM']))==0:
+                                                    if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                         df_w.loc[i,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'KET'] = 'Balance '+ df_i.loc[x,'ID']
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
@@ -1237,7 +1248,17 @@ if uploaded_file is not None:
                                                         df_i.loc[x,'KET'] = 'Promo Marketing/Adjustment'
                                                         df_i.loc[x,'HELP'] = df_w.loc[i,'CODE']
                                                         break 
-            
+                                                        
+                            for x in df_i[(df_i['ID'].apply(lambda x: len(re.findall(r'\bGF-\d{3}\b', x)))>=2) & (df_i['HELP']=='')].index:
+                                if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))]['NOM2'].sum())< 5:
+                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index[0],'KET'] = 'Selisih IT'
+                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index[1],'KET'] = 'Selisih IT'
+                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                    df_i.loc[x,'HELP'] = df_i.loc[x,'KET'].replace('GF-','')
+                                    df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                    df_i.loc[x,'KET'] = 'Selisih IT'
+                            
                             for i in df_w[df_w['KET']==''].index :
                                 if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
                                     df_w.loc[i,'KET'] = 'Invoice Beda Hari'
@@ -1262,7 +1283,8 @@ if uploaded_file is not None:
                         all.to_csv(f'{tmpdirname}/_bahan/GRAB_{cab}_{date}.csv', index=False)
                         st.write('GRAB FOOD', ': File processed')
                         
-                    if 'SHOPEEPAY' in all_kat:
+                    if not ((dfinv[(dfinv['KAT']  ==  "SHOPEEPAY") & (dfinv['CAB']  ==  cab) & (dfinv['DATE']==date)].empty) or
+                         (dfweb[(dfweb['KAT']  ==  "SHOPEEPAY") & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
                         spi   =   dfinv[dfinv['KAT']  ==  "SHOPEEPAY"]
                         spw   =   dfweb[dfweb['KAT']  ==  "SHOPEEPAY"]
                         spi   =   spi[spi['CAB']  ==  cab]
@@ -1300,7 +1322,7 @@ if uploaded_file is not None:
                                         for x in list_ind:
                                                 if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME'])  >= dt.timedelta(minutes=0)):
                                                     if ((df_i.loc[x,'TIME'] - df_w.loc[i,'TIME']) < dt.timedelta(minutes=150)):
-                                                        if (df_i.loc[x,'NOM']==float(df_w.loc[i,'NOM2'])):
+                                                        if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                             df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                             df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                             df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
@@ -1312,7 +1334,7 @@ if uploaded_file is not None:
                                                             break                              
                                                 if ((df_i.loc[x,'TIME']) - df_w.loc[i,'TIME']  < dt.timedelta(minutes=0)):
                                                     if ((df_w.loc[i,'TIME']) - df_i.loc[x,'TIME'] < dt.timedelta(minutes=150)):
-                                                        if (df_i.loc[x,'NOM']==float(df_w.loc[i,'NOM2'])):
+                                                        if (float(df_i.loc[x,'NOM'])-float(df_w.loc[i,'NOM2']))==0:
                                                             df_w.loc[i,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                             df_i.loc[x,'KET'] = 'Balance '+ str(df_i.loc[x,'ID'])
                                                             df_i.loc[x,'HELP'] = str(df_w.loc[i,'CODE'])
@@ -1523,7 +1545,7 @@ if uploaded_file is not None:
                         if os.path.exists(f'{tmpdirname}/_bahan/{ojol}_{cab}_{date}.csv'):
                             file = pd.read_csv(f'{tmpdirname}/_bahan/{ojol}_{cab}_{date}.csv')
                             if not file.empty:
-                                if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT']:
+                                if file['CAB'].unique()[0] in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM']:
                                     file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME'] = pd.to_datetime(file.loc[file[file['SOURCE']=='INVOICE'].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
                                 file['TIME'] = pd.to_datetime(file['TIME']).dt.strftime('%H:%M:%S')
                                 files.append(file)
@@ -1562,14 +1584,14 @@ if uploaded_file is not None:
                                         df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                         df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'       
                                     else:
-                                        if df_all3.loc[i,'NOM']==float(df_all3.loc[x,'NOM2']):
+                                        if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
                                             df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                             df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'
                                         else:
                                             df_all3.loc[i, 'HELP'] = 'Selisih IT'
-                                            df_all3.loc[i, 'KET'] = 'Invoice Beda Hari Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
+                                            df_all3.loc[i, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
                                             df_all3.loc[x, 'HELP'] = 'Selisih IT' 
-                                            df_all3.loc[x, 'KET'] = 'Transaksi Kemarin Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])   
+                                            df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])   
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
                                 df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
@@ -1582,7 +1604,10 @@ if uploaded_file is not None:
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat)
             final_df['NOM'] = final_df.apply(lambda row: row['NOM'] if row['SOURCE']=='INVOICE' else row['NOM2'],axis=1)
-            final_df =  final_df.drop(columns='NOM2')
+            if 'ID2' not in final_df.columns:
+                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP']]
+            else:
+                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2']]
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
