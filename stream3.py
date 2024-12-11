@@ -1250,11 +1250,11 @@ if uploaded_file is not None:
                                                         break 
                                                         
                             for x in df_i[(df_i['ID'].apply(lambda x: len(re.findall(r'\bGF-\d{3}\b', x)))>=2) & (df_i['HELP']=='')].index:
-                                if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))]['NOM2'].sum())< 5:
-                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index[0],'KET'] = 'Selisih IT'
-                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index[1],'KET'] = 'Selisih IT'
-                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
-                                    df_w.loc[df_w[df_w['ID2'].isin(df_i.loc[x,'KET'].replace('GF-','').split(', '))].index,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[236,'KET'].replace('GF-','').split(', ')])]['NOM2'].sum())< 5:
+                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[236,'KET'].replace('GF-','').split(', ')])].index[0],'KET'] = 'Selisih IT'
+                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[236,'KET'].replace('GF-','').split(', ')])].index[1],'KET'] = 'Selisih IT'
+                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[236,'KET'].replace('GF-','').split(', ')])].index[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[236,'KET'].replace('GF-','').split(', ')])].index,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
                                     df_i.loc[x,'HELP'] = df_i.loc[x,'KET'].replace('GF-','')
                                     df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
                                     df_i.loc[x,'KET'] = 'Selisih IT'
