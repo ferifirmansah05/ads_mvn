@@ -1259,7 +1259,7 @@ if uploaded_file is not None:
                                         df_w.loc[i[1],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
                                         df_i.loc[x,'HELP'] = df_i.loc[x,'KET'].replace('GF-','')
                                         df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
-                                        df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[index,'NOM2'].astype(float).sum())
+                                        df_i.loc[x,'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM2'].astype(float).sum())
                                         
                             for i in df_w[df_w['KET']==''].index :
                                 if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
