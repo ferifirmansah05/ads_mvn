@@ -21,7 +21,7 @@ import subprocess
 from pandas.errors import ParserError
 
 
-defdownload_file_from_github(url, save_path):
+def download_file_from_github(url, save_path):
     response = requests.get(url)
     if response.status_code == 200:
         with open(save_path, 'wb') as file:
