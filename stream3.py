@@ -1217,8 +1217,7 @@ if uploaded_file is not None:
                                 cn.loc[i, 'KET'] = 'Done'
             
                         gfi['KET'] = gfi['ID']
-                        st.dataframe(gfi)
-                        st.dataframe(gfw)
+
                         def compare_time(df_i, df_w, time):
                             for i in range(0,df_w.shape[0]):
                                 if df_w.loc[i,'KET']=='':
@@ -1253,7 +1252,6 @@ if uploaded_file is not None:
                                                         
                             for x in df_i[(df_i['ID'].apply(lambda x: len(re.findall(r'\bGF-\d{3}\b', x)))>=2) & (df_i['HELP']=='')].index:
                                 if len(df_w[df_w['ID2'].astype(str).isin([str(int(x)) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index) >=2:
-                                    st.write([str(int(x)) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])
                                     i = df_w[df_w['ID2'].astype(str).isin([str(int(x)) for x in df_i.loc[x,'KET'].replace('GF-','').split(', ')])].index
                                     if abs(df_i.loc[x,'NOM'] - df_w.loc[i,'NOM2'].astype(float).sum())< 5:
                                         df_w.loc[i[0],'KET'] = 'Selisih '+ str(df_i.loc[x,'ID']) + difference(df_i.loc[x,'NOM'],df_w.loc[i,'NOM'].astype(float).sum())
