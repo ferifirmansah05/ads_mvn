@@ -1206,9 +1206,9 @@ if uploaded_file is not None:
                         gfi.drop_duplicates(inplace=True)
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
-                        gfw['ID2'] = gfw['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
-                        gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
-            
+                        gfw['ID2'] = gfw['ID'].apply(lambda x: str(re.findall(r'\d+', x)[-1]) if re.findall(r'\d+', x) else 0)
+                        gfi['ID2'] = gfi['ID'].apply(lambda x: str(re.findall(r'\d+', x)[-1]) if re.findall(r'\d+', x) else 0)
+                
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
                         for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
                             x = gfw[(gfw['ID2']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) & (gfw['NOM']==cn.loc[i,'TOTAL BILL'])].index
@@ -1250,11 +1250,11 @@ if uploaded_file is not None:
                                                         break 
                                                         
                             for x in df_i[(df_i['ID'].apply(lambda x: len(re.findall(r'\bGF-\d{3}\b', x)))>=2) & (df_i['HELP']=='')].index:
-                                if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM2'].sum())< 5:
-                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index[0],'KET'] = 'Selisih IT'
-                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index[1],'KET'] = 'Selisih IT'
-                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
-                                    df_w.loc[df_w[df_w['ID2'].isin([int(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                if abs(df_i.loc[x,'NOM'] - df_w[df_w['ID2'].isin([str(int(x)) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])]['NOM2'].sum())< 5:
+                                    df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index[0],'KET'] = 'Selisih IT'
+                                    df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index[1],'KET'] = 'Selisih IT'
+                                    df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index[0],'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
+                                    df_w.loc[df_w[df_w['ID2'].isin([str(x) for x in gfi.loc[x,'KET'].replace('GF-','').split(', ')])].index,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
                                     df_i.loc[x,'HELP'] = df_i.loc[x,'KET'].replace('GF-','')
                                     df_i.loc[x,'ID2'] = df_i.loc[x,'KET'].replace('GF-','')
                                     df_i.loc[x,'KET'] = 'Selisih IT'
