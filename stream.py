@@ -752,7 +752,21 @@ if uploaded_file is not None:
                             dataframes.append(df)
                     except Exception as e:
                         st.write(f"Error reading {file_path}: {e}")
-            
+                        
+                if file_name.endswith('.xlsx'):
+                    file_path = os.path.join(folder_path, file_name)
+                    try:
+                        df = pd.read_excel(file_path)
+                        # Get the DataFrame corresponding to each file
+                        df.columns = df.iloc[0,:]
+                        if 'BILL' in df.columns:
+                            df = df.drop(columns='TOTAL').rename(columns={'BILL':'TOTAL'})
+                        df = df[~df['DATE'].isin(['DATE','TOTAL'])]
+                        df['DATE'] = df['DATE'].astype(str).str[:10]
+                        dataframes.append(df)
+                    except Exception as e:
+                        print(f"Error reading {file_path}: {e}")
+                        
             # Check if any HTML files were processed
             if dataframes:
                 # Concatenate all DataFrames into one DataFrame
@@ -764,8 +778,8 @@ if uploaded_file is not None:
                 st.write("No dataframes to concatenate.")           
 
             if 'dfweb' in locals(): 
-                dfweb['DATE'] = dfweb['DATE'].str.replace('Apr', 'April')            
-                dfweb['DATE'] = dfweb['DATE'].str.replace('Jun', 'June')
+                #dfweb['DATE'] = dfweb['DATE'].str.replace('Apr', 'April')            
+                #dfweb['DATE'] = dfweb['DATE'].str.replace('Jun', 'June')
                 
                 dfweb['SOURCE']     =   'WEB'
                 
@@ -792,10 +806,11 @@ if uploaded_file is not None:
                         except ValueError as e:
                             return pd.NaT
                             
-                dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
+                #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
+                dfweb['TIME'] = pd.to_datetime(dfweb['TIME'], errors='coerce').fillna(pd.to_datetime(dfweb['TIME'], format='%H:%M:%S',errors='coerce')).strftime('%H:%M:%S')
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
                 #st.write(dfweb)
-                dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (row['NOM2'].isnumeric()) else '',axis=1)
+                dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (str(row['NOM2']).isnumeric()) else '',axis=1)
                 dfweb = dfweb.drop(columns='DISC')
 
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
