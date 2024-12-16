@@ -1,6 +1,7 @@
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 import streamlit as st
+import matplotlib.pyplot as plt
 
 # Sample data with numeric columns for gradient application
 data = {
