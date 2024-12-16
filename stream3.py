@@ -20,4 +20,5 @@ gb.configure_grid_options(domLayout='autoHeight', autoSizeColumns=True)
 grid_options = gb.build()
 # Tampilkan AgGrid
 st.write("Tabel dengan kolom pertama dibekukan:")
-AgGrid(df, gridOptions=grid_options, height=300)
+AgGrid(df, gridOptions=grid_options, height=None, fit_columns_on_grid_load=True, theme='streamlit')
+
