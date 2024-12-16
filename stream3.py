@@ -1,7 +1,6 @@
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 import streamlit as st
-import matplotlib.pyplot as plt
 
 # Sample data with numeric columns for gradient application
 data = {
@@ -11,8 +10,23 @@ data = {
 }
 df = pd.DataFrame(data)
 
+# Function to create a gradient style
+def gradient_style(value, min_value, max_value):
+    # Normalize the value to a range between 0 and 1
+    normalized_value = (value - min_value) / (max_value - min_value)
+    # Create a gradient color from white to red
+    color = f"rgb({int(255 * normalized_value)}, 0, 0)"
+    return f"background-color: {color};"
+
 # Create grid options
 gb = GridOptionsBuilder.from_dataframe(df)
-st.dataframe(df.style.background_gradient(cmap='Reds', axis=1, subset=df.columns[1:]))
+
+# Apply gradient style to numeric columns
+for column in df.columns[1:]:  # Skip the 'Name' column
+    min_value = df[column].min()
+    max_value = df[column].max()
+    # Set cell style for each numeric column
+    gb.configure_column(column, cellStyle=lambda value: gradient_style(value, min_value, max_value))
+
 # Render the grid with the styled DataFrame
-AgGrid(df.style.background_gradient(cmap='Reds', axis=1, subset=df.columns[1:]), gridOptions=gb.build())
+AgGrid(df, gridOptions=gb.build())
