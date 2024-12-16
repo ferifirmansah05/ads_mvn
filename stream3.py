@@ -16,7 +16,7 @@ df = pd.DataFrame(data)
 gb = GridOptionsBuilder.from_dataframe(df)
 gb.configure_default_column(editable=True, resizable=True)
 gb.configure_column("Nama", pinned="left")  # Membekukan kolom pertama
-gb.configure_grid_options(domLayout='autoHeight', autoSizeColumns=True)
+gb.configure_grid_options(domLayout='autoHeight') 
 grid_options = gb.build()
 # Tampilkan AgGrid
 st.write("Tabel dengan kolom pertama dibekukan:")
