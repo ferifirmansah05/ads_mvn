@@ -19,6 +19,18 @@ gb.configure_column("Nama", pinned="left")  # Membekukan kolom pertama
 gb.configure_grid_options(domLayout='autoHeight') 
 grid_options = gb.build()
 # Tampilkan AgGrid
+st.markdown("""
+    <style>
+        .stAgGrid {
+            margin-bottom: 0; /* Menghapus margin di bawah tabel */
+            padding-bottom: 0; /* Menghapus padding di bawah tabel */
+        }
+        .ag-root-wrapper {
+            border: none !important; /* Opsional: Hilangkan border jika diperlukan */
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
 st.write("Tabel dengan kolom pertama dibekukan:")
 AgGrid(df, gridOptions=grid_options,fit_columns_on_grid_load=True)
 
