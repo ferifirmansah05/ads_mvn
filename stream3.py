@@ -17,7 +17,6 @@ df = pd.DataFrame(data)
 gb = GridOptionsBuilder.from_dataframe(df)
 
 # Menambahkan background gradient pada kolom kedua hingga akhir
-
 gradient_css = """
     function(params) {
         const value = params.value;
