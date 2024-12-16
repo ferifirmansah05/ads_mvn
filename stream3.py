@@ -17,7 +17,7 @@ df = pd.DataFrame(data)
 gb = GridOptionsBuilder.from_dataframe(df)
 
 # Menambahkan background gradient pada kolom kedua hingga akhir
-gradient_css = JsCode("""
+gradient_css = """
     function(params) {
         const value = params.value;
         const min = 700; // Sesuaikan dengan minimum data Anda
@@ -30,7 +30,7 @@ gradient_css = JsCode("""
             color: 'black'  // Warna teks
         };
     }
-""")
+"""
 
 # Terapkan fungsi CSS ke kolom kedua hingga terakhir
 for col in df.columns[1:]:
