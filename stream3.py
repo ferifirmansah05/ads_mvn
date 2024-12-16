@@ -19,5 +19,5 @@ gb.configure_column("Nama", pinned="left")  # Membekukan kolom pertama
 gb.configure_grid_options(domLayout='autoHeight') 
 grid_options = gb.build()
 st.write("Tabel dengan kolom pertama dibekukan:")
-AgGrid(df, gridOptions=grid_options,fit_columns_on_grid_load=True, height=None)
+AgGrid(df, gridOptions=grid_options,fit_columns_on_grid_load=True, height=0)
 
