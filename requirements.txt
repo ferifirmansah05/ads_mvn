@@ -7,3 +7,4 @@ streamlit
 html5lib
 beautifulsoup4
 streamlit-aggrid
+matplotlib
