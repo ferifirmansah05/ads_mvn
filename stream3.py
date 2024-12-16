@@ -14,4 +14,4 @@ df = pd.DataFrame(data)
 gb = GridOptionsBuilder.from_dataframe(df)
 
 # Render the grid with the styled DataFrame
-AgGrid(styled_df, gridOptions=gb.build())
+AgGrid(df.style.background_gradient(cmap='Reds', axis=1, subset=df.columns[1:]), gridOptions=gb.build())
