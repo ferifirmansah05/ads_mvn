@@ -1,7 +1,8 @@
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 import streamlit as st
-
+from streamlit.components.v1 import html
+html('exam')
 
 # Contoh DataFrame
 data = {
