@@ -20,4 +20,4 @@ grid_options = gb.build()
 
 # Tampilkan AgGrid
 st.write("Tabel dengan kolom pertama dibekukan:")
-AgGrid(df, gridOptions=grid_options, height=300, theme="blue")
+AgGrid(df, gridOptions=grid_options, height=300)
