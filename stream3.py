@@ -2,7 +2,7 @@ import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 import streamlit as st
 from streamlit.components.v1 import html
-
+import JsCode
 # DataFrame contoh
 data = {
     "Nama": ["John", "Alice", "Bob", "Eve"],
@@ -17,7 +17,7 @@ df = pd.DataFrame(data)
 gb = GridOptionsBuilder.from_dataframe(df)
 
 # Menambahkan background gradient pada kolom kedua hingga akhir
-gradient_css = """
+gradient_css = JsCode("""
     function(params) {
         const value = params.value;
         const min = 700; // Sesuaikan dengan minimum data Anda
@@ -30,7 +30,7 @@ gradient_css = """
             color: 'black'  // Warna teks
         };
     }
-"""
+""")
 # Terapkan fungsi CSS ke kolom kedua hingga terakhir
 for col in df.columns[1:]:
     gb.configure_column(col, cellStyle=gradient_css)
