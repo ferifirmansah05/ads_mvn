@@ -3,7 +3,7 @@ openpyxl
 fuzzywuzzy
 firebase_admin
 pandas == 2.2.2
-streamlit
+streamlit==1.34
 html5lib
 beautifulsoup4
 streamlit-aggrid
