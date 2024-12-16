@@ -17,6 +17,7 @@ df = pd.DataFrame(data)
 gb = GridOptionsBuilder.from_dataframe(df)
 
 # Menambahkan background gradient pada kolom kedua hingga akhir
+
 gradient_css = """
     function(params) {
         const value = params.value;
@@ -31,7 +32,6 @@ gradient_css = """
         };
     }
 """
-
 # Terapkan fungsi CSS ke kolom kedua hingga terakhir
 for col in df.columns[1:]:
     gb.configure_column(col, cellStyle=gradient_css)
