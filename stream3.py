@@ -14,10 +14,12 @@ df = pd.DataFrame(data)
 
 # Konfigurasi AgGrid
 gb = GridOptionsBuilder.from_dataframe(df)
-gb.configure_default_column(editable=True, resizable=True)
-gb.configure_column("Nama", pinned="left")  # Membekukan kolom pertama
-gb.configure_grid_options(domLayout='autoHeight') 
+gb.configure_default_column(resizable=True)
+gb.configure_grid_options(domLayout='autoHeight')  # Menyesuaikan tinggi tabel
+
 grid_options = gb.build()
-st.write("Tabel dengan kolom pertama dibekukan:")
-AgGrid(df, gridOptions=grid_options,fit_columns_on_grid_load=True, height=None)
+
+# Menampilkan AgGrid
+st.write("Tabel dengan border sesuai tinggi tabel:")
+AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=True)
 
