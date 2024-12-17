@@ -34,7 +34,7 @@ data = {
     "Apr": np.random.randint(100, 500, size=5),
 }
 df = pd.DataFrame(data)
-
+df.iloc[:,1:] = df.iloc[:,1:].astype('int')
 # 4. Membuat colormap
 cmap = create_white_to_red_cmap()
 
