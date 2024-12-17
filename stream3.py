@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 from matplotlib.colors import LinearSegmentedColormap, to_hex
 
 # 1. Fungsi untuk membuat colormap gradasi putih ke merah pastel
@@ -47,7 +47,7 @@ gb = GridOptionsBuilder.from_dataframe(df)
 for col in df.columns[1:]:
     gb.configure_column(
         col,
-        cellStyle=f"""
+        cellStyle=JsCode(f"""
         function(params) {{
             let value = params.value;
             if (value !== undefined && value !== null) {{
@@ -59,7 +59,7 @@ for col in df.columns[1:]:
             }}
             return {{}};
         }}
-        """
+        """)
     )
 
 grid_options = gb.build()
