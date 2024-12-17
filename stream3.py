@@ -13,12 +13,7 @@ def create_white_to_red_cmap():
     )
     return pastel_cmap
 
-# 2. Fungsi untuk mendapatkan warna horizontal
-def row_gradient_colors(row, cmap):
-    vmin, vmax = row.min(), row.max()  # Nilai min dan max dalam satu baris
-    colors = [get_color(value, vmin, vmax, cmap) for value in row]
-    return colors
-
+# 2. Fungsi untuk menghitung warna berdasarkan nilai
 def get_color(value, vmin, vmax, cmap):
     norm_value = (value - vmin) / (vmax - vmin) if vmax > vmin else 0
     rgba_color = cmap(norm_value)  # Ambil warna dari colormap
@@ -38,21 +33,26 @@ df = pd.DataFrame(data)
 # 4. Membuat colormap
 cmap = create_white_to_red_cmap()
 
-# 5. Menghitung warna horizontal per baris
-row_colors = df.iloc[:, 1:].apply(lambda row: row_gradient_colors(row, cmap), axis=1)
-
-# 6. Konfigurasi AgGrid
+# 5. Menyiapkan GridOptionsBuilder dengan cellStyle dinamis
 gb = GridOptionsBuilder.from_dataframe(df)
 
-# Menambahkan cellStyle untuk setiap kolom numerik
-for col_idx, col in enumerate(df.columns[1:]):
+# Menambahkan cellStyle untuk setiap kolom numerik (hanya menghitung vmin dan vmax dari kolom itu)
+for col in df.columns[1:]:
     gb.configure_column(
         col,
         cellStyle=JsCode(f"""
         function(params) {{
-            const colors = {row_colors.apply(lambda x: x[col_idx]).tolist()};
+            const value = params.value;
+            const vmin = Math.min(...params.columnApi.getAllDisplayedColumns().map(c => 
+                params.api.getDisplayedRowAtIndex(0).data[c.colId]));
+            const vmax = Math.max(...params.columnApi.getAllDisplayedColumns().map(c => 
+                params.api.getDisplayedRowAtIndex(0).data[c.colId]));
+            
+            const norm = (value - vmin) / (vmax - vmin);
+            const color = `rgb(255, ${255 - Math.round(255 * norm)}, ${255 - Math.round(255 * norm)})`;
+            
             return {{
-                'backgroundColor': colors[params.node.rowIndex],
+                'backgroundColor': color,
                 'color': 'black',
                 'textAlign': 'center'
             }};
@@ -62,6 +62,6 @@ for col_idx, col in enumerate(df.columns[1:]):
 
 grid_options = gb.build()
 
-# 7. Tampilkan AgGrid di Streamlit
-st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
+# 6. Tampilkan AgGrid di Streamlit
+st.title("AgGrid dengan Gradasi Horizontal Dinamis")
 AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True)
