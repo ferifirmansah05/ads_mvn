@@ -1,9 +1,29 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+from st_aggrid import AgGrid, GridOptionsBuilder
+from matplotlib.colors import LinearSegmentedColormap, to_hex
+import matplotlib.pyplot as plt
 
-# Contoh DataFrame
+# 1. Fungsi untuk membuat skema warna pastel menggunakan LinearSegmentedColormap
+def create_pastel_cmap():
+    pastel_cmap = LinearSegmentedColormap.from_list(
+        "pastel_gradient",
+        [
+            (0, (1.0, 1.0, 1.0)),  # Putih
+            (1, (1.0, 0.7, 0.7))   # Merah pastel
+        ]
+    )
+    return pastel_cmap
+
+# 2. Fungsi untuk mengonversi nilai ke warna pastel
+def get_pastel_color(value, vmin, vmax, cmap):
+    norm_value = (value - vmin) / (vmax - vmin) if vmax > vmin else 0
+    rgba_color = cmap(norm_value)  # Ambil warna RGBA dari colormap
+    hex_color = to_hex(rgba_color)  # Konversi ke HEX
+    return hex_color
+
+# 3. Contoh DataFrame
 np.random.seed(0)
 data = {
     "Nama": ["John", "Alice", "Bob", "Eve", "Michael"],
@@ -14,48 +34,34 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# Hitung nilai min dan max untuk setiap baris
-df['RowMin'] = df.iloc[:, 1:].min(axis=1)
-df['RowMax'] = df.iloc[:, 1:].max(axis=1)
+# 4. Membuat skema warna pastel
+pastel_cmap = create_pastel_cmap()
 
-# Membuat GridOptions dengan AgGrid
-gb = GridOptionsBuilder.from_dataframe(df.drop(columns=["RowMin", "RowMax"]))
+# 5. Menambahkan kolom warna berdasarkan nilai di setiap baris
+df_colors = df.copy()
+vmin = df.iloc[:, 1:].min().min()  # Nilai minimum
+vmax = df.iloc[:, 1:].max().max()  # Nilai maksimum
 
-# Definisikan cellStyle untuk gradient horizontal
-js_code = JsCode("""
-function(params) {
-    const rowMin = params.data.RowMin;
-    const rowMax = params.data.RowMax;
+for col in df.columns[1:]:  # Kolom numerik
+    df_colors[col] = df[col].apply(lambda x: get_pastel_color(x, vmin, vmax, pastel_cmap))
 
-    if (params.value == null || rowMin == rowMax) {
-        return {'backgroundColor': 'white', 'color': 'black'};
-    }
+# 6. Mengatur GridOptionsBuilder dengan warna pastel
+gb = GridOptionsBuilder.from_dataframe(df)
 
-    const value = params.value;
-    const ratio = (value - rowMin) / (rowMax - rowMin);
-    const red = Math.min(255, Math.max(0, 255 * (1 - ratio)));
-    const green = Math.min(255, Math.max(0, 255 * ratio));
-    const color = `rgb(${red}, ${green}, 0)`;
+# Menambahkan cellStyle untuk setiap kolom numerik
+for col in df.columns[1:]:
+    js_code = f"""
+    function(params) {{
+        return {{
+            'backgroundColor': '{df_colors.at[params.rowIndex, col]}',
+            'color': 'black'
+        }};
+    }}
+    """
+    gb.configure_column(col, cellStyle=js_code)
 
-    return {'backgroundColor': color, 'color': 'black'};
-}
-""")
-
-# Terapkan cellStyle pada kolom data (bukan kolom pertama)
-for col in df.columns[1:-2]:  # Kolom data saja, kecuali "Nama" dan kolom tambahan
-    gb.configure_column(
-        col,
-        cellStyle=js_code,
-    )
-
-# Atur GridOptions
 grid_options = gb.build()
 
-# Tampilkan AgGrid dengan gradient horizontal
-st.title("AgGrid dengan Gradient Horizontal Per Baris")
-AgGrid(
-    df, 
-    gridOptions=grid_options, 
-    height=400, 
-    allow_unsafe_jscode=True
-)
+# 7. Menampilkan tabel di Streamlit
+st.title("AgGrid dengan Gradient Pastel Horizontal")
+AgGrid(df, gridOptions=grid_options, height=400, allow_unsafe_jscode=True)
