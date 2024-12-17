@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 from matplotlib.colors import LinearSegmentedColormap, to_hex
 import matplotlib.pyplot as plt
 
@@ -50,14 +50,14 @@ gb = GridOptionsBuilder.from_dataframe(df)
 
 # Menambahkan cellStyle untuk setiap kolom numerik
 for col in df.columns[1:]:
-    js_code = f"""
+    js_code = JsCode(f"""
     function(params) {{
         return {{
             'backgroundColor': '{df_colors.at[params.rowIndex, col]}',
             'color': 'black'
         }};
     }}
-    """
+    """)
     gb.configure_column(col, cellStyle=js_code)
 
 grid_options = gb.build()
