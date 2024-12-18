@@ -82,8 +82,8 @@ gb = GridOptionsBuilder.from_dataframe(data)
 # Menentukan pengaturan khusus untuk kolom pertama
 column_defs = [
     {'headerName': 'Name', 'field': 'Name', 'autoSizeColumns': True},  # Kolom pertama: Auto resize
-    {'headerName': 'Age', 'field': 'Age', 'width': 150},              # Kolom kedua: Lebar 150px
-    {'headerName': 'City', 'field': 'City', 'width': 150},            # Kolom ketiga: Lebar 150px
+    {'headerName': 'Age', 'field': 'Age', 'width': 50},              # Kolom kedua: Lebar 150px
+    {'headerName': 'City', 'field': 'City', 'width': 50},            # Kolom ketiga: Lebar 150px
 ]
 
 # Mengonfigurasi grid untuk menggunakan columnDefs yang telah diubah
