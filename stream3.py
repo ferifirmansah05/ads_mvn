@@ -48,7 +48,7 @@ gb = GridOptionsBuilder.from_dataframe(df)
 # Menambahkan cellStyle untuk setiap kolom numerik
 for col_idx, col in enumerate(df.columns[1:]):
     gb.configure_column(
-        col,
+        col, width=150,
         cellStyle=JsCode(f"""
         function(params) {{
             const colors = {row_colors.apply(lambda x: x[col_idx]).tolist()};
@@ -66,7 +66,7 @@ grid_options = gb.build()
 
 # 7. Tampilkan AgGrid di Streamlit
 st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
-AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, enable_enterprise_modules=True,width='100%')
+AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=True)
 
 
 # Data untuk grid
