@@ -66,7 +66,7 @@ grid_options = gb.build()
 
 # 7. Tampilkan AgGrid di Streamlit
 st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
-AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=True)
+AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=True, allow_unsafe_jscode=True)
 
 
 # Data untuk grid
