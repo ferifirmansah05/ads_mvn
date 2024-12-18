@@ -62,7 +62,7 @@ for col_idx, col in enumerate(df.columns[1:]):
 
 grid_options = gb.build()
 
-} for col in data[0].keys()]
+
 # 7. Tampilkan AgGrid di Streamlit
 st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
 AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, enable_enterprise_modules=True,width='100%')
