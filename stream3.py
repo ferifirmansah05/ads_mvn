@@ -69,31 +69,27 @@ st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
 AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, enable_enterprise_modules=True,width='100%')
 
 
+# Data untuk grid
+data = [
+    {'Name': 'Alice', 'Age': 30, 'City': 'New York'},
+    {'Name': 'Bob', 'Age': 25, 'City': 'London'},
+    {'Name': 'Charlie', 'Age': 35, 'City': 'San Francisco'},
+]
 
-# Contoh DataFrame
-data = {
-    "Nama": ["John", "Alice", "Bob", "Eve", "Michael"],
-    "Jan": [120, 300, 200, 150, 400],
-    "Feb": [130, 340, 220, 160, 450],
-    "Mar": [140, 360, 240, 170, 470],
-    "Apr": [150, 370, 260, 180, 500],
-}
-df = pd.DataFrame(data)
+# Membuat GridOptionsBuilder dari data
+gb = GridOptionsBuilder.from_dataframe(data)
 
-# Konfigurasi AgGrid
-gb = GridOptionsBuilder.from_dataframe(df)
+# Menentukan pengaturan khusus untuk kolom pertama
+column_defs = [
+    {'headerName': 'Name', 'field': 'Name', 'autoSizeColumns': True},  # Kolom pertama: Auto resize
+    {'headerName': 'Age', 'field': 'Age', 'width': 150},              # Kolom kedua: Lebar 150px
+    {'headerName': 'City', 'field': 'City', 'width': 150},            # Kolom ketiga: Lebar 150px
+]
 
-# Atur lebar untuk kolom pertama (Nama)
-gb.configure_column("Nama", width=150)  # Lebar khusus untuk kolom pertama
+# Mengonfigurasi grid untuk menggunakan columnDefs yang telah diubah
+gb.configure_columns(column_defs)
 
-# Atur lebar seragam untuk semua kolom selain kolom pertama
-for col in df.columns[1:]:
-    gb.configure_column(col, width=100)  # Lebar sama untuk semua kolom lainnya
+# Menampilkan grid AG-Grid di Streamlit
+AgGrid(data, gridOptions=gb.build(), fit_columns_on_grid_load=True)
 
-# Build grid options
-grid_options = gb.build()
-
-# Tampilkan AgGrid di Streamlit
-st.title("AgGrid dengan Lebar Kolom Seragam Kecuali Kolom Pertama")
-AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=False, columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS)
 
