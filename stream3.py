@@ -95,5 +95,5 @@ grid_options = gb.build()
 
 # Tampilkan AgGrid di Streamlit
 st.title("AgGrid dengan Lebar Kolom Seragam Kecuali Kolom Pertama")
-AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=False)
+AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=False, columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS)
 
