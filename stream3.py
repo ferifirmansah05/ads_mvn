@@ -47,7 +47,7 @@ gb = GridOptionsBuilder.from_dataframe(df)
 # Menambahkan cellStyle untuk setiap kolom numerik
 for col_idx, col in enumerate(df.columns[1:]):
     gb.configure_column(
-        col, width=500
+        col, width=500,
         cellStyle=JsCode(f"""
         function(params) {{
             const colors = {row_colors.apply(lambda x: x[col_idx]).tolist()};
