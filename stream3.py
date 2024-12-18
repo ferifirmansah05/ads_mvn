@@ -96,19 +96,16 @@ def add_total_row(data):
 gridOptions = gb.build()
 gridOptions["domLayout"] = "autoHeight"  # Agar grid sesuai dengan ukuran data
 
-# Menampilkan AG-Grid
-response = AgGrid(df, gridOptions=gridOptions, height=300)
+# Menampilkan AG-Grid dan mendapatkan data terfilter
+response = AgGrid(df, gridOptions=gridOptions, height=300, enable_enterprise_modules=True)
 
-# Mengambil data yang sudah difilter
-filtered_data = response['filteredRows']
+# Mengambil data yang difilter melalui API AG-Grid
+filtered_data = response['data']
 
 # Menambahkan baris total di bawah data yang ditampilkan
-if filtered_data:
-    total_row = add_total_row(filtered_data)  # Total berdasarkan data yang terfilter
-    data_to_display = filtered_data + [total_row]  # Gabungkan data terfilter dengan total
-else:
-    total_row = add_total_row(data)  # Total berdasarkan semua data
-    data_to_display = data + [total_row]  # Gabungkan data asli dengan total
+total_row = add_total_row(filtered_data)  # Total berdasarkan data yang terfilter
+data_to_display = filtered_data + [total_row]  # Gabungkan data terfilter dengan total
 
 # Menampilkan grid dengan data dan baris total yang terpisah dari proses sorting
 AgGrid(data_to_display, gridOptions=gridOptions, height=300)
+
