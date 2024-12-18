@@ -75,7 +75,7 @@ data = [
     {'Name': 'Bob', 'Age': 25, 'City': 'London'},
     {'Name': 'Charlie', 'Age': 35, 'City': 'San Francisco'},
 ]
-
+data = pd.DataFrame(data)
 # Membuat GridOptionsBuilder dari data
 gb = GridOptionsBuilder.from_dataframe(data)
 
