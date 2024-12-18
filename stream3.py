@@ -69,27 +69,46 @@ st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
 AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=True, allow_unsafe_jscode=True)
 
 
-# Data untuk grid
+# Data sample
 data = [
-    {'Name': 'Alice', 'Age': 30, 'City': 'New York'},
-    {'Name': 'Bob', 'Age': 25, 'City': 'London'},
-    {'Name': 'Charlie', 'Age': 35, 'City': 'San Francisco'},
-]
-data = pd.DataFrame(data)
-# Membuat GridOptionsBuilder dari data
-gb = GridOptionsBuilder.from_dataframe(data)
-
-# Menentukan pengaturan khusus untuk kolom pertama
-column_defs = [
-    {'headerName': 'Name', 'field': 'Name', 'autoSizeColumns': True},  # Kolom pertama: Auto resize
-    {'headerName': 'Age', 'field': 'Age', 'width': 50},              # Kolom kedua: Lebar 150px
-    {'headerName': 'City', 'field': 'City', 'width': 50},            # Kolom ketiga: Lebar 150px
+    {"Make": "Toyota", "Model": "Corolla", "Price": 25000},
+    {"Make": "Honda", "Model": "Civic", "Price": 22000},
+    {"Make": "Ford", "Model": "Focus", "Price": 21000},
+    {"Make": "Chevrolet", "Model": "Malibu", "Price": 28000},
+    {"Make": "Nissan", "Model": "Altima", "Price": 26000},
 ]
 
-# Mengonfigurasi grid untuk menggunakan columnDefs yang telah diubah
-gb.configure_columns(column_defs)
+df = pd.DataFrame(data)
 
-# Menampilkan grid AG-Grid di Streamlit
-AgGrid(data, gridOptions=gb.build(), fit_columns_on_grid_load=True)
+# Menyusun Grid Options
+gb = GridOptionsBuilder.from_dataframe(df)
+gb.configure_pagination(paginationPageSize=10)
+gb.configure_column("Make", width=150)
+gb.configure_column("Model", width=150)
+gb.configure_column("Price", width=120)
 
+# Pengaturan untuk menambahkan baris total
+def add_total_row(data):
+    total_row = {"Make": "Total", "Model": "", "Price": sum(item["Price"] for item in data)}
+    return total_row
 
+# Membuat grid dan menampilkan data dengan baris total
+gridOptions = gb.build()
+gridOptions["domLayout"] = "autoHeight"  # Agar grid sesuai dengan ukuran data
+
+# Menampilkan AG-Grid
+response = AgGrid(df, gridOptions=gridOptions, height=300)
+
+# Mengambil data yang sudah difilter
+filtered_data = response['filteredRows']
+
+# Menambahkan baris total di bawah data yang ditampilkan
+if filtered_data:
+    total_row = add_total_row(filtered_data)  # Total berdasarkan data yang terfilter
+    data_to_display = filtered_data + [total_row]  # Gabungkan data terfilter dengan total
+else:
+    total_row = add_total_row(data)  # Total berdasarkan semua data
+    data_to_display = data + [total_row]  # Gabungkan data asli dengan total
+
+# Menampilkan grid dengan data dan baris total yang terpisah dari proses sorting
+AgGrid(data_to_display, gridOptions=gridOptions, height=300)
