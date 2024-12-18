@@ -48,7 +48,7 @@ gb.configure_default_column(cellStyle={'color': 'black', 'font-size': '12px'}, s
 # Menambahkan cellStyle untuk setiap kolom numerik
 for col_idx, col in enumerate(df.columns[1:]):
     gb.configure_column(
-        col, width=500,
+        col,
         cellStyle=JsCode(f"""
         function(params) {{
             const colors = {row_colors.apply(lambda x: x[col_idx]).tolist()};
