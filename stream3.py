@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode,ColumnsAutoSizeMode
 from matplotlib.colors import LinearSegmentedColormap, to_hex
 
 # 1. Fungsi untuk membuat colormap putih ke merah pastel
