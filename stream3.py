@@ -43,7 +43,8 @@ row_colors = df.iloc[:, 1:].apply(lambda row: row_gradient_colors(row, cmap), ax
 
 # 6. Konfigurasi AgGrid
 gb = GridOptionsBuilder.from_dataframe(df)
-gb.configure_pagination(paginationAutoPageSize=True)
+gb.configure_default_column(cellStyle={'color': 'black', 'font-size': '12px'}, suppressMenu=True, wrapHeaderText=True, autoHeaderHeight=True)
+
 # Menambahkan cellStyle untuk setiap kolom numerik
 for col_idx, col in enumerate(df.columns[1:]):
     gb.configure_column(
