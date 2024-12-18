@@ -67,3 +67,33 @@ grid_options = gb.build()
 # 7. Tampilkan AgGrid di Streamlit
 st.title("AgGrid dengan Gradasi Horizontal Putih ke Merah Pastel")
 AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, enable_enterprise_modules=True,width='100%')
+
+
+
+# Contoh DataFrame
+data = {
+    "Nama": ["John", "Alice", "Bob", "Eve", "Michael"],
+    "Jan": [120, 300, 200, 150, 400],
+    "Feb": [130, 340, 220, 160, 450],
+    "Mar": [140, 360, 240, 170, 470],
+    "Apr": [150, 370, 260, 180, 500],
+}
+df = pd.DataFrame(data)
+
+# Konfigurasi AgGrid
+gb = GridOptionsBuilder.from_dataframe(df)
+
+# Atur lebar untuk kolom pertama (Nama)
+gb.configure_column("Nama", width=150)  # Lebar khusus untuk kolom pertama
+
+# Atur lebar seragam untuk semua kolom selain kolom pertama
+for col in df.columns[1:]:
+    gb.configure_column(col, width=100)  # Lebar sama untuk semua kolom lainnya
+
+# Build grid options
+grid_options = gb.build()
+
+# Tampilkan AgGrid di Streamlit
+st.title("AgGrid dengan Lebar Kolom Seragam Kecuali Kolom Pertama")
+AgGrid(df, gridOptions=grid_options, fit_columns_on_grid_load=False)
+
