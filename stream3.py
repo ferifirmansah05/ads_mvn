@@ -89,7 +89,7 @@ gb.configure_column("Price", width=120)
 
 # Pengaturan untuk menambahkan baris total
 def add_total_row(data):
-    total_row = {"Make": "Total", "Model": "", "Price": sum(item["Price"] for item in data)}
+    total_row = {"Make": "Total", "Model": "", "Price": sum(int(item["Price"]) for item in data)}
     return total_row
 
 # Membuat grid dan menampilkan data dengan baris total
