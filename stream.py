@@ -272,11 +272,14 @@ if uploaded_file is not None:
             combined_dataframes = []
             # Iterate over each file in the folder
             for filename in os.listdir(main_folder):
-                if filename.endswith('.csv') or filename.endswith('.xlsx'):  # Assuming all files are CSV format, adjust if needed
+                if filename.endswith('.csv'):  # Assuming all files are CSV format, adjust if needed
                     file_path = os.path.join(main_folder, filename)
                     # Read each file into a dataframe and append to the list
                     dfs.append(pd.read_csv(file_path))
-            
+                if filename.endswith('.xlsx'):  # Assuming all files are CSV format, adjust if needed
+                    file_path = os.path.join(main_folder, filename)
+                    # Read each file into a dataframe and append to the list
+                    dfs.append(pd.read_excel(file_path))
             # Check if there are any dataframes to concatenate
             if dfs:
                 # Concatenate all dataframes in the list into one dataframe
