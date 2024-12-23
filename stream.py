@@ -308,9 +308,9 @@ if uploaded_file is not None:
                 df_gojek3 = df_gojek3.loc[:, ['Transaction time', 'Order ID', 'Amount', 'CAB']].rename(
                     columns={'Transaction time': 'DATETIME', 'Order ID': 'ID', 'Amount': 'NOM'}).fillna('')
             
-                df_gojek3['DATETIME'] = df_gojek3['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
-                df_gojek3['DATETIME'] = df_gojek3['DATETIME'].str.replace('Apr', 'April')
-                df_gojek3['DATETIME'] = df_gojek3['DATETIME'].str.replace('Jun', 'June')
+                #df_gojek3['DATETIME'] = df_gojek3['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
+                #df_gojek3['DATETIME'] = df_gojek3['DATETIME'].str.replace('Apr', 'April')
+                #df_gojek3['DATETIME'] = df_gojek3['DATETIME'].str.replace('Jun', 'June')
                 df_gojek3['ID'] = df_gojek3['ID'].str.replace("'", '').str.slice(0, 19)
             
                 # Parse datetime column
