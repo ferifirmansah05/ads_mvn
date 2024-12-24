@@ -1644,7 +1644,6 @@ if uploaded_file is not None:
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat(files, ignore_index=True)
-            st.write(df_all)
             df_concat = []
             for cab in all_cab:
                 for kat in ['GO RESTO', 'QRIS SHOPEE', 'GRAB FOOD','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM','EDC']:
