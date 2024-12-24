@@ -864,7 +864,16 @@ if uploaded_file is not None:
             dfweb['KET']   =   ""
             dfinv['HELP']   =   ""
             dfweb['HELP']   =   ""
-            
+            dfweb['CODE2'] = dfweb['CODE'].str[6:].astype(int)
+            for cab in dfweb['CAB'].unique():
+                for day in dfweb['DATE'].unique():
+                    if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].empty:
+                        previous_row = None
+                        code_max = dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)]['CODE2'].max()
+                        if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +datetime.timedelta(hours=2))) &
+                              (dfweb['CODE2']>(code_max-50))].empty:
+                            dfweb.loc[dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +datetime.timedelta(hours=2))) &
+                                (dfweb['CODE2']>(code_max-50))].index, 'TIME'] = dfweb['TIME'] + datetime.timedelta(days=1)
             dfweb['KAT'] = dfweb['KAT'].str.upper()
             cash = dfweb[dfweb['KAT']=='CASH']
             
@@ -1663,7 +1672,7 @@ if uploaded_file is not None:
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
                                         & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
                                 if len(x)>=1:
-                                    x = abs(pd.to_datetime(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME']))).sort_values().index[-1]
+                                    x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])).sort_values().index[-1]
                                     if kat in ['GRAB FOOD']:
                                         df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                         df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'       
