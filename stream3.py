@@ -1643,7 +1643,7 @@ if uploaded_file is not None:
                                 files.append(file)
             
                     # Concatenate CSV files within each subfolder
-            df_all = pd.concat(files)
+            df_all = pd.concat(files, ignore_index=True)
             st.write(df_all)
             df_concat = []
             for cab in all_cab:
