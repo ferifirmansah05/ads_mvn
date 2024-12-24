@@ -870,10 +870,10 @@ if uploaded_file is not None:
                     if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].empty:
                         previous_row = None
                         code_max = dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)]['CODE2'].max()
-                        if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +datetime.timedelta(hours=2))) &
+                        if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +dt.timedelta(hours=2))) &
                               (dfweb['CODE2']>(code_max-50))].empty:
-                            dfweb.loc[dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +datetime.timedelta(hours=2))) &
-                                (dfweb['CODE2']>(code_max-50))].index, 'TIME'] = dfweb['TIME'] + datetime.timedelta(days=1)
+                            dfweb.loc[dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +dt.timedelta(hours=2))) &
+                                (dfweb['CODE2']>(code_max-50))].index, 'TIME'] = dfweb['TIME'] + dt.timedelta(days=1)
             dfweb['KAT'] = dfweb['KAT'].str.upper()
             cash = dfweb[dfweb['KAT']=='CASH']
             
