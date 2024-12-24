@@ -1557,69 +1557,70 @@ if uploaded_file is not None:
                         all['KAT'] = 'QRIS TELKOM'
                         all.to_csv(f'{tmpdirname}/_bahan/QRIS TELKOM_{cab}_{date}.csv', index=False)
                         st.write('QRIS TELKOM', ': File processed')
-                             
-                    if not ((dfinv[(dfinv['KAT'].str.contains('EDC')) & (dfinv['CAB']  ==  cab) & (dfinv['DATE2']==date)].empty) or
+
+                    if 'DATE2' in dfinv.columns:
+                        if not ((dfinv[(dfinv['KAT'].str.contains('EDC')) & (dfinv['CAB']  ==  cab) & (dfinv['DATE2']==date)].empty) or
                             (dfweb[(dfweb['KAT'].str.contains('EDC')) & (dfweb['CAB']  ==  cab) & (dfweb['DATE']==date)].empty)) :
-                        edi   =   dfinv[dfinv['KAT'].str.contains('EDC')]
-                        edw   =   dfweb[dfweb['KAT'].str.contains('EDC')]
-                        edi   =   edi[edi['CAB']  ==  cab]
-                        edw   =   edw[edw['CAB']  ==  cab]
-                        edi = edi[edi['DATE2']==date]
-                        edw = edw[edw['DATE']==date]
-                    
-                                                
-                        edi = edi.sort_values(by=['CAB', 'NOM', 'DATE'], ascending=[True, True, True]).reset_index(drop=True)
-                        edw = edw.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
+                            edi   =   dfinv[dfinv['KAT'].str.contains('EDC')]
+                            edw   =   dfweb[dfweb['KAT'].str.contains('EDC')]
+                            edi   =   edi[edi['CAB']  ==  cab]
+                            edw   =   edw[edw['CAB']  ==  cab]
+                            edi = edi[edi['DATE2']==date]
+                            edw = edw[edw['DATE']==date]
                         
-                    
-                        edi.drop_duplicates(inplace=True)
-                        edw['ID'] = edw['ID'].str.upper()
-                        edw.loc[edw[edw['ID'].isna()].index,'ID'] = ''
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='EDC')].index:
-                                    x = edw[(edw['ID']==cn.loc[i,'NAMA TAMU']) 
-                                            & (edw['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                                    if len(x) >= 1:
-                                        edw.loc[x[0], 'KET']='Cancel Nota'
-                                        cn.loc[i, 'KET'] = 'Done'
+                                                    
+                            edi = edi.sort_values(by=['CAB', 'NOM', 'DATE'], ascending=[True, True, True]).reset_index(drop=True)
+                            edw = edw.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
+                            
+                        
+                            edi.drop_duplicates(inplace=True)
+                            edw['ID'] = edw['ID'].str.upper()
+                            edw.loc[edw[edw['ID'].isna()].index,'ID'] = ''
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='EDC')].index:
+                                        x = edw[(edw['ID']==cn.loc[i,'NAMA TAMU']) 
+                                                & (edw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                        if len(x) >= 1:
+                                            edw.loc[x[0], 'KET']='Cancel Nota'
+                                            cn.loc[i, 'KET'] = 'Done'
+                                            
+                            edi['ID2'] = edi['ID']                     
+                            edw['KET'] = edw['CODE']
+                        
+                            def compare_time(df_w, df_i):
+                                for i in range(0,df_i.shape[0]):
+                                    if df_i.loc[i,'KET']=='' :
+                                        list_ind = df_w[(df_w['NOM'] == df_i.loc[i,'NOM']) & (df_w['HELP']=='')].index
+                                        for x in list(list_ind):
+                                            if (df_i.loc[i,'DATE'] - df_w.loc[x,'DATE']) == dt.timedelta(days=0):
+                                                    if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
+                                                        df_i.loc[i,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
+                                                        df_w.loc[x,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
+                                                        df_w.loc[x,'HELP'] = df_w.loc[x,'CODE']
+                                                        break        
+                                            elif (df_i.loc[i,'DATE'] - df_w.loc[x,'DATE']) == dt.timedelta(days=1):
+                                                    if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
+                                                        df_i.loc[i,'KET'] = 'Transaksi Kemarin'
+                                                        df_w.loc[x,'KET'] = 'Invoice Beda Hari'
+                                                        df_w.loc[x,'HELP'] = df_w.loc[x,'CODE']
+                                                    break
+                        
+                                for i in df_i[df_i['KET']==''].index :
+                                        df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web'
+                        
+                                for i in df_w[df_w['HELP']==''].index :
+                                        df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol' 
+                            compare_time(edw, edi)
+                        
+                            all = pd.concat([edw, edi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM','TIME'],ascending=[True,True,True,False,True,True]).drop(columns='HELP')
+                            if ket == 'selisih':
+                                all = all[~(all['KET'].str.contains('Balance'))]
+                            all['HELP'] = all['KET'].apply(lambda x: label_1(x))
+                            all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
+                            #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
+                            #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
+                            all.to_csv(f'{tmpdirname}/_bahan/EDC_{cab}_{date}.csv', index=False)
+                            st.write('EDC', ': File processed')
                                         
-                        edi['ID2'] = edi['ID']                     
-                        edw['KET'] = edw['CODE']
-                    
-                        def compare_time(df_w, df_i):
-                            for i in range(0,df_i.shape[0]):
-                                if df_i.loc[i,'KET']=='' :
-                                    list_ind = df_w[(df_w['NOM'] == df_i.loc[i,'NOM']) & (df_w['HELP']=='')].index
-                                    for x in list(list_ind):
-                                        if (df_i.loc[i,'DATE'] - df_w.loc[x,'DATE']) == dt.timedelta(days=0):
-                                                if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
-                                                    df_i.loc[i,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
-                                                    df_w.loc[x,'KET'] = 'Balance '+ str(df_w.loc[x,'CODE'])
-                                                    df_w.loc[x,'HELP'] = df_w.loc[x,'CODE']
-                                                    break        
-                                        elif (df_i.loc[i,'DATE'] - df_w.loc[x,'DATE']) == dt.timedelta(days=1):
-                                                if ((df_w.loc[x,'NOM']-df_i.loc[i,'NOM'])==0):
-                                                    df_i.loc[i,'KET'] = 'Transaksi Kemarin'
-                                                    df_w.loc[x,'KET'] = 'Invoice Beda Hari'
-                                                    df_w.loc[x,'HELP'] = df_w.loc[x,'CODE']
-                                                break
-                    
-                            for i in df_i[df_i['KET']==''].index :
-                                    df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web'
-                    
-                            for i in df_w[df_w['HELP']==''].index :
-                                    df_w.loc[i,'KET'] = 'Tidak Ada Invoice Ojol' 
-                        compare_time(edw, edi)
-                    
-                        all = pd.concat([edw, edi]).sort_values(['CAB','DATE','KET', 'SOURCE','NOM','TIME'],ascending=[True,True,True,False,True,True]).drop(columns='HELP')
-                        if ket == 'selisih':
-                            all = all[~(all['KET'].str.contains('Balance'))]
-                        all['HELP'] = all['KET'].apply(lambda x: label_1(x))
-                        all['KET'] = all['KET'].apply(lambda x:x if (('Selisih' in x) | ('Balance' in x)) else '')
-                        #all['DATE'] = all['DATE'].dt.strftime('%d/%m/%Y')
-                        #all['TIME'] = all['TIME'].dt.strftime('%H:%M:%S')
-                        all.to_csv(f'{tmpdirname}/_bahan/EDC_{cab}_{date}.csv', index=False)
-                        st.write('EDC', ': File processed')
-                                    
 
             combined_dataframes = []
             files = []
