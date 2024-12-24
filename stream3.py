@@ -1031,11 +1031,11 @@ if uploaded_file is not None:
                                                     y = x+1
                                                 if abs(all_2.loc[i,'TIME'] - all_1.loc[x,'TIME']) < abs(all_1.loc[y,'TIME'] - all_1.loc[x,'TIME']):
                                                     step = step + 1
-                                                    temp_row_a = all_2.loc[i,['TIME','CODE','ID','NOM']].copy()
-                                                    temp_row_b = all_1.loc[y,['TIME','CODE','ID','NOM']].copy()
+                                                    temp_row_a = all_2.loc[i,['TIME','CODE','ID','NOM','NOM2']].copy()
+                                                    temp_row_b = all_1.loc[y,['TIME','CODE','ID','NOM','NOM2']].copy()
                         
-                                                    all_2.loc[i,['TIME','CODE','ID','NOM']] = temp_row_b
-                                                    all_1.loc[y,['TIME','CODE','ID','NOM']] = temp_row_a
+                                                    all_2.loc[i,['TIME','CODE','ID','NOM','NOM2']] = temp_row_b
+                                                    all_1.loc[y,['TIME','CODE','ID','NOM','NOM2']] = temp_row_a
                         
                                                     if float(all_1.loc[y,'NOM2'] if all_1.loc[y,'SOURCE']=='WEB' else all_1.loc[y,'NOM']) == float(all_1.loc[x,'NOM2'] if all_1.loc[x,'SOURCE']=='WEB' else all_1.loc[x,'NOM']):
                                                         if all_2.loc[i,'SOURCE'] =='WEB':
