@@ -870,7 +870,7 @@ if uploaded_file is not None:
                         for index, row in dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].iterrows():
                             index2 = adjust_date(row, previous_row)
                             if index2 is not None:
-                                dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] = dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] + datetime.timedelta(days=1)
+                                dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] = dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] + dt.timedelta(days=1)
                                 index2 = None
                                 break
                             previous_row = row
