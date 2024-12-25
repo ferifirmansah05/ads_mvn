@@ -787,14 +787,14 @@ if uploaded_file is not None:
                 dfweb['SOURCE']     =   'WEB'
                 
                 #Rename columns to match the database schema
-                dfweb       =       dfweb.rename(columns={'CO':'TIME','TOTAL':'NOM2','KATEGORI':'KAT','CUSTOMER':'ID'}).fillna('')
+                dfweb       =       dfweb.rename(columns={'CI':'TIME2','CO':'TIME','TOTAL':'NOM2','KATEGORI':'KAT','CUSTOMER':'ID'}).fillna('')
                 
                 dfweb         =   dfweb[dfweb['DATE'].isin(all_date)]
                 dfweb['DATE'] = pd.to_datetime(dfweb['DATE'])
                 dfweb['DATE'] = dfweb['DATE'].dt.strftime('%d/%m/%Y')
                 dfweb = dfweb[dfweb['CAB'].isin(all_cab)]
 
-                dfweb       =       dfweb.loc[:,['CAB','DATE','TIME','CODE','ID','NOM2','DISC','KAT','SOURCE']]#.sort_values('DATE', ascending=[False])
+                dfweb       =       dfweb.loc[:,['CAB','DATE','TIME','CODE','ID','NOM2','DISC','KAT','SOURCE','TIME2']]#.sort_values('DATE', ascending=[False])
                 
                 dfweb       =       dfweb[dfweb['TIME']     !=      'TOTAL']
                 dfweb       =       dfweb[dfweb['TIME']     !=      'CO']
@@ -811,6 +811,7 @@ if uploaded_file is not None:
                             
                 #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
                 dfweb['TIME'] = pd.to_datetime(dfweb['TIME'], errors='coerce').fillna(pd.to_datetime(dfweb['TIME'], format='%H:%M:%S',errors='coerce')).dt.strftime('%H:%M:%S')
+                dfweb['TIME2'] = pd.to_datetime(dfweb['TIME2'], errors='coerce').fillna(pd.to_datetime(dfweb['TIME2'], format='%H:%M:%S',errors='coerce')).dt.strftime('%H:%M:%S')
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
                 #st.write(dfweb)
                 dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (str(row['NOM2']).isnumeric()) else '',axis=1)
@@ -819,7 +820,7 @@ if uploaded_file is not None:
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
 
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
-            dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
+            dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE','TIME2']]
             dfinv = dfinv[(dfinv['CAB'].isin(all_cab))]
             dfinv = dfinv[dfinv['DATE']     !=      '']
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
@@ -848,10 +849,34 @@ if uploaded_file is not None:
                     dfweb['DATE'] = pd.to_datetime(dfweb['DATE'], format='%Y-%m-%d')
                 except ValueError as e:
                     print(f"Error dalam mengonversi tanggal: {e}")
-
+            
             dfweb['TIME'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME'])
+            dfweb['TIME2'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME2'])
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             
+            dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-8:] if 'S' in x else x[6:]).astype(int)
+            dfweb = dfweb.sort_values(['CAB','DATE','CODE2']).reset_index(drop=True)
+            
+            def adjust_date(row, previous_row):
+                if previous_row is not None and abs(row['TIME2'] - previous_row['TIME2']) > pd.Timedelta(hours=12):
+                    return index
+            
+            # Menyimpan datetime sebelumnya
+            previous_row = None
+            
+            for cab in dfweb['CAB'].unique():
+                for day in dfweb['DATE'].unique():
+                    if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].empty:
+                        for index, row in dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].iterrows():
+                            index2 = adjust_date(row, previous_row)
+                            if index2 is not None:
+                                dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] = dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] + datetime.timedelta(days=1)
+                                index2 = None
+                                break
+                            previous_row = row
+                        previous_row = None
+
+            dfweb = dfweb.drop(columns='TIME2')
             dfinv = dfinv[~(dfinv['NOM']=='Cek')]
             
             dfinv['NOM'] = pd.to_numeric(dfinv['NOM'])
@@ -864,16 +889,7 @@ if uploaded_file is not None:
             dfweb['KET']   =   ""
             dfinv['HELP']   =   ""
             dfweb['HELP']   =   ""
-            dfweb['CODE2'] = dfweb['CODE'].str[6:].astype(int)
-            for cab in dfweb['CAB'].unique():
-                for day in dfweb['DATE'].unique():
-                    if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].empty:
-                        previous_row = None
-                        code_max = dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)]['CODE2'].max()
-                        if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +dt.timedelta(hours=2))) &
-                              (dfweb['CODE2']>(code_max-50))].empty:
-                            dfweb.loc[dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day) & (dfweb['TIME'] < (day +dt.timedelta(hours=2))) &
-                                (dfweb['CODE2']>(code_max-50))].index, 'TIME'] = dfweb['TIME'] + dt.timedelta(days=1)
+
             dfweb['KAT'] = dfweb['KAT'].str.upper()
             cash = dfweb[dfweb['KAT']=='CASH']
             
