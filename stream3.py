@@ -820,7 +820,7 @@ if uploaded_file is not None:
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
 
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
-            dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE','TIME2']]
+            dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             dfinv = dfinv[(dfinv['CAB'].isin(all_cab))]
             dfinv = dfinv[dfinv['DATE']     !=      '']
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
