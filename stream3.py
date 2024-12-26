@@ -1753,7 +1753,7 @@ if uploaded_file is not None:
             if 'ID2' not in final_df.columns:
                 final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP']]
             else:
-                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2']]
+                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2','NOTE']]
             final_df['TIME'] = pd.to_datetime(final_df['TIME']).dt.strftime('%H:%M:%S')
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
