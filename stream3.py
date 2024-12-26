@@ -827,7 +827,7 @@ if uploaded_file is not None:
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
             
-            dfinv = dfinv[(dfinv['ID'].astype('str')!='Cek') & ~(dfinv['ID'].str.contains('|'.join(['Kompensasi','biaya iklan'])))]
+            dfinv = dfinv[(dfinv['ID'].astype('str')!='Cek') & ~(dfinv['ID'].astype(str).str.contains('|'.join(['Kompensasi','biaya iklan'])))]
             final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})])
             
             st.markdown('### Processing')
