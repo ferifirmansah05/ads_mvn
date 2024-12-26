@@ -1732,7 +1732,7 @@ if uploaded_file is not None:
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
                                 df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
-                                if (kat in ['GRAB']) & ('Adj' in df_all3.loc[i,'ID'].values):
+                                if (kat in ['GRAB']) & ('Adj' in df_all3.loc[i,'ID']):
                                     df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
                                 else:
                                     df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
