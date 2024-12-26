@@ -1719,7 +1719,7 @@ if uploaded_file is not None:
                                             if kat not in ['QRIS SHOPEE']:
                                                 df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
                                     else:
-                                        if kat in ['GRAB']:
+                                        if kat in ['GRAB FOOD']:
                                             df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
                                             df_all3.loc[x, 'HELP'] = 'Promo Marketing/Adjustment' 
                                         else:
@@ -1733,7 +1733,7 @@ if uploaded_file is not None:
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
                                 df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
-                                if (kat in ['GRAB']) & ('Adj' in df_all3.loc[i,'ID']):
+                                if (kat in ['GRAB FOOD']) & ('Adj' in df_all3.loc[i,'ID']):
                                     df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
                                 else:
                                     df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
