@@ -1726,7 +1726,8 @@ if uploaded_file is not None:
                                             df_all3.loc[i, 'HELP'] = 'Selisih IT'
                                             df_all3.loc[i, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
                                             df_all3.loc[x, 'HELP'] = 'Selisih IT' 
-                                            df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])   
+                                            df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
+                                            df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
                                     df_all3.loc[i,'NOTE']='Cek'
                                     df_all3.loc[x,'NOTE']='Cek'
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
