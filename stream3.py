@@ -827,7 +827,7 @@ if uploaded_file is not None:
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
             
-            dfinv = dfinv[~(dfinv['NOM']=='Cek') | (dfinv['ID'].str.contains('|'.join(['Kompensasi','biaya iklan'])))]
+            dfinv = dfinv[~(dfinv['NOM']=='Cek') | ~(dfinv['ID'].str.contains('|'.join(['Kompensasi','biaya iklan'])))]
             final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})])
             
             st.markdown('### Processing')
@@ -1732,7 +1732,7 @@ if uploaded_file is not None:
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
                                 df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
-                                if (kat in ['GRAB']) & (df_all3.loc[i,'ID'][-3:]=='Adj'):
+                                if (kat in ['GRAB']) & ('Adj' in df_all3.loc[i,'ID'].values):
                                     df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
                                 else:
                                     df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
