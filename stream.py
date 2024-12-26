@@ -826,6 +826,8 @@ if uploaded_file is not None:
             dfinv['DATE'] = pd.to_datetime(dfinv['DATE'], format='%d/%m/%Y')
             dfinv   =   dfinv[dfinv['DATE'].isin(all_date)] #CHANGE
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
+            
+            dfinv = dfinv[(dfinv['ID'].astype('str')!='Cek') & ~(dfinv['ID'].astype(str).str.contains('|'.join(['Kompensasi','biaya iklan'])))]
             final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})])
             
             st.markdown('### Processing')
@@ -877,7 +879,7 @@ if uploaded_file is not None:
                         previous_row = None
 
             dfweb = dfweb.drop(columns='TIME2')
-            dfinv = dfinv[~(dfinv['NOM']=='Cek')]
+            
             
             dfinv['NOM'] = pd.to_numeric(dfinv['NOM'])
             dfweb['NOM'] = pd.to_numeric(dfweb['NOM'])
@@ -1593,11 +1595,9 @@ if uploaded_file is not None:
                             edi = edi[edi['DATE2']==date]
                             edw = edw[edw['DATE']==date]
                         
-                                                    
                             edi = edi.sort_values(by=['CAB', 'NOM', 'DATE'], ascending=[True, True, True]).reset_index(drop=True)
                             edw = edw.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
                             
-                        
                             edi.drop_duplicates(inplace=True)
                             edw['ID'] = edw['ID'].str.upper()
                             edw.loc[edw[edw['ID'].isna()].index,'ID'] = ''
@@ -1692,7 +1692,7 @@ if uploaded_file is not None:
                                         df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                         df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'       
                                     else:
-                                        if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
+                                        if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
                                             df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                             df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'
                                         else:
@@ -1700,10 +1700,44 @@ if uploaded_file is not None:
                                             df_all3.loc[i, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
                                             df_all3.loc[x, 'HELP'] = 'Selisih IT' 
                                             df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])   
+                           
+                            if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
+                                x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
+                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
+                                if len(x)>=1:
+                                    x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
+                                    if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
+                                        df_all3.loc[i, 'HELP'] = 'Balance'
+                                        df_all3.loc[x, 'HELP'] = 'Balance' 
+                                        if kat in ['QRIS ESB']:
+                                            df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
+                                            df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
+                                        else:
+                                            df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
+                                            df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
+                                            if kat not in ['QRIS SHOPEE']:
+                                                df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
+                                    else:
+                                        if kat in ['GRAB']:
+                                            df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
+                                            df_all3.loc[x, 'HELP'] = 'Promo Marketing/Adjustment' 
+                                        else:
+                                            df_all3.loc[i, 'HELP'] = 'Selisih IT'
+                                            df_all3.loc[i, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
+                                            df_all3.loc[x, 'HELP'] = 'Selisih IT' 
+                                            df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])
+                                            df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
+                                    df_all3.loc[i,'NOTE']='Cek'
+                                    df_all3.loc[x,'NOTE']='Cek'
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
                                 df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
-                                df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
+                                if (kat in ['GRAB']) & ('Adj' in df_all3.loc[i,'ID']):
+                                    df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
+                                else:
+                                    df_all3.loc[i, 'HELP'] = 'Tidak Ada Transaksi di Web'
+                                
                         all = pd.concat([df_all2.loc[df_all2[~((df_all2['KET'].isna()) & (df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari']))))].index,],df_all3]).sort_values(['CAB','DATE'])
                         all['DATE'] = pd.to_datetime(all['DATE']).dt.strftime('%d/%m/%Y')
                         
@@ -1720,8 +1754,9 @@ if uploaded_file is not None:
             if 'ID2' not in final_df.columns:
                 final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP']]
             else:
-                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2']]
+                final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2','NOTE']]
             final_df['TIME'] = pd.to_datetime(final_df['TIME']).dt.strftime('%H:%M:%S')
+            final_df['KET'] = final_df['KET'].str.replace('+-','-')
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
