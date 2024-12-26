@@ -1707,7 +1707,7 @@ if uploaded_file is not None:
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
-                                    if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[i,'NOM']))==0:
+                                    if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
                                         df_all3.loc[i, 'HELP'] = 'Balance'
                                         df_all3.loc[x, 'HELP'] = 'Balance' 
                                         if kat in ['QRIS ESB']:
