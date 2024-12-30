@@ -1747,6 +1747,7 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat, ignore_index=True)
+            st.dataframe(final_df)
             for cab in final_df['CAB'].unique():
                 if cab in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM']:
                     final_df.loc[final_df[(final_df['SOURCE']=='INVOICE') & (final_df['CAB']==cab)].index,'TIME'] = pd.to_datetime(final_df.loc[final_df[(final_df['SOURCE']=='INVOICE') & (final_df['CAB']==cab)].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
