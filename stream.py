@@ -1703,9 +1703,15 @@ if uploaded_file is not None:
                                             df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])   
                            
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
-                                x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
-                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
-                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
+                                if kat in ['SHOPEEPAY']:
+                                    x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
+                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='') 
+                                            & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=180))].index  
+                                else:
+                                    x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
+                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
                                     if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
