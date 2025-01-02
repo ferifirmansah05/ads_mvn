@@ -1660,8 +1660,8 @@ if uploaded_file is not None:
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat(files, ignore_index=True)
-            df_concat = []
             df_all['NOTE'] = ''
+            df_concat = []
             for cab in all_cab:
                 for kat in ['GO RESTO', 'QRIS SHOPEE', 'GRAB FOOD','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM','EDC']:
                     if not df_all[(df_all['CAB'] == cab) & (df_all['KAT'].str.contains(kat))].empty:
@@ -1703,9 +1703,15 @@ if uploaded_file is not None:
                                             df_all3.loc[x, 'KET'] = 'Selisih '+ str(df_all3.loc[x,'ID']) + difference(df_all3.loc[x,'NOM'],df_all3.loc[i,'NOM2'])   
                            
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
-                                x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
-                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
-                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
+                                if kat in ['SHOPEEPAY']:
+                                    x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
+                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='') 
+                                            & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=180))].index  
+                                else:
+                                    x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
+                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
                                     if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
@@ -1748,7 +1754,6 @@ if uploaded_file is not None:
             
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat, ignore_index=True)
-            st.dataframe(final_df)
             for cab in final_df['CAB'].unique():
                 if cab in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM']:
                     final_df.loc[final_df[(final_df['SOURCE']=='INVOICE') & (final_df['CAB']==cab)].index,'TIME'] = pd.to_datetime(final_df.loc[final_df[(final_df['SOURCE']=='INVOICE') & (final_df['CAB']==cab)].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
