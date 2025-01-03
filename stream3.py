@@ -1693,7 +1693,7 @@ if uploaded_file is not None:
                                         df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                         df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'       
                                     else:
-                                        if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
+                                        if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
                                             df_all3.loc[i, 'HELP'] = 'Invoice Beda Hari'
                                             df_all3.loc[x, 'HELP'] = 'Transaksi Kemarin'
                                         else:
