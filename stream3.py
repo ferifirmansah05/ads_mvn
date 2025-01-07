@@ -422,6 +422,7 @@ if uploaded_file is not None:
                 storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name GRAB.xlsx')
 
                 df_grab = pd.merge(df_grab, storename, how='left', on='Store Name').fillna('')
+                df_grab = df_grab[df_grab['Store ID']!='53e216ef-4659-45d3-8b30-774d2574ab56']
                 df_grab = df_grab[df_grab['CAB'] != '']
            
                 st.write("File GRAB *csv Concatenated")
