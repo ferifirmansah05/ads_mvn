@@ -1662,6 +1662,7 @@ if uploaded_file is not None:
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat(files, ignore_index=True)
+            df_all
             df_all['NOTE'] = ''
             df_concat = []
             for cab in all_cab:
