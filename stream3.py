@@ -894,9 +894,10 @@ if uploaded_file is not None:
 
             dfweb['KAT'] = dfweb['KAT'].str.upper()
             cash = dfweb[dfweb['KAT']=='CASH']
-            
+
+            wita = ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM','BPPMUL','BONIMA']
             for wib in dfinv['CAB'].unique():
-                if wib in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM','BPPMUL','BONIMA']:
+                if wib in wita:
                     dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
                     
             def difference(value1, value2):
@@ -1670,19 +1671,25 @@ if uploaded_file is not None:
                         df_all3.loc[:,'HELP'] = ''
                         for i in df_all3[(df_all3['HELP']=='')].index:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
-                                if kat in ['SHOPEEPAY','GRAB FOOD']:
+                                if kat in ['GRAB FOOD']:
                                     x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
                                         & (df_all3['ID2'] == df_all3.loc[i,'ID2'])
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
                                         & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index
+                                if kat in ['SHOPEEPAY']:
+                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) 
+                                        & (df_all3['ID2'] == df_all3.loc[i,'ID2'])
+                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
+                                        & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index
                                 if kat in ['GO RESTO', 'QRIS SHOPEE', 'QRIS TELKOM']:
-                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
+                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) 
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
                                         & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
                                 if kat in ['QRIS ESB']:
-                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1)).strftime('%Y-%m-%d')) 
+                                    x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) 
                                         & (df_all3['ID'] == df_all3.loc[i,'CODE'])
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
@@ -1755,7 +1762,7 @@ if uploaded_file is not None:
             #combined_dataframes.append(df_all)
             final_df = pd.concat(df_concat, ignore_index=True)
             for cab in final_df['CAB'].unique():
-                if cab in ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM' ,'BPPMUL','BONIMA']:
+                if cab in wita:
                     final_df.loc[final_df[(final_df['SOURCE']=='INVOICE') & (final_df['CAB']==cab)].index,'TIME'] = pd.to_datetime(final_df.loc[final_df[(final_df['SOURCE']=='INVOICE') & (final_df['CAB']==cab)].index,'TIME']) - dt.timedelta (hours=1, minutes=1)
             final_df['NOM'] = final_df.apply(lambda row: row['NOM'] if row['SOURCE']=='INVOICE' else row['NOM2'],axis=1)
             if 'ID2' not in final_df.columns:
