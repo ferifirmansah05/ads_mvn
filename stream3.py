@@ -1730,11 +1730,11 @@ if uploaded_file is not None:
                                             if kat in ['QRIS ESB']:
                                                 df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
                                                 df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
-                                        else:
-                                            df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
-                                            df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
-                                            if kat not in ['QRIS SHOPEE']:
-                                                df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
+                                            else:
+                                                df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
+                                                df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
+                                                if kat not in ['QRIS SHOPEE']:
+                                                    df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
                                     else:
                                         if kat in ['GRAB FOOD']:
                                             df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
