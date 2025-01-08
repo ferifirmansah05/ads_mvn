@@ -1723,18 +1723,18 @@ if uploaded_file is not None:
                                             & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
-                                    if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
-                                        if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
-                                            df_all3.loc[i, 'HELP'] = 'Balance'
-                                            df_all3.loc[x, 'HELP'] = 'Balance' 
-                                            if kat in ['QRIS ESB']:
-                                                df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
-                                                df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
-                                            else:
-                                                df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
-                                                df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
-                                                if kat not in ['QRIS SHOPEE']:
-                                                    df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
+                                    if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
+                                        #if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
+                                        df_all3.loc[i, 'HELP'] = 'Balance'
+                                        df_all3.loc[x, 'HELP'] = 'Balance' 
+                                        if kat in ['QRIS ESB']:
+                                            df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
+                                            df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
+                                        else:
+                                            df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
+                                            df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
+                                            if kat not in ['QRIS SHOPEE']:
+                                                df_all3.loc[i, 'ID2'] = df_all3.loc[x,'ID2']
                                     else:
                                         if kat in ['GRAB FOOD']:
                                             df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
