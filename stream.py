@@ -1668,7 +1668,7 @@ if uploaded_file is not None:
                 for kat in ['GO RESTO', 'QRIS SHOPEE', 'GRAB FOOD','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM','EDC']:
                     if not df_all[(df_all['CAB'] == cab) & (df_all['KAT'].str.contains(kat))].empty:
                         df_all2 = df_all[(df_all['CAB'] == cab) & (df_all['KAT']==kat)].reset_index(drop=True)
-                        df_all3 = df_all2.loc[df_all2[(df_all2['KET'].isna()) & (df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari'])))].index,].copy()
+                        df_all3 = df_all2.loc[df_all2[(df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari'])))].index,].copy()
                         df_all3.loc[:,'HELP'] = ''
                         for i in df_all3[(df_all3['HELP']=='')].index:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
@@ -1692,9 +1692,9 @@ if uploaded_file is not None:
                                 if kat in ['QRIS ESB']:
                                     x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) 
                                         & (df_all3['ID'] == df_all3.loc[i,'CODE'])
-                                        & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                        & (abs(df_all3.loc[i,'NOM2'] - df_all3['NOM']) <=200)
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
-                                        & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
+                                        & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
                                     if kat in ['GRAB FOOD']:
@@ -1713,16 +1713,17 @@ if uploaded_file is not None:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
                                 if kat in ['SHOPEEPAY']:
                                     x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
-                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (abs(df_all3.loc[i,'NOM2'] - df_all3['NOM']) <=200)
                                             & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='') 
                                             & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=180))].index  
                                 else:
                                     x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
-                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (abs(df_all3.loc[i,'NOM2'] - df_all3['NOM']) <=200)
                                             & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
-                                    if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
+                                    if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
+                                        #if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
                                         df_all3.loc[i, 'HELP'] = 'Balance'
                                         df_all3.loc[x, 'HELP'] = 'Balance' 
                                         if kat in ['QRIS ESB']:
@@ -1747,6 +1748,8 @@ if uploaded_file is not None:
                                     df_all3.loc[x,'NOTE']='Cek'
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='WEB'):
                                 df_all3.loc[i, 'HELP'] = f"Tidak Ada Invoice {'Ojol' if kat in ['GO RESTO','GRAB FOOD','SHOPEEPAY'] else 'QRIS'}" 
+                                
+                        for i in df_all3[(df_all3['HELP']=='')].index:
                             if (df_all3.loc[i, 'HELP'] == '') & (df_all3.loc[i, 'SOURCE']=='INVOICE'):
                                 if (kat in ['GRAB FOOD']) & ('Adj' in df_all3.loc[i,'ID']):
                                     df_all3.loc[i, 'HELP'] = 'Promo Marketing/Adjustment'
@@ -1772,6 +1775,7 @@ if uploaded_file is not None:
                 final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2','NOTE']]
             final_df['TIME'] = pd.to_datetime(final_df['TIME']).dt.strftime('%H:%M:%S')
             final_df['KET'] = final_df['KET'].str.replace('+-','-')
+        
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
