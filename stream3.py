@@ -1695,8 +1695,7 @@ if uploaded_file is not None:
                                     x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) 
                                         & (df_all3['ID'] == df_all3.loc[i,'CODE'])
                                         & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
-                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
-                                        & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index
+                                        & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index
                                     x
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
