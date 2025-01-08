@@ -1662,7 +1662,6 @@ if uploaded_file is not None:
             
                     # Concatenate CSV files within each subfolder
             df_all = pd.concat(files, ignore_index=True)
-            df_all
             df_all['NOTE'] = ''
             df_concat = []
             for cab in all_cab:
@@ -1671,7 +1670,6 @@ if uploaded_file is not None:
                         df_all2 = df_all[(df_all['CAB'] == cab) & (df_all['KAT']==kat)].reset_index(drop=True)
                         df_all3 = df_all2.loc[df_all2[(df_all2['HELP'].str.contains('|'.join(['Transaksi Kemarin','Tidak Ada','Invoice Beda Hari'])))].index,].copy()
                         df_all3.loc[:,'HELP'] = ''
-                        df_all3
                         for i in df_all3[(df_all3['HELP']=='')].index:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
                                 if kat in ['GRAB FOOD']:
@@ -1692,8 +1690,6 @@ if uploaded_file is not None:
                                         & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')
                                         & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=150))].index                                                        
                                 if kat in ['QRIS ESB']:
-                                    df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) & 
-                                    (df_all3['ID'] == df_all3.loc[i,'CODE']) & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')]
                                     x = df_all3[(df_all3['DATE']==(pd.to_datetime(df_all3.loc[i,'DATE'])+ dt.timedelta(days=1 if cab not in wita else -1)).strftime('%Y-%m-%d')) 
                                         & (df_all3['ID'] == df_all3.loc[i,'CODE'])
                                         & (abs(df_all3.loc[i,'NOM2'] - df_all3['NOM']) <=200)
