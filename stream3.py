@@ -1714,21 +1714,22 @@ if uploaded_file is not None:
                             if (df_all3.loc[i,'SOURCE']=='WEB') & (df_all3.loc[i,'HELP']==''):
                                 if kat in ['SHOPEEPAY']:
                                     x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
-                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (abs(df_all3.loc[i,'NOM2'] - df_all3['NOM']) <=200)
                                             & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='') 
                                             & (abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3['TIME'])) <= dt.timedelta(minutes=180))].index  
                                 else:
                                     x = df_all3[(df_all3['DATE']==df_all3.loc[i,'DATE'])
-                                            & (abs(df_all3.loc[i,'NOM'] - df_all3['NOM']) <=200)
+                                            & (abs(df_all3.loc[i,'NOM2'] - df_all3['NOM']) <=200)
                                             & (df_all3['SOURCE']=='INVOICE') & (df_all3['HELP']=='')].index  
                                 if len(x)>=1:
                                     x = abs(pd.to_datetime(df_all3.loc[i,'TIME']) - pd.to_datetime(df_all3.loc[x,'TIME'])).sort_values().index[-1]
                                     if (float(df_all3.loc[i,'NOM'])-float(df_all3.loc[x,'NOM']))==0:
-                                        df_all3.loc[i, 'HELP'] = 'Balance'
-                                        df_all3.loc[x, 'HELP'] = 'Balance' 
-                                        if kat in ['QRIS ESB']:
-                                            df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
-                                            df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
+                                        if (float(df_all3.loc[i,'NOM2'])-float(df_all3.loc[x,'NOM']))==0:
+                                            df_all3.loc[i, 'HELP'] = 'Balance'
+                                            df_all3.loc[x, 'HELP'] = 'Balance' 
+                                            if kat in ['QRIS ESB']:
+                                                df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
+                                                df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[i,'CODE'])
                                         else:
                                             df_all3.loc[i, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
                                             df_all3.loc[x, 'KET'] = 'Balance '+ str(df_all3.loc[x,'ID'])
@@ -1773,6 +1774,7 @@ if uploaded_file is not None:
                 final_df =  final_df[['CAB','DATE','TIME','CODE','ID','NOM','KAT','SOURCE','KET','HELP','ID2','NOTE']]
             final_df['TIME'] = pd.to_datetime(final_df['TIME']).dt.strftime('%H:%M:%S')
             final_df['KET'] = final_df['KET'].str.replace('+-','-')
+            final_df
             time_now = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             st.markdown('### Output')
             zip_buffer = io.BytesIO()
