@@ -694,7 +694,7 @@ if uploaded_file is not None:
             for file_name in os.listdir(folder_path):
                 if file_name.endswith('.xlsx'):  # Make sure only HTML files are processed
                     file_path = os.path.join(folder_path, file_name)
-                    df = pd.read_excel(file_path, header=12)
+                    df = pd.read_excel(file_path, sheet_name='Report', header=12)
                     df = df[~(df['Tanggal Transaksi'].isna()) & (df['Payment Method Name']!='CASH')].loc[:,['Branch name','Tanggal Transaksi','POS Sales Number','Grand Total']]
                     dataframes.append(df)
             if dataframes:
