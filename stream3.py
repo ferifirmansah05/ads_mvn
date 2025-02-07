@@ -376,7 +376,7 @@ if uploaded_file is not None:
                                                                                         'Order Complete/Cancel Time' : 'DATETIME',
                                                                                         'Order Amount' : 'NOM',
                                                                                         'Order Status' : 'Status'}).fillna('')
-            
+                
                 #df_shopee['DATETIME'] = df_shopee['DATETIME'].str.replace('Apr', 'April')
                 #df_shopee['DATETIME'] = df_shopee['DATETIME'].str.replace('Jun', 'June')            
                 df_shopee['DATETIME']    =   pd.to_datetime(df_shopee['DATETIME'], format='%d/%m/%Y %H:%M:%S')
@@ -1357,7 +1357,7 @@ if uploaded_file is not None:
                         spi.drop_duplicates(inplace=True)
                         spw['ID'] = spw['ID'].str.upper()
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
-                        spw['ID2'] = spw['ID'].apply(lambda x: x.split(' - ')[0] if ' - ' in x else x).apply(lambda x: '#'+str(int(re.search(r'\d+$', x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x).group())) if re.search(r'\d+$',  x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x) else x)
+                        spw['ID2'] = spw['ID'].str.replace('|(BS)|U001E','').apply(lambda x: x.split(' - ')[0] if ' - ' in x else x).apply(lambda x: x.split(' - ')[0] if ' - ' in x else x).apply(lambda x: '#'+str(int(re.search(r'\d+$', x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x).group())) if re.search(r'\d+$',  x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x) else x)
                         spi['ID2'] = spi['ID']
             
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
