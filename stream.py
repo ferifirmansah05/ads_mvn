@@ -314,7 +314,7 @@ if uploaded_file is not None:
                 df_gojek3['ID'] = df_gojek3['ID'].str.replace("'", '').str.slice(0, 19)
             
                 # Parse datetime column
-                df_gojek3['DATETIME'] = pd.to_datetime(df_gojek3['DATETIME'], utc=True)
+                df_gojek3['DATETIME'] = pd.to_datetime(df_gojek3['DATETIME'])
             
                 df_gojek3['DATE'] = df_gojek3['DATETIME'].dt.strftime('%d/%m/%Y')
                 df_gojek3['TIME'] = df_gojek3['DATETIME'].dt.time
