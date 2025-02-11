@@ -118,6 +118,8 @@ if uploaded_file is not None:
                             df = df[df['TOTAL BILL']>0]
                             df['TOTAL BILL'] = df['TOTAL BILL'].astype('float')
                             df['TANGGAL'] = df['TANGGAL'].fillna('0').astype('int').astype('str')
+                            df['NAMA TAMU'] = df['NAMA TAMU'].str.upper()
+                            df = df[~((df['TYPE BAYAR']=='GRAB FOOD') & ~(df['NAMA TAMU'].str.contains('GF')))]
                             dfs.append(df)
                     except Exception as excel_exception:
                             print(f"Error process {file} as Excel: {excel_exception}")
@@ -130,7 +132,7 @@ if uploaded_file is not None:
                 st.write("File CANCEL NOTA Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
-
+            
             cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
             cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
 
@@ -1174,9 +1176,9 @@ if uploaded_file is not None:
                                                         df_i.loc[i,'KET'] = df_i.loc[i,'ID']
                                                         df_w.loc[id[x],'KET'] = df_i.loc[i,'ID']
                                                         df_w.loc[id[y],'KET'] = df_i.loc[i,'ID']
-                                                        df_w.loc[id[x],'HELP'] = 'Bayar 1 Kali - Banyak Struk (QRIS)'
-                                                        df_w.loc[id[y],'HELP'] = 'Bayar 1 Kali - Banyak Struk (QRIS)'
-                                                        df_i.loc[i,'HELP'] = 'Bayar 1 Kali - Banyak Struk (QRIS)'
+                                                        df_w.loc[id[x],'HELP'] = 'Bayar 1 Kali - Banyak Struk'
+                                                        df_w.loc[id[y],'HELP'] = 'Bayar 1 Kali - Banyak Struk'
+                                                        df_i.loc[i,'HELP'] = 'Bayar 1 Kali - Banyak Struk'
                                                     break
                                                 
                             for i in df_w[df_w['KET']==''].sort_values('TIME', ascending=False).index:
@@ -1195,30 +1197,31 @@ if uploaded_file is not None:
                                                         df_w.loc[i,'KET'] = str(df_i.loc[id[x],'ID']) + ' & ' + str(df_i.loc[id[y],'ID'])
                                                         df_i.loc[id[x],'KET'] = str(df_i.loc[id[x],'ID']) + ' & ' + str(df_i.loc[id[y],'ID'])
                                                         df_i.loc[id[y],'KET'] = str(df_i.loc[id[x],'ID']) + ' & ' + str(df_i.loc[id[y],'ID'])
-                                                        df_w.loc[i,'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
-                                                        df_i.loc[id[x],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
-                                                        df_i.loc[id[y],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk (QRIS)'
+                                                        df_w.loc[i,'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk'
+                                                        df_i.loc[id[x],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk'
+                                                        df_i.loc[id[y],'HELP'] = 'Bayar Lebih dari 1 Kali - 1 Struk'
                                                     break
                                                                         
-                            for i in df_w[df_w['KET']==''].index :
-                                list_ind = df_w[(df_w['NOM']-df_w.loc[i,'NOM'])==0].index
-                                for x in list_ind:
-                                    if ((df_w.loc[i,'TIME'] - df_w.loc[x,'TIME']) < dt.timedelta(minutes=2)) & ((df_w.loc[i,'TIME'] - df_w.loc[x,'TIME']) > dt.timedelta(seconds=0)):
-                                        df_w.loc[i,'KET'] = 'Double Input'
+                            #for i in df_w[df_w['KET']==''].index :
+                            #    list_ind = df_w[(df_w['NOM']-df_w.loc[i,'NOM'])==0].index
+                            #    for x in list_ind:
+                            #        if ((df_w.loc[i,'TIME'] - df_w.loc[x,'TIME']) < dt.timedelta(minutes=2)) & ((df_w.loc[i,'TIME'] - df_w.loc[x,'TIME']) > dt.timedelta(seconds=0)):
+                            #            df_w.loc[i,'KET'] = 'Double Input'
             
             
+                            #for i in df_i[df_i['HELP']==''].index :
+                            #    cash_ind = cash[(cash['CAB']==df_i.loc[i,'CAB']) & (cash['DATE']==df_i.loc[i,'DATE']) & (cash['NOM']==df_i.loc[i,'NOM'])].index
+                            #    for x in cash_ind:
+                            #        if (((df_i.loc[i,'TIME'] - cash.loc[x,'TIME']) < dt.timedelta(minutes=2)) & ((df_i.loc[i,'TIME'] - cash.loc[x,'TIME']) >= dt.timedelta(minutes=0))):
+                            #            df_i.loc[i,'KET'] = 'QRIS to Cash(' + str(cash.loc[x,'CODE']) + ')'
+                            #            df_i.loc[i,'HELP'] = 'QRIS to Cash(' + str(cash.loc[x,'CODE']) + ')'
+                            #            break   
+
                             for i in df_i[df_i['HELP']==''].index :
-                                cash_ind = cash[(cash['CAB']==df_i.loc[i,'CAB']) & (cash['DATE']==df_i.loc[i,'DATE']) & (cash['NOM']==df_i.loc[i,'NOM'])].index
-                                for x in cash_ind:
-                                    if (((df_i.loc[i,'TIME'] - cash.loc[x,'TIME']) < dt.timedelta(minutes=2)) & ((df_i.loc[i,'TIME'] - cash.loc[x,'TIME']) >= dt.timedelta(minutes=0))):
-                                        df_i.loc[i,'KET'] = 'QRIS to Cash(' + str(cash.loc[x,'CODE']) + ')'
-                                        df_i.loc[i,'HELP'] = 'QRIS to Cash(' + str(cash.loc[x,'CODE']) + ')'
-                                        break   
-                                if df_i.loc[i,'HELP'] == '':
-                                    if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
-                                        df_i.loc[i,'KET'] = 'Transaksi Beda Hari'
-                                    else:
-                                        df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web' 
+                                if df_i.loc[i,'TIME'] < pd.to_datetime('01:00:00' , format='%H:%M:%S'):
+                                    df_i.loc[i,'KET'] = 'Transaksi Beda Hari'
+                                else:
+                                    df_i.loc[i,'KET'] = 'Tidak Ada Transaksi di Web' 
             
                             for i in df_w[df_w['KET']==''].index :
                                 if df_w.loc[i,'TIME'] > pd.to_datetime('23:00:00' , format='%H:%M:%S'):
