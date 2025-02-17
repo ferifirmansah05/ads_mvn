@@ -821,7 +821,7 @@ if uploaded_file is not None:
                 dfweb = dfweb.drop(columns='DISC')
 
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
-            df_web
+            dfweb
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             dfinv = dfinv[(dfinv['CAB'].isin(all_cab))]
