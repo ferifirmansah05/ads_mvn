@@ -862,7 +862,7 @@ if uploaded_file is not None:
             #dfweb['CODE'] = dfweb['CODE'].astype(str)
             dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[6:]).astype(int)
             dfweb = dfweb.sort_values(['CAB','DATE','CODE2']).reset_index(drop=True)
-            dfweb
+            
             def adjust_date(row, previous_row):
                 if previous_row is not None and abs(row['TIME2'] - previous_row['TIME2']) > pd.Timedelta(hours=12):
                     return index
