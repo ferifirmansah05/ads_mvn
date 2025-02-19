@@ -769,6 +769,7 @@ if uploaded_file is not None:
                             df = df.drop(columns='TOTAL').rename(columns={'BILL':'TOTAL'})
                         df = df[~df['DATE'].isin(['DATE','TOTAL'])]
                         df['DATE'] = df['DATE'].astype(str).str[:10]
+                        df['CODE'] = df['CODE'].astype(str)
                         dataframes.append(df)
                     except Exception as e:
                         print(f"Error reading {file_path}: {e}")
@@ -821,7 +822,7 @@ if uploaded_file is not None:
                 dfweb = dfweb.drop(columns='DISC')
 
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
-
+            
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
             dfinv = dfinv[(dfinv['CAB'].isin(all_cab))]
@@ -858,7 +859,7 @@ if uploaded_file is not None:
             dfweb['TIME'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME'])
             dfweb['TIME2'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME2'])
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
-            
+            #dfweb['CODE'] = dfweb['CODE'].astype(str)
             dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[6:]).astype(int)
             dfweb = dfweb.sort_values(['CAB','DATE','CODE2']).reset_index(drop=True)
             
