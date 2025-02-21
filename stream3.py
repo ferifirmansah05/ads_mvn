@@ -128,13 +128,12 @@ if uploaded_file is not None:
             if dfs:
                 # Concatenate dataframes from all subfolders
                 cn = pd.concat(dfs,ignore_index=True)
-            
+                cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
+                cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
                 st.write("File CANCEL NOTA Concatenated")
             else:
                 st.write("No dataframes to concatenate.")
             
-            cn['TOTAL BILL'] = cn['TOTAL BILL'].astype('float')
-            cn['TANGGAL'] = cn['TANGGAL'].fillna('0').astype('int').astype('str')
 
             
             subfolders = all_cab
@@ -935,11 +934,12 @@ if uploaded_file is not None:
                         goi.drop_duplicates(inplace=True)
                         gow['ID2'] = gow['ID'].apply(lambda x: x.split(' - ')[-1] if ' - ' in x else '')
                         goi['ID2'] = goi['ID']
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
-                                x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                                if len(x)>=1:
-                                    gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
-                                    cn.loc[i, 'KET'] = 'Done'
+                        if 'cn' in locals():    
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
+                                    x = gow[(gow['DATE']==date) & (gow['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                    if len(x)>=1:
+                                        gow.loc[gow.loc[x,'ID'].apply(lambda x: fuzz.ratio(re.sub(r'\d+', '', str(x).upper()), re.sub(r'\d+', '', str(cn.loc[i,'NAMA TAMU']).upper()))).sort_values().index[-1],'KET'] = 'Cancel Nota'
+                                        cn.loc[i, 'KET'] = 'Done'
                         goi['KET'] = goi['ID']
                         gow2 = gow[gow['ID2']!=''].reset_index(drop=True)
                         gow = gow[gow['ID2']==''].reset_index(drop=True)
@@ -1119,11 +1119,11 @@ if uploaded_file is not None:
                         qsw = qsw.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, True]).reset_index(drop=True)
             
                         qsi.drop_duplicates(inplace=True)
-            
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS SHOPEE')].index:
-                            x = qsw[(qsw['DATE']==date) & (qsw['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                            qsw.loc[qsw.loc[x,'ID'].apply(lambda x: fuzz.ratio(str(x).upper(), str(cn.loc[i,'NAMA TAMU']).upper())).sort_values().index[-1],'KET'] = 'Cancel Nota'
-                            cn.loc[i, 'KET'] = 'Done'
+                        if 'cn' in locals():  
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS SHOPEE')].index:
+                                x = qsw[(qsw['DATE']==date) & (qsw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                qsw.loc[qsw.loc[x,'ID'].apply(lambda x: fuzz.ratio(str(x).upper(), str(cn.loc[i,'NAMA TAMU']).upper())).sort_values().index[-1],'KET'] = 'Cancel Nota'
+                                cn.loc[i, 'KET'] = 'Done'
                         qsi['KET'] = qsi['ID']
             
                         def compare_time(df_i, df_w, time):
@@ -1261,11 +1261,12 @@ if uploaded_file is not None:
                         gfi['ID2'] = gfi['ID'].apply(lambda x: re.findall(r'\d+', x)[-1] if re.findall(r'\d+', x) else 0)
             
                         gfw.loc[gfw[gfw['ID'].isna()].index,'ID'] = ''
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
-                            x = gfw[(gfw['ID2']==str(re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1])) & (gfw['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                            if len(x) >= 1:
-                                gfw.loc[x[0], 'KET']='Cancel Nota'
-                                cn.loc[i, 'KET'] = 'Done'
+                        if 'cn' in locals():  
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GRAB FOOD')].index:
+                                x = gfw[(gfw['ID2']==str(re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1])) & (gfw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                if len(x) >= 1:
+                                    gfw.loc[x[0], 'KET']='Cancel Nota'
+                                    cn.loc[i, 'KET'] = 'Done'
             
                         gfi['KET'] = gfi['ID']
 
@@ -1363,14 +1364,15 @@ if uploaded_file is not None:
                         spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
                         spw['ID2'] = spw['ID'].str.replace('|(BS)|U001E','').apply(lambda x: x.split(' - ')[0] if ' - ' in x else x).apply(lambda x: x.split(' - ')[0] if ' - ' in x else x).apply(lambda x: '#'+str(int(re.search(r'\d+$', x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x).group())) if re.search(r'\d+$',  x[:re.search(r'\d(?!.*\d)', x).end()] if re.search(r'\d(?!.*\d)', x) else x) else x)
                         spi['ID2'] = spi['ID']
-            
-                        spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='SHOPEEPAY')].index:
-                            x = spw[(spw['ID2']=='#'+(str(int(re.search(r'\d+$', cn.loc[i,'NAMA TAMU']).group())) if re.search(r'\d+$', cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU']))
-                                    & (spw['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                            if len(x) >= 1:
-                                spw.loc[x[0], 'KET']='Cancel Nota'
-                                cn.loc[i, 'KET'] = 'Done'
+
+                        if 'cn' in locals():  
+                            spw.loc[spw[spw['ID'].isna()].index,'ID'] = ''
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='SHOPEEPAY')].index:
+                                x = spw[(spw['ID2']=='#'+(str(int(re.search(r'\d+$', cn.loc[i,'NAMA TAMU']).group())) if re.search(r'\d+$', cn.loc[i,'NAMA TAMU']) else cn.loc[i,'NAMA TAMU']))
+                                        & (spw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                if len(x) >= 1:
+                                    spw.loc[x[0], 'KET']='Cancel Nota'
+                                    cn.loc[i, 'KET'] = 'Done'
             
                         spi['KET'] = spi['ID']
             
@@ -1464,12 +1466,13 @@ if uploaded_file is not None:
                         qew = qew.sort_values(by=['CAB', 'NOM', 'ID', 'TIME'], ascending=[True, True, True, False]).reset_index(drop=True)
             
                         qei.drop_duplicates(inplace=True)
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS qew')].index:
-                            x = qew[(qew['ID']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
-                                    & (qew['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                            if len(x) >= 1:
-                                qew.loc[x[0], 'KET']='Cancel Nota'
-                                cn.loc[i, 'KET'] = 'Done'
+                        if 'cn' in locals():  
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS qew')].index:
+                                x = qew[(qew['ID']==re.findall(r'\d+', cn.loc[i,'NAMA TAMU'])[-1]) 
+                                        & (qew['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                if len(x) >= 1:
+                                    qew.loc[x[0], 'KET']='Cancel Nota'
+                                    cn.loc[i, 'KET'] = 'Done'
             
                         qei['KET'] = qei['ID']
             
@@ -1545,12 +1548,13 @@ if uploaded_file is not None:
                         qti.drop_duplicates(inplace=True)
             
                         qtw.loc[qtw[qtw['ID'].isna()].index,'ID'] = ''
-                        for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS TELKOM')].index:
-                                    x = qtw[(qtw['ID']==cn.loc[i,'NAMA TAMU']) 
-                                            & (qtw['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                                    if len(x) >= 1:
-                                        qtw.loc[x[0], 'KET']='Cancel Nota'
-                                        cn.loc[i, 'KET'] = 'Done'
+                        if 'cn' in locals():  
+                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='QRIS TELKOM')].index:
+                                        x = qtw[(qtw['ID']==cn.loc[i,'NAMA TAMU']) 
+                                                & (qtw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                        if len(x) >= 1:
+                                            qtw.loc[x[0], 'KET']='Cancel Nota'
+                                            cn.loc[i, 'KET'] = 'Done'
             
                         qtw['KET'] = qtw['CODE']
             
@@ -1615,12 +1619,13 @@ if uploaded_file is not None:
                             edi.drop_duplicates(inplace=True)
                             edw['ID'] = edw['ID'].str.upper()
                             edw.loc[edw[edw['ID'].isna()].index,'ID'] = ''
-                            for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='EDC')].index:
-                                        x = edw[(edw['ID']==cn.loc[i,'NAMA TAMU']) 
-                                                & (edw['NOM']==cn.loc[i,'TOTAL BILL'])].index
-                                        if len(x) >= 1:
-                                            edw.loc[x[0], 'KET']='Cancel Nota'
-                                            cn.loc[i, 'KET'] = 'Done'
+                            if 'cn' in locals():  
+                                for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='EDC')].index:
+                                            x = edw[(edw['ID']==cn.loc[i,'NAMA TAMU']) 
+                                                    & (edw['NOM']==cn.loc[i,'TOTAL BILL'])].index
+                                            if len(x) >= 1:
+                                                edw.loc[x[0], 'KET']='Cancel Nota'
+                                                cn.loc[i, 'KET'] = 'Done'
                                             
                             edi['ID2'] = edi['ID']                     
                             edw['KET'] = edw['CODE']
