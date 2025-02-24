@@ -858,8 +858,7 @@ if uploaded_file is not None:
                 except ValueError as e:
                     print(f"Error dalam mengonversi tanggal: {e}")
             
-            dfweb['TIME'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME'])
-            dfweb['TIME2'] = pd.to_datetime(dfweb['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfweb['TIME2'])
+
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             #dfweb['CODE'] = dfweb['CODE'].astype(str)
             dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[6:]).astype(int)
