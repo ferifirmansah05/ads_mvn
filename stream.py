@@ -891,7 +891,7 @@ if uploaded_file is not None:
             
             dfinv = dfinv[dfinv['NOM']!=0]
             dfweb = dfweb[dfweb['NOM']!=0]
-            dfweb
+            
             dfinv['KET']   =   ""
             dfweb['KET']   =   ""
             dfinv['HELP']   =   ""
