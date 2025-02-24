@@ -812,9 +812,10 @@ if uploaded_file is not None:
                         except ValueError as e:
                             return pd.NaT
                             
+                cab_time = dfweb[~dfweb['TIME'].astype(str).str.contains('-')][['CAB','DATE']].drop_duplicates().reset_index(drop=True)
+                dfweb['TIME'] = pd.to_datetime(pd.to_datetime(dfweb['TIME'], errors='coerce').fillna(pd.to_datetime(dfweb['DATE']).dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME'].astype(str)).astype(str))
+                dfweb['TIME2'] = pd.to_datetime(pd.to_datetime(dfweb['TIME2'], errors='coerce').fillna(pd.to_datetime(dfweb['DATE']).dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME2'].astype(str)).astype(str))
                 #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
-                dfweb['TIME'] = pd.to_datetime(dfweb['TIME'], errors='coerce').fillna(pd.to_datetime(dfweb['TIME'], format='%H:%M:%S',errors='coerce')).dt.strftime('%H:%M:%S')
-                dfweb['TIME2'] = pd.to_datetime(dfweb['TIME2'], errors='coerce').fillna(pd.to_datetime(dfweb['TIME2'], format='%H:%M:%S',errors='coerce')).dt.strftime('%H:%M:%S')
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
                 #st.write(dfweb)
                 dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (str(row['NOM2']).isnumeric()) else '',axis=1)
@@ -831,7 +832,9 @@ if uploaded_file is not None:
             dfinv['DATE'] = dfinv['DATE'].dt.strftime('%d/%m/%Y')
             
             dfinv = dfinv[(dfinv['ID'].astype('str')!='Cek') & ~(dfinv['ID'].astype(str).str.contains('|'.join(['Kompensasi','biaya iklan'])))]
-            final_merge = pd.concat([dfinv,dfweb.drop(columns='NOM').rename(columns={'NOM2':'NOM'})])
+            final_merge = pd.concat([dfinv,dfweb.rename(columns={'NOM':'NOM+DISC'}).rename(columns={'NOM2':'NOM'})]).reset_index(drop=True)#.fillna(' ')
+            final_merge.loc[final_merge[final_merge['SOURCE']=='WEB'].index,'TIME'] = pd.to_datetime(final_merge[final_merge['SOURCE']=='WEB']['TIME']).dt.strftime('%H:%M:%S')
+            final_merge['TIME2'] = pd.to_datetime(final_merge['TIME2']).dt.strftime('%H:%M:%S')
             
             st.markdown('### Processing')
             all_kat = ['GOJEK', 'QRIS SHOPEE', 'GRAB','SHOPEEPAY', 'QRIS ESB','QRIS TELKOM','EDC']
@@ -868,14 +871,14 @@ if uploaded_file is not None:
             
             # Menyimpan datetime sebelumnya
             previous_row = None
-            
-            for cab in dfweb['CAB'].unique():
-                for day in dfweb['DATE'].unique():
-                    if not dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].empty:
-                        for index, row in dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].iterrows():
+
+            if not cab_time.empty:
+                for i in range(len(cab_time)):
+                    if not dfweb[(dfweb['CAB']==cab_time.loc[i,'CAB'])&(dfweb['DATE']==cab_time.loc[i,'DATE'])].empty:
+                        for index, row in dfweb[(dfweb['CAB']==cab_time.loc[i,'CAB'])&(dfweb['DATE']==cab_time.loc[i,'DATE'])].iterrows():
                             index2 = adjust_date(row, previous_row)
                             if index2 is not None:
-                                dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] = dfweb.loc[index2:dfweb[(dfweb['CAB']==cab)&(dfweb['DATE']==day)].index[-1], 'TIME'] + dt.timedelta(days=1)
+                                dfweb.loc[index2:dfweb[(dfweb['CAB']==cab_time.loc[i,'CAB'])&(dfweb['DATE']==cab_time.loc[i,'DATE'])].index[-1], 'TIME'] = dfweb.loc[index2:dfweb[(dfweb['CAB']==cab_time.loc[i,'CAB'])&(dfweb['DATE']==cab_time.loc[i,'DATE'])].index[-1], 'TIME'] + dt.timedelta(days=1)
                                 index2 = None
                                 break
                             previous_row = row
