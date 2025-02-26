@@ -837,7 +837,7 @@ if uploaded_file is not None:
                 dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (str(row['NOM2']).isnumeric()) else '',axis=1)
                 dfweb = dfweb.drop(columns='DISC')
 
-                dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
+                dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY','SHOPEE FOOD INT':'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO','GOFOOD INT':'GO RESTO' ,'GRAB': 'GRAB FOOD','GRAB FOOD INT':'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
             
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
