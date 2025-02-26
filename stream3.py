@@ -840,7 +840,7 @@ if uploaded_file is not None:
 
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY','SHOPEE FOOD INT':'SHOPEEPAY', 
                                                      'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO','GOFOOD INT':'GO RESTO' ,'GRAB': 'GRAB FOOD','GRAB FOOD INT':'GRAB FOOD', 
-                                                     'QRIS ESB ORDER':'QRIS ESB','QRIS BNI':'EDC'})
+                                                     'QRIS ESB ORDER':'QRIS ESB'})
             
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
