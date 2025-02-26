@@ -834,7 +834,7 @@ if uploaded_file is not None:
                 dfweb['TIME2'] = pd.to_datetime(pd.to_datetime(dfweb['TIME2'], errors='coerce').fillna(pd.to_datetime(dfweb['DATE']).dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME2'].astype(str)).astype(str))
                 #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
-                st.write(dfweb)
+                st.write(dfweb[dfweb['NOM2'].apply(lambda x: True if str(x).isnumeric() else False)])
                 dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (str(row['NOM2']).isnumeric()) else '',axis=1)
                 dfweb = dfweb.drop(columns='DISC')
 
