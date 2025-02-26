@@ -785,6 +785,7 @@ if uploaded_file is not None:
                             df = df[['DATE','CAB','Sales Number','CI','CO','KATEGORI','Additional Info','Bill Discount','Grand Total']].fillna('').rename(columns={
                                 'Sales Number':'CODE','Additional Info':'CUSTOMER','Bill Discount':'DISC','Grand Total':'TOTAL'})
                             df['DATE'] = pd.to_datetime(df['DATE']).dt.strftime('%Y-%m-%d')
+                            df['DISC'] = df['DISC'].fillna(0)
                             dataframes.append(df)
                         except Exception as excel_exception:
                             print(f"Error reading {file_path} as Excel: {excel_exception}")
