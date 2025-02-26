@@ -772,6 +772,22 @@ if uploaded_file is not None:
                         dataframes.append(df)
                     except Exception as e:
                         print(f"Error reading {file_path}: {e}")
+                        try:
+                            # If reading as CSV fails, try reading it as an Excel file
+                            df = pd.read_excel(file_path, header=13).dropna(subset='Bill Number')
+                            df['CI'] = pd.to_datetime(df['Sales In Date'].astype(str) + ' ' + df['Sales In Time'])
+                            df['CO'] = pd.to_datetime(df['Sales Out Date'].astype(str) + ' ' + df['Sales Out Time'])
+                            df['DATE'] = pd.to_datetime(df['Bill Number'].astype(str).str[4:12],format='%Y%m%d')
+                            df['CAB'] = df['Branch'].str.extract(r'\.(.*)')[0]
+                            df['KATEGORI'] = df['Visit Purpose'].str.extract(r'\.(.*)')[0]
+                            df.loc[df[(df['KATEGORI'].isin(['DINE IN','TAKE AWAY'])) & (df['Cashier']=='SYSTEM')].index,'KATEGORI'] ='QRIS ESB'
+                            df['KATEGORI'] = df['KATEGORI'].replace({'DINE IN':'QRIS SHOPEE','TAKE AWAY':'QRIS SHOPEE'})
+                            df = df[['DATE','CAB','Sales Number','CI','CO','KATEGORI','Additional Info','Bill Discount','Grand Total']].fillna('').rename(columns={
+                                'Sales Number':'CODE','Additional Info':'CUSTOMER','Bill Discount':'DISC','Grand Total':'TOTAL'})
+                            df['DATE'] = pd.to_datetime(df['DATE']).dt.strftime('%Y-%m-%d')
+                            dataframes.append(df)
+                        except Exception as excel_exception:
+                            print(f"Error reading {file_path} as Excel: {excel_exception}")
                         
             # Check if any HTML files were processed
             if dataframes:
