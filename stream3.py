@@ -877,12 +877,13 @@ if uploaded_file is not None:
                 except ValueError as e:
                     print(f"Error dalam mengonversi tanggal: {e}")
             
-
+            
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             #dfweb['CODE'] = dfweb['CODE'].astype(str)
             dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[6:]).astype(int)
             dfweb = dfweb.sort_values(['CAB','DATE','CODE2']).reset_index(drop=True)
-            
+            cab_time
+            dfweb
             def adjust_date(row, previous_row):
                 if previous_row is not None and abs(row['TIME2'] - previous_row['TIME2']) > pd.Timedelta(hours=12):
                     return index
@@ -901,7 +902,7 @@ if uploaded_file is not None:
                                 break
                             previous_row = row
                         previous_row = None
-            
+            dfweb
             dfweb = dfweb.drop(columns='TIME2')
             
             
