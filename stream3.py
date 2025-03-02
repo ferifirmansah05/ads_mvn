@@ -902,7 +902,7 @@ if uploaded_file is not None:
                                 break
                             previous_row = row
                         previous_row = None
-            dfweb
+            #dfweb
             dfweb = dfweb.drop(columns='TIME2')
             
             
