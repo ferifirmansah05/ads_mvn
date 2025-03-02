@@ -772,6 +772,23 @@ if uploaded_file is not None:
                         dataframes.append(df)
                     except Exception as e:
                         print(f"Error reading {file_path}: {e}")
+                        try:
+                            # If reading as CSV fails, try reading it as an Excel file
+                            df = pd.read_excel(file_path, header=13).dropna(subset='Bill Number')
+                            df['CI'] = pd.to_datetime(df['Sales In Date'].astype(str) + ' ' + df['Sales In Time'])
+                            df['CO'] = pd.to_datetime(df['Sales Out Date'].astype(str) + ' ' + df['Sales Out Time'])
+                            df['DATE'] = pd.to_datetime(df['Bill Number'].astype(str).str[4:12],format='%Y%m%d')
+                            df['CAB'] = df['Branch'].str.extract(r'\.(.*)')[0]
+                            df['KATEGORI'] = df['Visit Purpose'].str.extract(r'\.(.*)')[0]
+                            df.loc[df[(df['KATEGORI'].isin(['DINE IN','TAKE AWAY'])) & (df['Cashier']=='SYSTEM')].index,'KATEGORI'] ='QRIS ESB'
+                            df['KATEGORI'] = df['KATEGORI'].replace({'DINE IN':'QRIS SHOPEE','TAKE AWAY':'QRIS SHOPEE'})
+                            df = df[['DATE','CAB','Sales Number','CI','CO','KATEGORI','Additional Info','Bill Discount','Grand Total']].fillna('').rename(columns={
+                                'Sales Number':'CODE','Additional Info':'CUSTOMER','Bill Discount':'DISC','Grand Total':'TOTAL'})
+                            df['DATE'] = pd.to_datetime(df['DATE']).dt.strftime('%Y-%m-%d')
+                            df['DISC'] = df['DISC'].fillna(0)
+                            dataframes.append(df)
+                        except Exception as excel_exception:
+                            print(f"Error reading {file_path} as Excel: {excel_exception}")
                         
             # Check if any HTML files were processed
             if dataframes:
@@ -818,10 +835,12 @@ if uploaded_file is not None:
                 #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
                 #st.write(dfweb)
-                dfweb['NOM'] = dfweb.apply(lambda row: float(row['NOM2'])+float(row['DISC']) if (str(row['NOM2']).isnumeric()) else '',axis=1)
+                dfweb['NOM'] = dfweb['NOM2'].astype(float)+dfweb['DISC'].astype(float)
                 dfweb = dfweb.drop(columns='DISC')
 
-                dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY', 'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO' ,'GRAB': 'GRAB FOOD', 'QRIS ESB ORDER':'QRIS ESB'})
+                dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY','SHOPEE FOOD INT':'SHOPEEPAY', 
+                                                     'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO','GOFOOD INT':'GO RESTO' ,'GRAB': 'GRAB FOOD','GRAB FOOD INT':'GRAB FOOD', 
+                                                     'QRIS ESB ORDER':'QRIS ESB'})
             
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
             dfinv = dfinv[['CAB', 'DATE', 'TIME', 'CODE', 'ID', 'NOM', 'KAT', 'SOURCE']]
@@ -858,12 +877,13 @@ if uploaded_file is not None:
                 except ValueError as e:
                     print(f"Error dalam mengonversi tanggal: {e}")
             
-
+            
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             #dfweb['CODE'] = dfweb['CODE'].astype(str)
             dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[6:]).astype(int)
             dfweb = dfweb.sort_values(['CAB','DATE','CODE2']).reset_index(drop=True)
-            
+            #cab_time
+            #dfweb
             def adjust_date(row, previous_row):
                 if previous_row is not None and abs(row['TIME2'] - previous_row['TIME2']) > pd.Timedelta(hours=12):
                     return index
@@ -882,7 +902,7 @@ if uploaded_file is not None:
                                 break
                             previous_row = row
                         previous_row = None
-
+            #dfweb
             dfweb = dfweb.drop(columns='TIME2')
             
             
