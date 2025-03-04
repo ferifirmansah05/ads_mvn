@@ -544,7 +544,23 @@ if uploaded_file is not None:
             
             st.write('QRIS SHOPEE')
             combined_dataframes = []
-            
+            folder_path = f'{tmpdirname}/_bahan/QRIS_SHOPEE'
+            # Loop through each file in the folder
+            for file_name in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, file_name)
+                # Concatenate CSV files within each subfolder
+                    try:
+                        # Try reading the file as a CSV
+                        df = pd.read_csv(file_path)
+                        storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name QRIS SHOPEE.xlsx')
+                        df = pd.merge(df, storename, how='left', on='Store Name').fillna('')
+                        df = df[df['CAB'] != '']
+                        combined_dataframes.append(df)
+                        
+                    except Exception as ex:
+                        # If both CSV and Excel reading fail, raise an error
+                        print(f"Failed to read file. Error: {ex}")
+                            
             # Iterate over each subfolder
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
@@ -557,14 +573,14 @@ if uploaded_file is not None:
                         df = pd.read_csv(file)
                         if len(df.columns)<3:
                             df = pd.read_csv(file,sep=';',dtype=str)
-                        df['Folder'] = subfolder
+                        df['CAB'] = subfolder
                         dfs.append(df)
                         
                     except ParserError or ValueError:
                         try:
                             # If reading as CSV fails, try reading it as an Excel file
                             df = pd.read_csv(file,sep=';',dtype=str)
-                            df['Folder'] = subfolder
+                            df['CAB'] = subfolder
                             dfs.append(df)
                         except Exception as ex:
                             # If both CSV and Excel reading fail, raise an error
@@ -573,7 +589,7 @@ if uploaded_file is not None:
                 if dfs:
                     df = pd.concat(dfs)
                     # Add a new column for the folder name
-                    #df['Folder'] = subfolder
+                    #df['CAB'] = subfolder
                     combined_dataframes.append(df)
                     
 
@@ -596,8 +612,8 @@ if uploaded_file is not None:
                 df_qris = df_qris[~df_qris['Transaction ID'].isna()]
                 df_qris = df_qris.fillna('')
                 # Rename columns to match the database schema
-                df_qris = df_qris.loc[:, ['Folder', 'Transaction ID', 'DATE', 'TIME', 'Transaction Amount', 'Transaction Type']].rename(
-                    columns={'Folder': 'CAB', 'Transaction ID': 'ID', 'Transaction Amount': 'NOM'}).fillna('')
+                df_qris = df_qris.loc[:, ['CAB', 'Transaction ID', 'DATE', 'TIME', 'Transaction Amount', 'Transaction Type']].rename(
+                    columns={'Transaction ID': 'ID', 'Transaction Amount': 'NOM'}).fillna('')
                 df_qris['DATE'] = df_qris['DATE'].str.replace('Apr', 'April')          
                 df_qris['DATE'] = df_qris['DATE'].str.replace('Jun', 'June')
             
