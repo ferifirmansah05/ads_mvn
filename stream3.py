@@ -553,7 +553,7 @@ if uploaded_file is not None:
                         # Try reading the file as a CSV
                         df = pd.read_csv(file_path)
                         storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name QRIS SHOPEE.xlsx')
-                        df = pd.merge(df, storename, how='left', on='Store Name').fillna('')
+                        df = pd.merge(df, storename, how='left', on='Merchant/Store Name').fillna('')
                         df = df[df['CAB'] != '']
                         combined_dataframes.append(df)
                         
