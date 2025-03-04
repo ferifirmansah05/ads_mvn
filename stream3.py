@@ -549,17 +549,17 @@ if uploaded_file is not None:
             for file_name in os.listdir(folder_path):
                 file_path = os.path.join(folder_path, file_name)
                 # Concatenate CSV files within each subfolder
-                    try:
-                        # Try reading the file as a CSV
-                        df = pd.read_csv(file_path)
-                        storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name QRIS SHOPEE.xlsx')
-                        df = pd.merge(df, storename, how='left', on='Merchant/Store Name').fillna('')
-                        df = df[df['CAB'] != '']
-                        combined_dataframes.append(df)
-                        
-                    except Exception as ex:
-                        # If both CSV and Excel reading fail, raise an error
-                        print(f"Failed to read file. Error: {ex}")
+                try:
+                    # Try reading the file as a CSV
+                    df = pd.read_csv(file_path)
+                    storename = pd.read_excel(f'{tmpdirname}/_bahan/bahan/Store Name QRIS SHOPEE.xlsx')
+                    df = pd.merge(df, storename, how='left', on='Merchant/Store Name').fillna('')
+                    df = df[df['CAB'] != '']
+                    combined_dataframes.append(df)
+                    
+                except Exception as ex:
+                    # If both CSV and Excel reading fail, raise an error
+                    print(f"Failed to read file. Error: {ex}")
                             
             # Iterate over each subfolder
             for subfolder in subfolders:
