@@ -144,7 +144,7 @@ if uploaded_file is not None:
             
             for subfolder in subfolders:
                 # Glob pattern to get all CSV files in the subfolder
-                files = glob(os.path.join(main_folder, subfolder, 'Mie_Gacoan_*'))
+                files = glob(os.path.join(main_folder, subfolder, 'Mie_Gacoan_*')) + glob(os.path.join(main_folder, subfolder, 'G*'))
             
                 # Check if there are CSV files in the subfolder
                 if files:
