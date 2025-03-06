@@ -847,8 +847,8 @@ if uploaded_file is not None:
                             
                 cab_time = dfweb[~dfweb['TIME'].astype(str).str.contains('-')][['CAB','DATE']].drop_duplicates().reset_index(drop=True)
             
-                dfweb['TIME'] = pd.to_datetime(pd.to_datetime(dfweb['TIME'], format='%Y-%m-%d %H:%M:%S', errors='coerce').fillna(pd.to_datetime(dfweb['DATE']).dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME'].astype(str)).astype(str))
-                dfweb['TIME2'] = pd.to_datetime(pd.to_datetime(dfweb['TIME2'], format='%Y-%m-%d %H:%M:%S', errors='coerce').fillna(pd.to_datetime(dfweb['DATE']).dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME2'].astype(str)).astype(str))
+                dfweb['TIME'] = pd.to_datetime(pd.to_datetime(dfweb['TIME'], format='%Y-%m-%d %H:%M:%S', errors='coerce').fillna(pd.to_datetime(dfweb['DATE'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME'].astype(str)).astype(str))
+                dfweb['TIME2'] = pd.to_datetime(pd.to_datetime(dfweb['TIME2'], format='%Y-%m-%d %H:%M:%S', errors='coerce').fillna(pd.to_datetime(dfweb['DATE'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')+ ' ' + dfweb['TIME2'].astype(str)).astype(str))
                 #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
                 st.write(dfweb)
