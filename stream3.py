@@ -897,7 +897,7 @@ if uploaded_file is not None:
             
             dfinv['TIME'] = pd.to_datetime(dfinv['DATE'].dt.strftime('%Y-%m-%d') + ' ' + dfinv['TIME'].astype(str))
             #dfweb['CODE'] = dfweb['CODE'].astype(str)
-            dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[5:]).astype(int)
+            dfweb['CODE2'] = dfweb['CODE'].apply(lambda x: x[-9:] if 'S' in x else x[6:]).astype(int)
             dfweb = dfweb.sort_values(['CAB','DATE','CODE2']).reset_index(drop=True)
             #cab_time
             #dfweb
