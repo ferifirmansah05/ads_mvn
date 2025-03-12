@@ -852,7 +852,7 @@ if uploaded_file is not None:
                 #dfweb['TIME'] = dfweb['TIME'].apply(convert_time)
                 dfweb['DISC'] = dfweb['DISC'].replace('',0).fillna(0)
                 dfweb['NOM2'] = dfweb['NOM2'].fillna('').replace('',0)
-                st.write(dfweb)
+                #st.write(dfweb)
                 dfweb['NOM'] = dfweb['NOM2'].astype(float)+dfweb['DISC'].astype(float)
                 dfweb = dfweb.drop(columns='DISC')
 
