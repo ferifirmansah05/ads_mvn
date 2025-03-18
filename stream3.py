@@ -972,7 +972,7 @@ if uploaded_file is not None:
                         gow = gow.sort_values(by=['CAB', 'NOM', 'TIME'], ascending=[True, True, False]).reset_index(drop=True)
                         
                         goi.drop_duplicates(inplace=True)
-                        gow['ID2'] = gow['ID'].apply(lambda x: x.split(' - ')[-1] if ' - ' in x else '')
+                        gow['ID2'] = gow['ID'].apply(lambda x: x.split(' - ')[-1] if ' - ' in str(x) else '')
                         goi['ID2'] = goi['ID']
                         if 'cn' in locals():    
                             for i in cn[(cn['TANGGAL']==str(int(re.findall(r'\d+', date)[-1]))) & (cn['CAB']==cab) & (cn['TYPE BAYAR']=='GO RESTO')].index:
