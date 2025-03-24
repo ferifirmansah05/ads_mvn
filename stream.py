@@ -24,11 +24,11 @@ def run_stream_script(url):
 
 # Arahkan ke aplikasi berdasarkan pilihan pengguna
 if option == 'Automate Breakdown Ojol':
-    stream1_url = 'https://raw.githubusercontent.com/Analyst-FPnA/ABO-DA/main/stream3.py'
+    stream1_url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/stream3.py'
     run_stream_script(stream1_url)
   
 elif option == 'Download Invoice':
-    stream2_url = 'https://raw.githubusercontent.com/Analyst-FPnA/ABO-DA/main/stream2.py'
+    stream2_url = 'https://raw.githubusercontent.com/ferifirmansah05/ads_mvn/main/stream2.py'
     run_stream_script(stream2_url)
 
 
