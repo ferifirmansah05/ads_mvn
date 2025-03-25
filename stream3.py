@@ -170,48 +170,48 @@ if uploaded_file:
         authorization_code_shopee = st.text_input('Masukkan Kode Otorisasi:', '', key='shopee')
 
 
-   
-    if st.button('Process'):
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            if (authorization_code_gojek != '') & ('service_gojek' not in locals()):
-                service_gojek = authenticate_gmail(authorization_code_gojek)
-            if (authorization_code_shopee != '') & ('service_shopee' not in locals()):
-                service_shopee = authenticate_gmail(authorization_code_shopee)
-            if 'service_gojek' in locals():
-                for i, query in enumerate(db['GOFOOD']):
-                    messages = list_messages(service_gojek, query + ' smaller:500K')
+    if (authorization_code_shopee != '') or (authorization_code_gojek != ''): 
+        if st.button('Process'):
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                if (authorization_code_gojek != '') & ('service_gojek' not in locals()):
+                    service_gojek = authenticate_gmail(authorization_code_gojek)
+                if (authorization_code_shopee != '') & ('service_shopee' not in locals()):
+                    service_shopee = authenticate_gmail(authorization_code_shopee)
+                if 'service_gojek' in locals():
+                    for i, query in enumerate(db['GOFOOD']):
+                        messages = list_messages(service_gojek, query + ' smaller:500K')
+                        if messages:
+                            st.write(f'Found {len(messages)} messages.')
+                            for msg in messages[:jumlah]:
+                                msg_id = msg['id']
+                                save_attachment(service_gojek, msg_id, store_dir=f'{tmpdirname}/downloads/{db.loc[i,"CAB"]}')
+                        else:
+                            st.write('No messages found with the given criteria.')
+    
+                if 'service_shopee' in locals():
+                    for i, query in enumerate(db['SHOPEEFOOD']):
+                        messages = list_messages(service_shopee, query + ' smaller:500K')
+                        if messages:
+                            st.write(f'Found {len(messages)} messages.')
+                            for msg in messages[:jumlah]:
+                                msg_id = msg['id']
+                                save_attachment(service_shopee, msg_id, store_dir=f'{tmpdirname}/downloads/{db.loc[i,"CAB"]}')
+                        else:
+                            st.write('No messages found with the given criteria.')
+    
+                    messages = list_messages(service_shopee, 'SHOPEEPAY larger:500K')
                     if messages:
                         st.write(f'Found {len(messages)} messages.')
                         for msg in messages[:jumlah]:
                             msg_id = msg['id']
-                            save_attachment(service_gojek, msg_id, store_dir=f'{tmpdirname}/downloads/{db.loc[i,"CAB"]}')
-                    else:
-                        st.write('No messages found with the given criteria.')
-
-            if 'service_shopee' in locals():
-                for i, query in enumerate(db['SHOPEEFOOD']):
-                    messages = list_messages(service_shopee, query + ' smaller:500K')
-                    if messages:
-                        st.write(f'Found {len(messages)} messages.')
-                        for msg in messages[:jumlah]:
-                            msg_id = msg['id']
-                            save_attachment(service_shopee, msg_id, store_dir=f'{tmpdirname}/downloads/{db.loc[i,"CAB"]}')
-                    else:
-                        st.write('No messages found with the given criteria.')
-
-                messages = list_messages(service_shopee, 'SHOPEEPAY larger:500K')
-                if messages:
-                    st.write(f'Found {len(messages)} messages.')
-                    for msg in messages[:jumlah]:
-                        msg_id = msg['id']
-                        save_attachment(service_shopee, msg_id, store_dir=f'{tmpdirname}/downloads/QRIS_SHOPEE/')
-
-            create_zip_from_folder(f'{tmpdirname}/downloads', 'invoice.zip')
-            with open('invoice.zip', 'rb') as f:
-                st.download_button(
-                    label="Download ZIP File",
-                    data=f,
-                    file_name='invoice.zip',
-                    mime="application/zip"
-                )
-
+                            save_attachment(service_shopee, msg_id, store_dir=f'{tmpdirname}/downloads/QRIS_SHOPEE/')
+    
+                create_zip_from_folder(f'{tmpdirname}/downloads', 'invoice.zip')
+                with open('invoice.zip', 'rb') as f:
+                    st.download_button(
+                        label="Download ZIP File",
+                        data=f,
+                        file_name='invoice.zip',
+                        mime="application/zip"
+                    )
+    
