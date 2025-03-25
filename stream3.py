@@ -163,22 +163,20 @@ if uploaded_file:
     with gojek:
         auth_flow()
         authorization_code_gojek = st.text_input('Masukkan Kode Otorisasi:', '', key='gojek')
-        if (authorization_code_gojek != '') & ('service_gojek' not in locals()):
-            service_gojek = authenticate_gmail(authorization_code_gojek)
-            if service_gojek:
-                st.write('Connected---')
+
 
     with shopee:
         auth_flow()
         authorization_code_shopee = st.text_input('Masukkan Kode Otorisasi:', '', key='shopee')
-        if (authorization_code_shopee != '') & ('service_shopee' not in locals()):
-            service_shopee = authenticate_gmail(authorization_code_shopee)
-            if service_shopee:
-                st.write('Connected---')
+
 
    
     if st.button('Process'):
         with tempfile.TemporaryDirectory() as tmpdirname:
+            if (authorization_code_gojek != '') & ('service_gojek' not in locals()):
+                service_gojek = authenticate_gmail(authorization_code_gojek)
+            if (authorization_code_shopee != '') & ('service_shopee' not in locals()):
+                service_shopee = authenticate_gmail(authorization_code_shopee)
             if 'service_gojek' in locals():
                 for i, query in enumerate(db['GOFOOD']):
                     messages = list_messages(service_gojek, query + ' smaller:500K')
