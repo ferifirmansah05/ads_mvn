@@ -172,9 +172,7 @@ if uploaded_file is not None:
                                                     'Gross Amount']].rename(columns={'Waktu Transaksi' : 'DATETIME',
                                                                                     'Folder' : 'CAB',
                                                                                     'Nomor Pesanan' : 'ID',
-                                                                                    'Gross Amount' : 'NOM'}).fillna('')
-                df_gojek1['DATETIME'] = df_gojek1['DATETIME'].str.replace('Apr', 'April')
-                df_gojek1['DATETIME'] = df_gojek1['DATETIME'].str.replace('Jun', 'June')            
+                                                                                    'Gross Amount' : 'NOM'}).fillna('')          
             
                 # Parse datetime column
                 df_gojek1['DATETIME']    =   pd.to_datetime(df_gojek1['DATETIME'], utc=True)
