@@ -155,7 +155,7 @@ if "button2" not in st.session_state:
 
 if uploaded_file:
     db = pd.read_excel(uploaded_file)
-    jumlah = st.slider('Pilih total file terakhir yang akan didownload', min_value=1, max_value=7, value=3)
+    jumlah = st.slider('Pilih total file terakhir yang akan didownload', min_value=1, max_value=11, value=3)
     all_cab = st.multiselect('Pilih Cabang', db['CAB'].to_list(), default=db['CAB'].to_list())
     db = db[db['CAB'].isin(all_cab)].reset_index(drop=True)
     gojek, shopee = st.tabs(["GOJEK", "SHOPEE"])
