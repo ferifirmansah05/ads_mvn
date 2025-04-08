@@ -19,7 +19,8 @@ st.title('Download Invoice')
 
 # Jika memodifikasi scope, hapus file token.json
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.modify']
-SCOPES_2 = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/gmail.modify']
+SCOPES_2 = ['openid','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/gmail.modify']
+
 redirect_uri = os.environ.get("REDIRECT_URI", 'urn:ietf:wg:oauth:2.0:oob')
 
 from streamlit_js import st_js, st_js_blocking
