@@ -65,7 +65,7 @@ def auth_flow(SCOPE):
         st.link_button("Sign in with Google", authorization_url)
 
 
-def authenticate_gmail(authorization_code):
+def authenticate_gmail(authorization_code, SCOPE):
     """Authenticate and return Gmail API service."""
     creds = None
     # Token file untuk menyimpan kredensial yang telah diakses sebelumnya.
@@ -174,9 +174,9 @@ if uploaded_file:
     if st.button('Process'):
         with tempfile.TemporaryDirectory() as tmpdirname:
             if (authorization_code_gojek != '') & ('service_gojek' not in locals()):
-                service_gojek = authenticate_gmail(authorization_code_gojek)
+                service_gojek = authenticate_gmail(authorization_code_gojek,SCOPES)
             if (authorization_code_shopee != '') & ('service_shopee' not in locals()):
-                service_shopee = authenticate_gmail(authorization_code_shopee)
+                service_shopee = authenticate_gmail(authorization_code_shopee,SCOPES_2)
             if 'service_gojek' in locals():
                 for i, query in enumerate(db['GOFOOD']):
                     messages = list_messages(service_gojek, query + ' smaller:500K')
