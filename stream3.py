@@ -19,7 +19,7 @@ st.title('Download Invoice')
 
 # Jika memodifikasi scope, hapus file token.json
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.modify']
-
+SCOPES_2 = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/gmail.modify']
 redirect_uri = os.environ.get("REDIRECT_URI", 'urn:ietf:wg:oauth:2.0:oob')
 
 from streamlit_js import st_js, st_js_blocking
@@ -36,11 +36,11 @@ def init_session():
     if user_info:
         st.session_state["user_info"] = user_info
 
-def auth_flow():
+def auth_flow(SCOPE):
     auth_code = st.query_params.get("code")
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         'credentials_shopee.json',  # replace with your json credentials from your google auth app
-        scopes=SCOPES,
+        scopes=SCOPE,
         redirect_uri=redirect_uri,
     )
     if auth_code:
@@ -70,7 +70,7 @@ def authenticate_gmail(authorization_code):
     creds = None
     # Token file untuk menyimpan kredensial yang telah diakses sebelumnya.
     try:
-        creds = InstalledAppFlow.from_client_secrets_file('credentials_shopee.json', SCOPES, redirect_uri='urn:ietf:wg:oauth:2.0:oob').fetch_token(code=authorization_code) 
+        creds = InstalledAppFlow.from_client_secrets_file('credentials_shopee.json', SCOPE, redirect_uri='urn:ietf:wg:oauth:2.0:oob').fetch_token(code=authorization_code) 
     except InvalidGrantError as error:
         creds = ''
         st.write(f'Kode Otorisasi Tidak Valid: {error}')
@@ -91,7 +91,7 @@ def authenticate_gmail(authorization_code):
     with open('token.json', 'w') as token_file:
         json.dump(token_info, token_file)
 
-    return build('gmail', 'v1', credentials=Credentials.from_authorized_user_file('token.json', SCOPES))
+    return build('gmail', 'v1', credentials=Credentials.from_authorized_user_file('token.json', SCOPE))
     
 def list_messages(service, query):
     """List email messages based on a query."""
@@ -161,12 +161,12 @@ if uploaded_file:
     gojek, shopee = st.tabs(["GOJEK", "SHOPEE"])
 
     with gojek:
-        auth_flow()
+        auth_flow(SCOPES)
         authorization_code_gojek = st.text_input('Masukkan Kode Otorisasi:', '', key='gojek')
 
 
     with shopee:
-        auth_flow()
+        auth_flow(SCOPES_2)
         authorization_code_shopee = st.text_input('Masukkan Kode Otorisasi:', '', key='shopee')
 
 
