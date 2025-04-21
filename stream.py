@@ -855,7 +855,7 @@ if uploaded_file is not None:
                 dfweb = dfweb.drop(columns='DISC')
 
                 dfweb['KAT'] = dfweb['KAT'].replace({'SHOPEE PAY': 'SHOPEEPAY', 'SHOPEEFOOD INT': 'SHOPEEPAY','SHOPEE FOOD INT':'SHOPEEPAY', 
-                                                     'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO','GOFOOD INT':'GO RESTO' ,'GRAB': 'GRAB FOOD','GRAB FOOD INT':'GRAB FOOD', 
+                                                     'GORESTO': 'GO RESTO','GOFOOD':'GO RESTO','GOFOOD INT':'GO RESTO' ,'GRAB': 'GRAB FOOD','GRAB FOOD INT':'GRAB FOOD','GRABFOOD INT':'GRAB FOOD', 
                                                      'QRIS ESB ORDER':'QRIS ESB', 'EDC CIMB':'EDC'})
             
             dfinv = pd.concat(dfinv, ignore_index = True).fillna('')
