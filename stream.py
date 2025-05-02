@@ -238,8 +238,8 @@ if uploaded_file is not None:
                                                                             'Nomor Pesanan' : 'ID',
                                                                             'Gross Amount' : 'NOM'}).fillna('')
                 df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
-                df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Apr', 'April')
-                df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Jun', 'June')
+                #df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Apr', 'April')
+                #df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Jun', 'June')
                 # Parse datetime column
                 df_gojek2['DATETIME']    =   pd.to_datetime(df_gojek2['DATETIME'], utc=True)
             
@@ -612,8 +612,8 @@ if uploaded_file is not None:
                 # Rename columns to match the database schema
                 df_qris = df_qris.loc[:, ['CAB', 'Transaction ID', 'DATE', 'TIME', 'Transaction Amount', 'Transaction Type']].rename(
                     columns={'Transaction ID': 'ID', 'Transaction Amount': 'NOM'}).fillna('')
-                df_qris['DATE'] = df_qris['DATE'].str.replace('Apr', 'April')          
-                df_qris['DATE'] = df_qris['DATE'].str.replace('Jun', 'June')
+                #df_qris['DATE'] = df_qris['DATE'].str.replace('Apr', 'April')          
+                #df_qris['DATE'] = df_qris['DATE'].str.replace('Jun', 'June')
             
                 df_qris['DATE'] = pd.to_datetime(df_qris['DATE'], format='%d/%m/%Y')
                 df_qris['DATE'] = df_qris['DATE'].dt.strftime('%d/%m/%Y')
