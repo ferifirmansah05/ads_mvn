@@ -175,6 +175,7 @@ if uploaded_file is not None:
                                                                                     'Gross Amount' : 'NOM'}).fillna('')          
             
                 # Parse datetime column
+                df_gojek1['DATETIME'] = df_gojek1['DATETIME'].str.replace('Apr', 'April')
                 df_gojek1['DATETIME']    =   pd.to_datetime(df_gojek1['DATETIME'], utc=True)
             
                 df_gojek1['DATE']        =   df_gojek1['DATETIME'].dt.strftime('%d/%m/%Y')
@@ -238,7 +239,7 @@ if uploaded_file is not None:
                                                                             'Nomor Pesanan' : 'ID',
                                                                             'Gross Amount' : 'NOM'}).fillna('')
                 df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('T', ' ').str.slice(0, 19)
-                df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Apr', 'April')
+                #df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Apr', 'April')
                 #df_gojek2['DATETIME'] = df_gojek2['DATETIME'].str.replace('Jun', 'June')
                 # Parse datetime column
                 df_gojek2['DATETIME']    =   pd.to_datetime(df_gojek2['DATETIME'], utc=True)
