@@ -175,8 +175,7 @@ if uploaded_file is not None:
                                                                                     'Gross Amount' : 'NOM'}).fillna('')          
             
                 # Parse datetime column
-                #df_gojek1['DATETIME'] = df_gojek1['DATETIME'].str.replace('Apr', 'April')
-                df_gojek1['DATETIME']    =   pd.to_datetime(df_gojek1['DATETIME'], utc=True)
+                df_gojek1['DATETIME']    =   pd.to_datetime(df_gojek1['DATETIME'], utc=True, format="%b %d %Y, %H:%M")
             
                 df_gojek1['DATE']        =   df_gojek1['DATETIME'].dt.strftime('%d/%m/%Y')
                 df_gojek1['TIME']        =   df_gojek1['DATETIME'].dt.time
