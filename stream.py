@@ -63,7 +63,7 @@ df_prov.columns = df_prov.loc[3,:].values
 df_prov = df_prov.loc[4:,]
 df_prov = df_prov.loc[:265, ['Nama','Provinsi Alamat','Kota Alamat']]
 df_prov = df_prov.rename(columns={'Nama':'Nama Cabang','Provinsi Alamat':'Provinsi', 'Kota Alamat': 'Kota/Kabupaten'})
-list_cab = df_prov['Nama Cabang'].str.extract(r'\((.*?)\)')[0].values
+list_cab = df_prov['Nama Cabang'].str.extract(r'\(([^()]*)\)')[0].values
 
 
 st.title('Automate Breakdown Ojol')
