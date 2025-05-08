@@ -936,7 +936,7 @@ if uploaded_file is not None:
             dfweb['KAT'] = dfweb['KAT'].str.upper()
             cash = dfweb[dfweb['KAT']=='CASH']
 
-            wita = ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM','BPPMUL','BONIMA']
+            wita = ['MKSAHM', 'BPPHAR', 'MKSPER', 'MKSTUN', 'MKSPOR', 'MKSPET', 'MKSRAT','SMRYAM', 'SMRAHM','BPPMUL','BONIMA','KDINAS']
             for wib in dfinv['CAB'].unique():
                 if wib in wita:
                     dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] = dfinv.loc[dfinv[dfinv['CAB']==wib].index, 'TIME'] + dt.timedelta(hours=1,minutes=1)
